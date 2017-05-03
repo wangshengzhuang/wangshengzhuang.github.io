@@ -4,7 +4,7 @@
 
     
   <url>
-    <loc>http://wangshengzhuang.com/2017/05/02/MySQL/HA/InnoDB%20Cluster/%E4%B8%80%E3%80%81InnoDB%20Cluster%E7%AE%80%E4%BB%8B/</loc>
+    <loc>http://wangshengzhuang.com/2017/05/02/MySQL/MySQL%20HA/InnoDB%20Cluster/%E4%B8%80%E3%80%81InnoDB%20Cluster%E7%AE%80%E4%BB%8B/</loc>
     <lastmod>2017-05-03T14:51:49.133Z</lastmod>
     <data>
         <display>
@@ -21,10 +21,10 @@
               <breadCrumb title="MySQL" url="http://wangshengzhuang.com/categories/MySQL/"/>
           
              
-              <breadCrumb title="HA" url="http://wangshengzhuang.com/categories/MySQL/HA/"/>
+              <breadCrumb title="MySQL HA" url="http://wangshengzhuang.com/categories/MySQL/MySQL-HA/"/>
           
              
-              <breadCrumb title="InnoDB Cluster" url="http://wangshengzhuang.com/categories/MySQL/HA/InnoDB-Cluster/"/>
+              <breadCrumb title="InnoDB Cluster" url="http://wangshengzhuang.com/categories/MySQL/MySQL-HA/InnoDB-Cluster/"/>
           
         </display>
     </data>
@@ -32,7 +32,7 @@
 
     
   <url>
-    <loc>http://wangshengzhuang.com/2017/05/03/MySQL/HA/InnoDB%20Cluster/3%E6%B2%99%E7%9B%92%E5%AE%9E%E4%BE%8B%E6%90%AD%E5%BB%BAInnoDB%20Cluster%E7%8E%AF%E5%A2%83%20/</loc>
+    <loc>http://wangshengzhuang.com/2017/05/03/MySQL/MySQL%20HA/InnoDB%20Cluster/3%E6%B2%99%E7%9B%92%E5%AE%9E%E4%BE%8B%E6%90%AD%E5%BB%BAInnoDB%20Cluster%E7%8E%AF%E5%A2%83%20/</loc>
     <lastmod>2017-05-03T14:51:27.656Z</lastmod>
     <data>
         <display>
@@ -49,10 +49,10 @@
               <breadCrumb title="MySQL" url="http://wangshengzhuang.com/categories/MySQL/"/>
           
              
-              <breadCrumb title="HA" url="http://wangshengzhuang.com/categories/MySQL/HA/"/>
+              <breadCrumb title="MySQL HA" url="http://wangshengzhuang.com/categories/MySQL/MySQL-HA/"/>
           
              
-              <breadCrumb title="InnoDB Cluster" url="http://wangshengzhuang.com/categories/MySQL/HA/InnoDB-Cluster/"/>
+              <breadCrumb title="InnoDB Cluster" url="http://wangshengzhuang.com/categories/MySQL/MySQL-HA/InnoDB-Cluster/"/>
           
         </display>
     </data>
