@@ -92,17 +92,17 @@
 
 
 
-<meta name="description" content="1. Yum 安装MySQL Shell123wget https://dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpmrpm -ivh mysql57-community-release-el7-10.noarch.rpmyum install mysql-shell -y 2. 创建三个沙盒实例Start MySQL S">
+<meta name="description" content="This section explains how to set up a single-primary InnoDB cluster and configure MySQL Router to achieve high availability.  This tutorial shows how to use MySQL Shell to create an InnoDB cluster con">
 <meta name="keywords" content="InnoDB Cluster,MySQL">
 <meta property="og:type" content="article">
 <meta property="og:title" content="沙盒实例搭建InnoDB Cluster环境">
 <meta property="og:url" content="http://wangshengzhuang.com/2017/05/03/MySQL/MySQL HA/InnoDB Cluster/3沙盒实例搭建InnoDB Cluster环境 /index.html">
 <meta property="og:site_name" content="小强斋太-Study Notes">
-<meta property="og:description" content="1. Yum 安装MySQL Shell123wget https://dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpmrpm -ivh mysql57-community-release-el7-10.noarch.rpmyum install mysql-shell -y 2. 创建三个沙盒实例Start MySQL S">
-<meta property="og:updated_time" content="2017-05-03T14:51:27.656Z">
+<meta property="og:description" content="This section explains how to set up a single-primary InnoDB cluster and configure MySQL Router to achieve high availability.  This tutorial shows how to use MySQL Shell to create an InnoDB cluster con">
+<meta property="og:updated_time" content="2017-05-03T15:25:41.533Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="沙盒实例搭建InnoDB Cluster环境">
-<meta name="twitter:description" content="1. Yum 安装MySQL Shell123wget https://dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpmrpm -ivh mysql57-community-release-el7-10.noarch.rpmyum install mysql-shell -y 2. 创建三个沙盒实例Start MySQL S">
+<meta name="twitter:description" content="This section explains how to set up a single-primary InnoDB cluster and configure MySQL Router to achieve high availability.  This tutorial shows how to use MySQL Shell to create an InnoDB cluster con">
 
 
 
@@ -462,7 +462,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  816
+                  903
                 </span>
               
 
@@ -496,7 +496,10 @@
       
 
       
-        <h3 id="1-Yum-安装MySQL-Shell"><a href="#1-Yum-安装MySQL-Shell" class="headerlink" title="1. Yum 安装MySQL Shell"></a>1. Yum 安装MySQL Shell</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">wget https://dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpm</div><div class="line">rpm -ivh mysql57-community-release-el7-10.noarch.rpm</div><div class="line">yum install mysql-shell -y</div></pre></td></tr></table></figure>
+        <p>This section explains how to set up a single-primary InnoDB cluster and configure MySQL Router to achieve high availability. </p>
+<p>This tutorial shows how to use MySQL Shell to create an InnoDB cluster consisting of a MySQL Server instance which provides the seed instance of the InnoDB cluster and holds the initial data set. Two more sandbox MySQL server instances are created and added to the InnoDB cluster. Then MySQL Router is deployed and used to route connections to the InnoDB cluster, and high availability is tested. </p>
+<a id="more"></a>
+<h3 id="1-Yum-安装MySQL-Shell"><a href="#1-Yum-安装MySQL-Shell" class="headerlink" title="1. Yum 安装MySQL Shell"></a>1. Yum 安装MySQL Shell</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">wget https://dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpm</div><div class="line">rpm -ivh mysql57-community-release-el7-10.noarch.rpm</div><div class="line">yum install mysql-shell -y</div></pre></td></tr></table></figure>
 <h3 id="2-创建三个沙盒实例"><a href="#2-创建三个沙盒实例" class="headerlink" title="2. 创建三个沙盒实例"></a>2. 创建三个沙盒实例</h3><p>Start MySQL Shell </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">shell&gt; mysqlsh</div></pre></td></tr></table></figure>
 <p>MySQL Shell provides two scripting languages: JavaScript and Python. Throughout this guide MySQL Shell is used primarily in JavaScript mode . When MySQL Shell starts it is in JavaScript mode by default. You switch into JavaScript mode, Python mode and SQL mode using the commands <code>\js</code>, <code>\py</code>, and <code>\sql</code>. Ensure you are in JavaScript mode by issuing the <code>\js</code> command, then execute:</p>

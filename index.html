@@ -465,7 +465,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  816
+                  903
                 </span>
               
 
@@ -500,12 +500,8 @@
 
       
         
-          
-          1. Yum 安装MySQL Shell123wget https://dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpmrpm -ivh mysql57-community-release-el7-10.noarch.rpmyum install mysql-shell -y
-2. 创建三个沙盒实例Start MySQL Shell 
-1shell&gt; mysqlsh
-MySQL Shell provides two scripting languages: JavaScript and Python. Throughout this guide MySQL Shell is used primarily in JavaScript mode . When MySQL Shell starts it is in JavaScript mode by default. You switch into JavaScript mode, Python mode and SQL mode using the commands \js, \py, and \sql. Ensure you are in JavaScript mode by issuing the \js command, then execute:
-          ...
+          <p>This section explains how to set up a single-primary InnoDB cluster and configure MySQL Router to achieve high availability. </p>
+<p>This tutorial shows how to use MySQL Shell to create an InnoDB cluster consisting of a MySQL Server instance which provides the seed instance of the InnoDB cluster and holds the initial data set. Two more sandbox MySQL server instances are created and added to the InnoDB cluster. Then MySQL Router is deployed and used to route connections to the InnoDB cluster, and high availability is tested. </p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/05/03/MySQL/MySQL HA/InnoDB Cluster/3沙盒实例搭建InnoDB Cluster环境 /#more" rel="contents">
@@ -881,22 +877,12 @@ MySQL Shell provides two scripting languages: JavaScript and Python. Throughout 
 
       
         
-          
-          一、InnoDB Cluster简介前几天 Mysql 团队愉快的发布了 InnoDB Cluster 的 GA（General Availability 正式发布） 版本
-InnoDB Cluster 是 Mysql 的一套完整的高可用解决方案
-
-MySQL InnoDB cluster is a collection of products that work together to provide a complete High Availability solution for MySQL.
-
-
-InnoDB Cluster 由下面3个核心组件构成：
-
-MySQL Shell    通过内置的 AdminAPI 来创建和管理整个 InnoDB Clusters
-
-Includes the AdminAPI, which enables you to script the creation and administration of an InnoDB cluster, using either JavaScript or Python.
-
-
-MySQL Router   缓存 InnoDB cluster 的元数据，负责把 client 的 read/write 请求路由到当前的主数据库节点，还可以对 client 的请求进行负载均衡，并且在主数据库节点出现故障时，保证 c
-          ...
+          <h3 id="一、InnoDB-Cluster简介"><a href="#一、InnoDB-Cluster简介" class="headerlink" title="一、InnoDB Cluster简介"></a>一、InnoDB Cluster简介</h3><p>前几天 Mysql 团队愉快的发布了 InnoDB Cluster 的 GA（General Availability 正式发布） 版本</p>
+<p>InnoDB Cluster 是 Mysql 的一套完整的高可用解决方案</p>
+<blockquote>
+<p>MySQL InnoDB cluster is a collection of products that work together to provide a complete High Availability solution for MySQL.</p>
+</blockquote>
+<p><img src="http://image.wangshengzhuang.com/17-5-3/23165946-file_1493815367505_f827.png" alt=""></p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/05/02/MySQL/MySQL HA/InnoDB Cluster/一、InnoDB Cluster简介/#more" rel="contents">

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wangshengzhuang.com/"/>
-  <updated>2017-05-03T14:51:27.656Z</updated>
+  <updated>2017-05-03T15:25:41.533Z</updated>
   <id>http://wangshengzhuang.com/</id>
   
   <author>
@@ -20,9 +20,12 @@
     <link href="http://wangshengzhuang.com/2017/05/03/MySQL/MySQL%20HA/InnoDB%20Cluster/3%E6%B2%99%E7%9B%92%E5%AE%9E%E4%BE%8B%E6%90%AD%E5%BB%BAInnoDB%20Cluster%E7%8E%AF%E5%A2%83%20/"/>
     <id>http://wangshengzhuang.com/2017/05/03/MySQL/MySQL HA/InnoDB Cluster/3沙盒实例搭建InnoDB Cluster环境 /</id>
     <published>2017-05-02T16:00:00.000Z</published>
-    <updated>2017-05-03T14:51:27.656Z</updated>
+    <updated>2017-05-03T15:25:41.533Z</updated>
     
-    <content type="html"><![CDATA[<h3 id="1-Yum-安装MySQL-Shell"><a href="#1-Yum-安装MySQL-Shell" class="headerlink" title="1. Yum 安装MySQL Shell"></a>1. Yum 安装MySQL Shell</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">wget https://dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpm</div><div class="line">rpm -ivh mysql57-community-release-el7-10.noarch.rpm</div><div class="line">yum install mysql-shell -y</div></pre></td></tr></table></figure>
+    <content type="html"><![CDATA[<p>This section explains how to set up a single-primary InnoDB cluster and configure MySQL Router to achieve high availability. </p>
+<p>This tutorial shows how to use MySQL Shell to create an InnoDB cluster consisting of a MySQL Server instance which provides the seed instance of the InnoDB cluster and holds the initial data set. Two more sandbox MySQL server instances are created and added to the InnoDB cluster. Then MySQL Router is deployed and used to route connections to the InnoDB cluster, and high availability is tested. </p>
+<a id="more"></a>
+<h3 id="1-Yum-安装MySQL-Shell"><a href="#1-Yum-安装MySQL-Shell" class="headerlink" title="1. Yum 安装MySQL Shell"></a>1. Yum 安装MySQL Shell</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">wget https://dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpm</div><div class="line">rpm -ivh mysql57-community-release-el7-10.noarch.rpm</div><div class="line">yum install mysql-shell -y</div></pre></td></tr></table></figure>
 <h3 id="2-创建三个沙盒实例"><a href="#2-创建三个沙盒实例" class="headerlink" title="2. 创建三个沙盒实例"></a>2. 创建三个沙盒实例</h3><p>Start MySQL Shell </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">shell&gt; mysqlsh</div></pre></td></tr></table></figure>
 <p>MySQL Shell provides two scripting languages: JavaScript and Python. Throughout this guide MySQL Shell is used primarily in JavaScript mode . When MySQL Shell starts it is in JavaScript mode by default. You switch into JavaScript mode, Python mode and SQL mode using the commands <code>\js</code>, <code>\py</code>, and <code>\sql</code>. Ensure you are in JavaScript mode by issuing the <code>\js</code> command, then execute:</p>
@@ -66,7 +69,8 @@
     
     <summary type="html">
     
-      &lt;h3 id=&quot;1-Yum-安装MySQL-Shell&quot;&gt;&lt;a href=&quot;#1-Yum-安装MySQL-Shell&quot; class=&quot;headerlink&quot; title=&quot;1. Yum 安装MySQL Shell&quot;&gt;&lt;/a&gt;1. Yum 安装MySQL Shell&lt;/h3&gt;&lt;fi
+      &lt;p&gt;This section explains how to set up a single-primary InnoDB cluster and configure MySQL Router to achieve high availability. &lt;/p&gt;
+&lt;p&gt;This tutorial shows how to use MySQL Shell to create an InnoDB cluster consisting of a MySQL Server instance which provides the seed instance of the InnoDB cluster and holds the initial data set. Two more sandbox MySQL server instances are created and added to the InnoDB cluster. Then MySQL Router is deployed and used to route connections to the InnoDB cluster, and high availability is tested. &lt;/p&gt;
     
     </summary>
     
@@ -88,7 +92,7 @@
     <link href="http://wangshengzhuang.com/2017/05/02/MySQL/MySQL%20HA/InnoDB%20Cluster/%E4%B8%80%E3%80%81InnoDB%20Cluster%E7%AE%80%E4%BB%8B/"/>
     <id>http://wangshengzhuang.com/2017/05/02/MySQL/MySQL HA/InnoDB Cluster/一、InnoDB Cluster简介/</id>
     <published>2017-05-01T16:00:00.000Z</published>
-    <updated>2017-05-03T14:51:49.133Z</updated>
+    <updated>2017-05-03T15:22:18.993Z</updated>
     
     <content type="html"><![CDATA[<h3 id="一、InnoDB-Cluster简介"><a href="#一、InnoDB-Cluster简介" class="headerlink" title="一、InnoDB Cluster简介"></a>一、InnoDB Cluster简介</h3><p>前几天 Mysql 团队愉快的发布了 InnoDB Cluster 的 GA（General Availability 正式发布） 版本</p>
 <p>InnoDB Cluster 是 Mysql 的一套完整的高可用解决方案</p>
@@ -96,6 +100,7 @@
 <p>MySQL InnoDB cluster is a collection of products that work together to provide a complete High Availability solution for MySQL.</p>
 </blockquote>
 <p><img src="http://image.wangshengzhuang.com/17-5-3/23165946-file_1493815367505_f827.png" alt=""></p>
+<a id="more"></a>
 <p>InnoDB Cluster 由下面3个核心组件构成：</p>
 <ul>
 <li><p><a href="https://dev.mysql.com/doc/refman/5.7/en/mysql-shell.html" target="_blank" rel="external">MySQL Shell</a>    通过内置的 AdminAPI 来创建和管理整个 InnoDB Clusters</p>
@@ -120,7 +125,12 @@
     
     <summary type="html">
     
-      &lt;h3 id=&quot;一、InnoDB-Cluster简介&quot;&gt;&lt;a href=&quot;#一、InnoDB-Cluster简介&quot; class=&quot;headerlink&quot; title=&quot;一、InnoDB Cluster简介&quot;&gt;&lt;/a&gt;一、InnoDB Cluster简介&lt;/h3&gt;&lt;p&gt;前几天 My
+      &lt;h3 id=&quot;一、InnoDB-Cluster简介&quot;&gt;&lt;a href=&quot;#一、InnoDB-Cluster简介&quot; class=&quot;headerlink&quot; title=&quot;一、InnoDB Cluster简介&quot;&gt;&lt;/a&gt;一、InnoDB Cluster简介&lt;/h3&gt;&lt;p&gt;前几天 Mysql 团队愉快的发布了 InnoDB Cluster 的 GA（General Availability 正式发布） 版本&lt;/p&gt;
+&lt;p&gt;InnoDB Cluster 是 Mysql 的一套完整的高可用解决方案&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;MySQL InnoDB cluster is a collection of products that work together to provide a complete High Availability solution for MySQL.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&quot;http://image.wangshengzhuang.com/17-5-3/23165946-file_1493815367505_f827.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
     
     </summary>
     
