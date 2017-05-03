@@ -1,0 +1,2 @@
+Sitemap: http://wangshengzhuang.com/sitemap.xml
+Sitemap: http://wangshengzhuang.com/baidusitemap.xml

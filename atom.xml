@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>小强斋太-Study Notes</title>
+  <subtitle>Stay hungry. Stay foolish</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://wangshengzhuang.com/"/>
+  <updated>2017-05-03T14:51:27.656Z</updated>
+  <id>http://wangshengzhuang.com/</id>
+  
+  <author>
+    <name>小强斋太</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>沙盒实例搭建InnoDB Cluster环境</title>
+    <link href="http://wangshengzhuang.com/2017/05/03/MySQL/HA/InnoDB%20Cluster/3%E6%B2%99%E7%9B%92%E5%AE%9E%E4%BE%8B%E6%90%AD%E5%BB%BAInnoDB%20Cluster%E7%8E%AF%E5%A2%83%20/"/>
+    <id>http://wangshengzhuang.com/2017/05/03/MySQL/HA/InnoDB Cluster/3沙盒实例搭建InnoDB Cluster环境 /</id>
+    <published>2017-05-02T16:00:00.000Z</published>
+    <updated>2017-05-03T14:51:27.656Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="1-Yum-安装MySQL-Shell"><a href="#1-Yum-安装MySQL-Shell" class="headerlink" title="1. Yum 安装MySQL Shell"></a>1. Yum 安装MySQL Shell</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">wget https://dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpm</div><div class="line">rpm -ivh mysql57-community-release-el7-10.noarch.rpm</div><div class="line">yum install mysql-shell -y</div></pre></td></tr></table></figure>
+<h3 id="2-创建三个沙盒实例"><a href="#2-创建三个沙盒实例" class="headerlink" title="2. 创建三个沙盒实例"></a>2. 创建三个沙盒实例</h3><p>Start MySQL Shell </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">shell&gt; mysqlsh</div></pre></td></tr></table></figure>
+<p>MySQL Shell provides two scripting languages: JavaScript and Python. Throughout this guide MySQL Shell is used primarily in JavaScript mode . When MySQL Shell starts it is in JavaScript mode by default. You switch into JavaScript mode, Python mode and SQL mode using the commands <code>\js</code>, <code>\py</code>, and <code>\sql</code>. Ensure you are in JavaScript mode by issuing the <code>\js</code> command, then execute:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; dba.deploySandboxInstance(3310)</div><div class="line">mysql-js&gt; dba.deploySandboxInstance(3320)</div><div class="line">mysql-js&gt; dba.deploySandboxInstance(3330)</div></pre></td></tr></table></figure>
+<h3 id="3-Creating-the-InnoDB-Cluster"><a href="#3-Creating-the-InnoDB-Cluster" class="headerlink" title="3.  Creating the InnoDB Cluster"></a>3.  Creating the InnoDB Cluster</h3><p>Connect MySQL Shell to the seed instance, in this case the one at port 3310:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; \connect root@localhost:3310</div><div class="line">或者</div><div class="line">mysql-js&gt; shell.connect(&apos;root@localhost:3310&apos;)</div></pre></td></tr></table></figure>
+<p>Use the <code>createCluster()</code> method to create the InnoDB cluster with the currently connected instance as the seed:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; var cluster = dba.createCluster(&apos;testCluster&apos;)</div></pre></td></tr></table></figure>
+<h3 id="4-Adding-Instances-to-an-InnoDB-Cluster"><a href="#4-Adding-Instances-to-an-InnoDB-Cluster" class="headerlink" title="4. Adding Instances to an InnoDB Cluster"></a>4. Adding Instances to an InnoDB Cluster</h3><p>配置<code>/etc/hosts</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">127.0.0.1 mysql001</div></pre></td></tr></table></figure>
+<p>Obtaining the <code>cluster</code> Instance Variable</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; var cluster = dba.getCluster(&quot;testCluster&quot;)</div></pre></td></tr></table></figure>
+<p>Add the second instance to the InnoDB cluster:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; cluster.addInstance(&apos;root@localhost:3320&apos;)</div></pre></td></tr></table></figure>
+<p>Add the third instance:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; cluster.addInstance(&apos;root@localhost:3330&apos;)</div></pre></td></tr></table></figure>
+<p>查看cluster 状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; cluster.status()</div><div class="line">&#123;</div><div class="line">    &quot;clusterName&quot;: &quot;testCluster&quot;, </div><div class="line">    &quot;defaultReplicaSet&quot;: &#123;</div><div class="line">        &quot;name&quot;: &quot;default&quot;, </div><div class="line">        &quot;primary&quot;: &quot;localhost:3310&quot;, </div><div class="line">        &quot;status&quot;: &quot;OK&quot;, </div><div class="line">        &quot;statusText&quot;: &quot;Cluster is ONLINE and can tolerate up to ONE failure.&quot;, </div><div class="line">        &quot;topology&quot;: &#123;</div><div class="line">            &quot;localhost:3310&quot;: &#123;</div><div class="line">                &quot;address&quot;: &quot;localhost:3310&quot;, </div><div class="line">                &quot;mode&quot;: &quot;R/W&quot;, </div><div class="line">                &quot;readReplicas&quot;: &#123;&#125;, </div><div class="line">                &quot;role&quot;: &quot;HA&quot;, </div><div class="line">                &quot;status&quot;: &quot;ONLINE&quot;</div><div class="line">            &#125;, </div><div class="line">            &quot;localhost:3320&quot;: &#123;</div><div class="line">                &quot;address&quot;: &quot;localhost:3320&quot;, </div><div class="line">                &quot;mode&quot;: &quot;R/O&quot;, </div><div class="line">                &quot;readReplicas&quot;: &#123;&#125;, </div><div class="line">                &quot;role&quot;: &quot;HA&quot;, </div><div class="line">                &quot;status&quot;: &quot;ONLINE&quot;</div><div class="line">            &#125;, </div><div class="line">            &quot;localhost:3330&quot;: &#123;</div><div class="line">                &quot;address&quot;: &quot;localhost:3330&quot;, </div><div class="line">                &quot;mode&quot;: &quot;R/O&quot;, </div><div class="line">                &quot;readReplicas&quot;: &#123;&#125;, </div><div class="line">                &quot;role&quot;: &quot;HA&quot;, </div><div class="line">                &quot;status&quot;: &quot;ONLINE&quot;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="5-安装配置-MySQL-Router"><a href="#5-安装配置-MySQL-Router" class="headerlink" title="5. 安装配置 MySQL Router"></a>5. 安装配置 MySQL Router</h3><p>Yum安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">wget https://dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpm</div><div class="line">rpm -ivh mysql57-community-release-el7-10.noarch.rpm</div><div class="line">yum install mysql-router -y</div></pre></td></tr></table></figure>
+<p> bootstrap 生成配置文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">shell&gt; mysqlrouter --bootstrap root@localhost:3310 --user=mysqlrouter</div></pre></td></tr></table></figure>
+<p>配置文件<code>/etc/mysqlrouter/mysqlrouter.conf</code>内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line">shell &gt; cat  /etc/mysqlrouter/mysqlrouter.conf</div><div class="line"># File automatically generated during MySQL Router bootstrap</div><div class="line">[DEFAULT]</div><div class="line">name=system</div><div class="line">user=mysqlrouter</div><div class="line">keyring_path=/var/lib/mysqlrouter/keyring</div><div class="line">master_key_path=/etc/mysqlrouter/mysqlrouter.key</div><div class="line"></div><div class="line">[logger]</div><div class="line">level = INFO</div><div class="line"></div><div class="line">[metadata_cache:testCluster]</div><div class="line">router_id=3</div><div class="line">bootstrap_server_addresses=mysql://localhost:3310,mysql://localhost:3320,mysql://localhost:3330</div><div class="line">user=mysql_router3_c3j5z9t7rjgk</div><div class="line">metadata_cluster=testCluster</div><div class="line">ttl=300</div><div class="line"></div><div class="line">[routing:testCluster_default_rw]</div><div class="line">bind_address=0.0.0.0</div><div class="line">bind_port=6446</div><div class="line">destinations=metadata-cache://testCluster/default?role=PRIMARY</div><div class="line">mode=read-write</div><div class="line">protocol=classic</div><div class="line"></div><div class="line">[routing:testCluster_default_ro]</div><div class="line">bind_address=0.0.0.0</div><div class="line">bind_port=6447</div><div class="line">destinations=metadata-cache://testCluster/default?role=SECONDARY</div><div class="line">mode=read-only</div><div class="line">protocol=classic</div><div class="line"></div><div class="line">[routing:testCluster_default_x_rw]</div><div class="line">bind_address=0.0.0.0</div><div class="line">bind_port=64460</div><div class="line">destinations=metadata-cache://testCluster/default?role=PRIMARY</div><div class="line">mode=read-write</div><div class="line">protocol=x</div><div class="line"></div><div class="line">[routing:testCluster_default_x_ro]</div><div class="line">bind_address=0.0.0.0</div><div class="line">bind_port=64470</div><div class="line">destinations=metadata-cache://testCluster/default?role=SECONDARY</div><div class="line">mode=read-only</div><div class="line">protocol=x</div></pre></td></tr></table></figure>
+<p>启动mysqlrouter(记得修改下权限 默认权限不对)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">chown mysqlrouter.mysqlrouter /var/lib/mysqlrouter</div><div class="line">systemctl start mysqlrouter</div></pre></td></tr></table></figure>
+<p>测试连接</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">shell&gt; mysqlsh --uri root@localhost:6446</div><div class="line">mysql-js&gt; \sql</div><div class="line">Switching to SQL mode... Commands end with ;</div><div class="line">mysql-sql&gt; select @@port;</div><div class="line">+--------+</div><div class="line">| @@port |</div><div class="line">+--------+</div><div class="line">|   3310 |</div><div class="line">+--------+</div><div class="line">1 row in set (0.00 sec)</div></pre></td></tr></table></figure>
+<h3 id="6-Testing-Failover"><a href="#6-Testing-Failover" class="headerlink" title="6. Testing Failover"></a>6. Testing Failover</h3><p>killing the <code>PRIMARY</code> instance 3310</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; dba.killSandboxInstance(3310)</div></pre></td></tr></table></figure>
+<p>测试连接（第一次失败，第二次成功）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; \sql</div><div class="line">Switching to SQL mode... Commands end with ;</div><div class="line">mysql-sql&gt; SELECT @@port;</div><div class="line">ERROR: 2013 (HY000): Lost connection to MySQL server during query</div><div class="line">The global session got disconnected.</div><div class="line">Attempting to reconnect to &apos;root@localhost:6446&apos;...</div><div class="line">The global session was successfully reconnected.</div><div class="line">mysql-sql&gt; select @@port;</div><div class="line">+--------+</div><div class="line">| @@port |</div><div class="line">+--------+</div><div class="line">|   3330 |</div><div class="line">+--------+</div><div class="line">1 row in set (0.00 sec)</div></pre></td></tr></table></figure>
+<p>查看cluster状态, 可以发现3320实例已经变成Primary</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; cluster.status()</div><div class="line">&#123;</div><div class="line">    &quot;clusterName&quot;: &quot;testCluster&quot;, </div><div class="line">    &quot;defaultReplicaSet&quot;: &#123;</div><div class="line">        &quot;name&quot;: &quot;default&quot;, </div><div class="line">        &quot;primary&quot;: &quot;localhost:3320&quot;, </div><div class="line">        &quot;status&quot;: &quot;OK_NO_TOLERANCE&quot;, </div><div class="line">        &quot;statusText&quot;: &quot;Cluster is NOT tolerant to any failures. 1 member is not active&quot;, </div><div class="line">        &quot;topology&quot;: &#123;</div><div class="line">            &quot;localhost:3310&quot;: &#123;</div><div class="line">                &quot;address&quot;: &quot;localhost:3310&quot;, </div><div class="line">                &quot;mode&quot;: &quot;R/O&quot;, </div><div class="line">                &quot;readReplicas&quot;: &#123;&#125;, </div><div class="line">                &quot;role&quot;: &quot;HA&quot;, </div><div class="line">                &quot;status&quot;: &quot;(MISSING)&quot;</div><div class="line">            &#125;, </div><div class="line">            &quot;localhost:3320&quot;: &#123;</div><div class="line">                &quot;address&quot;: &quot;localhost:3320&quot;, </div><div class="line">                &quot;mode&quot;: &quot;R/W&quot;, </div><div class="line">                &quot;readReplicas&quot;: &#123;&#125;, </div><div class="line">                &quot;role&quot;: &quot;HA&quot;, </div><div class="line">                &quot;status&quot;: &quot;ONLINE&quot;</div><div class="line">            &#125;, </div><div class="line">            &quot;localhost:3330&quot;: &#123;</div><div class="line">                &quot;address&quot;: &quot;localhost:3330&quot;, </div><div class="line">                &quot;mode&quot;: &quot;R/O&quot;, </div><div class="line">                &quot;readReplicas&quot;: &#123;&#125;, </div><div class="line">                &quot;role&quot;: &quot;HA&quot;, </div><div class="line">                &quot;status&quot;: &quot;ONLINE&quot;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p> bring the instance that you killed back online.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; dba.startSandboxInstance(3310)</div><div class="line">mysql-js&gt; cluster.rejoinInstance(&apos;root@localhost:3310&apos;)</div><div class="line">mysql-js&gt; cluster.status()</div></pre></td></tr></table></figure>
+<p>重新查看cluster状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; cluster.status()</div><div class="line">&#123;</div><div class="line">    &quot;clusterName&quot;: &quot;testCluster&quot;, </div><div class="line">    &quot;defaultReplicaSet&quot;: &#123;</div><div class="line">        &quot;name&quot;: &quot;default&quot;, </div><div class="line">        &quot;primary&quot;: &quot;localhost:3320&quot;, </div><div class="line">        &quot;status&quot;: &quot;OK&quot;, </div><div class="line">        &quot;statusText&quot;: &quot;Cluster is ONLINE and can tolerate up to ONE failure.&quot;, </div><div class="line">        &quot;topology&quot;: &#123;</div><div class="line">            &quot;localhost:3310&quot;: &#123;</div><div class="line">                &quot;address&quot;: &quot;localhost:3310&quot;, </div><div class="line">                &quot;mode&quot;: &quot;R/O&quot;, </div><div class="line">                &quot;readReplicas&quot;: &#123;&#125;, </div><div class="line">                &quot;role&quot;: &quot;HA&quot;, </div><div class="line">                &quot;status&quot;: &quot;ONLINE&quot;</div><div class="line">            &#125;, </div><div class="line">            &quot;localhost:3320&quot;: &#123;</div><div class="line">                &quot;address&quot;: &quot;localhost:3320&quot;, </div><div class="line">                &quot;mode&quot;: &quot;R/W&quot;, </div><div class="line">                &quot;readReplicas&quot;: &#123;&#125;, </div><div class="line">                &quot;role&quot;: &quot;HA&quot;, </div><div class="line">                &quot;status&quot;: &quot;ONLINE&quot;</div><div class="line">            &#125;, </div><div class="line">            &quot;localhost:3330&quot;: &#123;</div><div class="line">                &quot;address&quot;: &quot;localhost:3330&quot;, </div><div class="line">                &quot;mode&quot;: &quot;R/O&quot;, </div><div class="line">                &quot;readReplicas&quot;: &#123;&#125;, </div><div class="line">                &quot;role&quot;: &quot;HA&quot;, </div><div class="line">                &quot;status&quot;: &quot;ONLINE&quot;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://dev.mysql.com/doc/refman/5.7/en/mysql-innodb-cluster-getting-started.html" target="_blank" rel="external"> Getting Started with InnoDB Cluster</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;1-Yum-安装MySQL-Shell&quot;&gt;&lt;a href=&quot;#1-Yum-安装MySQL-Shell&quot; class=&quot;headerlink&quot; title=&quot;1. Yum 安装MySQL Shell&quot;&gt;&lt;/a&gt;1. Yum 安装MySQL Shell&lt;/h3&gt;&lt;fi
+    
+    </summary>
+    
+      <category term="MySQL" scheme="http://wangshengzhuang.com/categories/MySQL/"/>
+    
+      <category term="HA" scheme="http://wangshengzhuang.com/categories/MySQL/HA/"/>
+    
+      <category term="InnoDB Cluster" scheme="http://wangshengzhuang.com/categories/MySQL/HA/InnoDB-Cluster/"/>
+    
+    
+      <category term="InnoDB Cluster" scheme="http://wangshengzhuang.com/tags/InnoDB-Cluster/"/>
+    
+      <category term="MySQL" scheme="http://wangshengzhuang.com/tags/MySQL/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>InnoDB Cluster简介</title>
+    <link href="http://wangshengzhuang.com/2017/05/02/MySQL/HA/InnoDB%20Cluster/%E4%B8%80%E3%80%81InnoDB%20Cluster%E7%AE%80%E4%BB%8B/"/>
+    <id>http://wangshengzhuang.com/2017/05/02/MySQL/HA/InnoDB Cluster/一、InnoDB Cluster简介/</id>
+    <published>2017-05-01T16:00:00.000Z</published>
+    <updated>2017-05-03T14:51:49.133Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="一、InnoDB-Cluster简介"><a href="#一、InnoDB-Cluster简介" class="headerlink" title="一、InnoDB Cluster简介"></a>一、InnoDB Cluster简介</h3><p>前几天 Mysql 团队愉快的发布了 InnoDB Cluster 的 GA（General Availability 正式发布） 版本</p>
+<p>InnoDB Cluster 是 Mysql 的一套完整的高可用解决方案</p>
+<blockquote>
+<p>MySQL InnoDB cluster is a collection of products that work together to provide a complete High Availability solution for MySQL.</p>
+</blockquote>
+<p><img src="http://image.wangshengzhuang.com/17-5-3/23165946-file_1493815367505_f827.png" alt=""></p>
+<p>InnoDB Cluster 由下面3个核心组件构成：</p>
+<ul>
+<li><p><a href="https://dev.mysql.com/doc/refman/5.7/en/mysql-shell.html" target="_blank" rel="external">MySQL Shell</a>    通过内置的 AdminAPI 来创建和管理整个 InnoDB Clusters</p>
+<blockquote>
+<p>Includes the AdminAPI, which enables you to script the creation and administration of an InnoDB cluster, using either JavaScript or Python.</p>
+</blockquote>
+</li>
+<li><p><a href="https://dev.mysql.com/doc/mysql-router/2.1/en/" target="_blank" rel="external">MySQL Router</a>   缓存 InnoDB cluster 的元数据，负责把 client 的 read/write 请求路由到当前的主数据库节点，还可以对 client 的请求进行负载均衡，并且在主数据库节点出现故障时，保证 client 的请求被路由到新的主服务器节点</p>
+<blockquote>
+<p>Caches the metadata of the InnoDB cluster and routes read/write client requests to the current primary. If the primary instance becomes unavailable, MySQL Router automatically routes client requests to a promoted secondary (the new primary). </p>
+</blockquote>
+</li>
+<li><p><a href="https://dev.mysql.com/doc/refman/5.7/en/group-replication.html" target="_blank" rel="external"><em>Group Replication</em></a>  MySQL Server 5.7.17 or higher. 可以把数据同步到集群内的所有成员中，并支持 <strong>容错</strong> 、 <strong>自动故障转移</strong> 、 <strong>灵活扩展</strong>   等重要特性</p>
+<blockquote>
+<p>This provides the MySQL Group Replication mechanism to allow data to be replicated within the cluster, with built-in failover. Group Replication </p>
+</blockquote>
+<p>​</p>
+<p>​</p>
+</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;一、InnoDB-Cluster简介&quot;&gt;&lt;a href=&quot;#一、InnoDB-Cluster简介&quot; class=&quot;headerlink&quot; title=&quot;一、InnoDB Cluster简介&quot;&gt;&lt;/a&gt;一、InnoDB Cluster简介&lt;/h3&gt;&lt;p&gt;前几天 My
+    
+    </summary>
+    
+      <category term="MySQL" scheme="http://wangshengzhuang.com/categories/MySQL/"/>
+    
+      <category term="HA" scheme="http://wangshengzhuang.com/categories/MySQL/HA/"/>
+    
+      <category term="InnoDB Cluster" scheme="http://wangshengzhuang.com/categories/MySQL/HA/InnoDB-Cluster/"/>
+    
+    
+      <category term="InnoDB Cluster" scheme="http://wangshengzhuang.com/tags/InnoDB-Cluster/"/>
+    
+      <category term="MySQL" scheme="http://wangshengzhuang.com/tags/MySQL/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="http://wangshengzhuang.com/2017/05/01/hello-world/"/>
+    <id>http://wangshengzhuang.com/2017/05/01/hello-world/</id>
+    <published>2017-04-30T16:00:00.000Z</published>
+    <updated>2017-05-03T14:42:57.640Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="今天是五一劳动节，我的新Blog诞生了。希望在新的一年里，能在此认认真真的记录自己的成长！"><a href="#今天是五一劳动节，我的新Blog诞生了。希望在新的一年里，能在此认认真真的记录自己的成长！" class="headerlink" title="今天是五一劳动节，我的新Blog诞生了。希望在新的一年里，能在此认认真真的记录自己的成长！"></a>今天是五一劳动节，我的新Blog诞生了。希望在新的一年里，能在此认认真真的记录自己的成长！</h2><p><img src="http://image.wangshengzhuang.com/17-5-1/18885308-file_1493622006489_1591c.jpg" alt=""></p>
+<a id="more"></a>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;今天是五一劳动节，我的新Blog诞生了。希望在新的一年里，能在此认认真真的记录自己的成长！&quot;&gt;&lt;a href=&quot;#今天是五一劳动节，我的新Blog诞生了。希望在新的一年里，能在此认认真真的记录自己的成长！&quot; class=&quot;headerlink&quot; title=&quot;今天是五一劳动节，我的新Blog诞生了。希望在新的一年里，能在此认认真真的记录自己的成长！&quot;&gt;&lt;/a&gt;今天是五一劳动节，我的新Blog诞生了。希望在新的一年里，能在此认认真真的记录自己的成长！&lt;/h2&gt;&lt;p&gt;&lt;img src=&quot;http://image.wangshengzhuang.com/17-5-1/18885308-file_1493622006489_1591c.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+    
+    </summary>
+    
+    
+  </entry>
+  
+</feed>
