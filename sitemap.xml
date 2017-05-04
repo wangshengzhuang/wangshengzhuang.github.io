@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://wangshengzhuang.com/2017/05/03/MySQL/MySQL%20HA/InnoDB%20Cluster/3%E6%B2%99%E7%9B%92%E5%AE%9E%E4%BE%8B%E6%90%AD%E5%BB%BAInnoDB%20Cluster%E7%8E%AF%E5%A2%83/</loc>
+    
+    <lastmod>2017-05-04T15:16:41.278Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://wangshengzhuang.com/2017/05/04/MySQL/MySQL%20HA/InnoDB%20Cluster/%E5%8D%95%E6%9C%BA3%E5%AE%9E%E4%BE%8B%E6%90%AD%E5%BB%BAInnoDB%20Cluster%E7%8E%AF%E5%A2%83/</loc>
     
-    <lastmod>2017-05-04T15:02:55.056Z</lastmod>
+    <lastmod>2017-05-04T15:08:17.710Z</lastmod>
     
   </url>
   
@@ -12,13 +19,6 @@
     <loc>http://wangshengzhuang.com/2017/05/01/hello-world/</loc>
     
     <lastmod>2017-05-03T15:38:44.674Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://wangshengzhuang.com/2017/05/03/MySQL/MySQL%20HA/InnoDB%20Cluster/3%E6%B2%99%E7%9B%92%E5%AE%9E%E4%BE%8B%E6%90%AD%E5%BB%BAInnoDB%20Cluster%E7%8E%AF%E5%A2%83/</loc>
-    
-    <lastmod>2017-05-03T15:36:31.689Z</lastmod>
     
   </url>
   

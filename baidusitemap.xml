@@ -4,8 +4,36 @@
 
     
   <url>
+    <loc>http://wangshengzhuang.com/2017/05/03/MySQL/MySQL%20HA/InnoDB%20Cluster/3%E6%B2%99%E7%9B%92%E5%AE%9E%E4%BE%8B%E6%90%AD%E5%BB%BAInnoDB%20Cluster%E7%8E%AF%E5%A2%83/</loc>
+    <lastmod>2017-05-04T15:16:41.278Z</lastmod>
+    <data>
+        <display>
+        <title>沙盒实例搭建InnoDB Cluster环境</title>
+        <pubTime>2017-05-02T16:00:00.000Z</pubTime>
+        
+        <tag>InnoDB Cluster</tag>
+         
+        <tag>MySQL</tag>
+         
+         
+           
+             
+              <breadCrumb title="MySQL" url="http://wangshengzhuang.com/categories/MySQL/"/>
+          
+             
+              <breadCrumb title="MySQL HA" url="http://wangshengzhuang.com/categories/MySQL/MySQL-HA/"/>
+          
+             
+              <breadCrumb title="InnoDB Cluster" url="http://wangshengzhuang.com/categories/MySQL/MySQL-HA/InnoDB-Cluster/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://wangshengzhuang.com/2017/05/04/MySQL/MySQL%20HA/InnoDB%20Cluster/%E5%8D%95%E6%9C%BA3%E5%AE%9E%E4%BE%8B%E6%90%AD%E5%BB%BAInnoDB%20Cluster%E7%8E%AF%E5%A2%83/</loc>
-    <lastmod>2017-05-04T15:02:55.056Z</lastmod>
+    <lastmod>2017-05-04T15:08:17.710Z</lastmod>
     <data>
         <display>
         <title>单机3实例搭建InnoDB Cluster环境</title>
@@ -41,34 +69,6 @@
         
          
            
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://wangshengzhuang.com/2017/05/03/MySQL/MySQL%20HA/InnoDB%20Cluster/3%E6%B2%99%E7%9B%92%E5%AE%9E%E4%BE%8B%E6%90%AD%E5%BB%BAInnoDB%20Cluster%E7%8E%AF%E5%A2%83/</loc>
-    <lastmod>2017-05-03T15:36:31.689Z</lastmod>
-    <data>
-        <display>
-        <title>沙盒实例搭建InnoDB Cluster环境</title>
-        <pubTime>2017-05-02T16:00:00.000Z</pubTime>
-        
-        <tag>InnoDB Cluster</tag>
-         
-        <tag>MySQL</tag>
-         
-         
-           
-             
-              <breadCrumb title="MySQL" url="http://wangshengzhuang.com/categories/MySQL/"/>
-          
-             
-              <breadCrumb title="MySQL HA" url="http://wangshengzhuang.com/categories/MySQL/MySQL-HA/"/>
-          
-             
-              <breadCrumb title="InnoDB Cluster" url="http://wangshengzhuang.com/categories/MySQL/MySQL-HA/InnoDB-Cluster/"/>
-          
         </display>
     </data>
     </url>
