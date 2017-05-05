@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wangshengzhuang.com/"/>
-  <updated>2017-05-05T14:55:06.744Z</updated>
+  <updated>2017-05-05T15:31:24.374Z</updated>
   <id>http://wangshengzhuang.com/</id>
   
   <author>
@@ -17,10 +17,10 @@
   
   <entry>
     <title>多节点3实例搭建InnoDB Cluster环境</title>
-    <link href="http://wangshengzhuang.com/2017/05/05/MySQL/MySQL%20HA/InnoDB%20Cluster/Mysql%20%E9%AB%98%E5%8F%AF%E7%94%A8%20InnoDB%20Cluster%20%E5%A4%9A%E8%8A%82%E7%82%B9%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B/"/>
-    <id>http://wangshengzhuang.com/2017/05/05/MySQL/MySQL HA/InnoDB Cluster/Mysql 高可用 InnoDB Cluster 多节点搭建过程/</id>
+    <link href="http://wangshengzhuang.com/2017/05/05/MySQL/MySQL%20HA/InnoDB%20Cluster/InnoDB%20Cluster%20%E5%A4%9A%E6%9C%BA3%E5%AE%9E%E4%BE%8B%E8%8A%82%E7%82%B9%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B/"/>
+    <id>http://wangshengzhuang.com/2017/05/05/MySQL/MySQL HA/InnoDB Cluster/InnoDB Cluster 多机3实例节点搭建过程/</id>
     <published>2017-05-05T13:00:00.000Z</published>
-    <updated>2017-05-05T14:55:06.744Z</updated>
+    <updated>2017-05-05T15:31:24.374Z</updated>
     
     <content type="html"><![CDATA[<p>本文描述了如何通过单机三个msyql实例，创建一个Single-Primary Innodb cluster，并通过mysql Router对connections实现路由，实现高可用性。</p>
 <table>
@@ -54,9 +54,10 @@
 </tbody>
 </table>
 <p><img src="http://image.wangshengzhuang.com/17-5-5/42193296-file_1493993554567_5bbb.png" alt=""></p>
-<p>主要步骤如图所示</p>
-<p><img src="http://image.wangshengzhuang.com/17-5-5/36524170-file_1493993271351_341a.png" alt=""></p>
 <a id="more"></a>
+<p>主要步骤如图所示</p>
+<p><img src="http://image.wangshengzhuang.com/17-5-5/60464800-file_1493998183242_301b.png" alt=""></p>
+<!-- more -->
 <blockquote>
 <p>This section explains how to set up a single-primary InnoDB cluster and configure MySQL Router to achieve high availability. </p>
 <p>This tutorial shows how to use MySQL Shell to create an InnoDB cluster consisting of a MySQL Server instance which provides the seed instance of the InnoDB cluster and holds the initial data set. Two more MySQL server instances are created and added to the InnoDB cluster. Then MySQL Router is deployed and used to route connections to the InnoDB cluster, and high availability is tested. </p>
@@ -151,8 +152,6 @@
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;&lt;img src=&quot;http://image.wangshengzhuang.com/17-5-5/42193296-file_1493993554567_5bbb.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;主要步骤如图所示&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://image.wangshengzhuang.com/17-5-5/36524170-file_1493993271351_341a.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
     
     </summary>
     
@@ -335,14 +334,14 @@
     <link href="http://wangshengzhuang.com/2017/05/02/MySQL/MySQL%20HA/InnoDB%20Cluster/InnoDB%20Cluster%E7%AE%80%E4%BB%8B/"/>
     <id>http://wangshengzhuang.com/2017/05/02/MySQL/MySQL HA/InnoDB Cluster/InnoDB Cluster简介/</id>
     <published>2017-05-01T16:00:00.000Z</published>
-    <updated>2017-05-03T15:22:18.993Z</updated>
+    <updated>2017-05-05T15:23:53.587Z</updated>
     
     <content type="html"><![CDATA[<h3 id="一、InnoDB-Cluster简介"><a href="#一、InnoDB-Cluster简介" class="headerlink" title="一、InnoDB Cluster简介"></a>一、InnoDB Cluster简介</h3><p>前几天 Mysql 团队愉快的发布了 InnoDB Cluster 的 GA（General Availability 正式发布） 版本</p>
 <p>InnoDB Cluster 是 Mysql 的一套完整的高可用解决方案</p>
 <blockquote>
 <p>MySQL InnoDB cluster is a collection of products that work together to provide a complete High Availability solution for MySQL.</p>
 </blockquote>
-<p><img src="http://image.wangshengzhuang.com/17-5-3/23165946-file_1493815367505_f827.png" alt=""></p>
+<p><img src="http://image.wangshengzhuang.com/0acc4ee7b48fa39a7685491e99bbccfb.png" alt=""></p>
 <a id="more"></a>
 <p>InnoDB Cluster 由下面3个核心组件构成：</p>
 <ul>
@@ -360,7 +359,7 @@
 <blockquote>
 <p>This provides the MySQL Group Replication mechanism to allow data to be replicated within the cluster, with built-in failover. Group Replication </p>
 </blockquote>
-<p>​</p>
+<p><img src="http://image.wangshengzhuang.com/17-5-3/23165946-file_1493815367505_f827.png" alt=""></p>
 <p>​</p>
 </li>
 </ul>
@@ -373,7 +372,7 @@
 &lt;blockquote&gt;
 &lt;p&gt;MySQL InnoDB cluster is a collection of products that work together to provide a complete High Availability solution for MySQL.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;&lt;img src=&quot;http://image.wangshengzhuang.com/17-5-3/23165946-file_1493815367505_f827.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://image.wangshengzhuang.com/0acc4ee7b48fa39a7685491e99bbccfb.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
     
     </summary>
     

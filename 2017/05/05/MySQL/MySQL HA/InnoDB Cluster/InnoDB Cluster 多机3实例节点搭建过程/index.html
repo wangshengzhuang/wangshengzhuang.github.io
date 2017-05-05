@@ -96,12 +96,12 @@
 <meta name="keywords" content="InnoDB Cluster,MySQL">
 <meta property="og:type" content="article">
 <meta property="og:title" content="多节点3实例搭建InnoDB Cluster环境">
-<meta property="og:url" content="http://wangshengzhuang.com/2017/05/05/MySQL/MySQL HA/InnoDB Cluster/Mysql 高可用 InnoDB Cluster 多节点搭建过程/index.html">
+<meta property="og:url" content="http://wangshengzhuang.com/2017/05/05/MySQL/MySQL HA/InnoDB Cluster/InnoDB Cluster 多机3实例节点搭建过程/index.html">
 <meta property="og:site_name" content="小强斋太-Study Notes">
 <meta property="og:description" content="本文描述了如何通过单机三个msyql实例，创建一个Single-Primary Innodb cluster，并通过mysql Router对connections实现路由，实现高可用性。    ip地址 主机名 server_id     192.168.0.101 mysql001 1   192.168.0.102 mysql002 2   192.168.0.103 mysql003 3">
 <meta property="og:image" content="http://image.wangshengzhuang.com/17-5-5/42193296-file_1493993554567_5bbb.png">
-<meta property="og:image" content="http://image.wangshengzhuang.com/17-5-5/36524170-file_1493993271351_341a.png">
-<meta property="og:updated_time" content="2017-05-05T14:55:06.744Z">
+<meta property="og:image" content="http://image.wangshengzhuang.com/17-5-5/60464800-file_1493998183242_301b.png">
+<meta property="og:updated_time" content="2017-05-05T15:31:24.374Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="多节点3实例搭建InnoDB Cluster环境">
 <meta name="twitter:description" content="本文描述了如何通过单机三个msyql实例，创建一个Single-Primary Innodb cluster，并通过mysql Router对connections实现路由，实现高可用性。    ip地址 主机名 server_id     192.168.0.101 mysql001 1   192.168.0.102 mysql002 2   192.168.0.103 mysql003 3">
@@ -133,7 +133,7 @@
 
 
 
-  <link rel="canonical" href="http://wangshengzhuang.com/2017/05/05/MySQL/MySQL HA/InnoDB Cluster/Mysql 高可用 InnoDB Cluster 多节点搭建过程/"/>
+  <link rel="canonical" href="http://wangshengzhuang.com/2017/05/05/MySQL/MySQL HA/InnoDB Cluster/InnoDB Cluster 多机3实例节点搭建过程/"/>
 
 
 
@@ -342,7 +342,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/05/MySQL/MySQL HA/InnoDB Cluster/Mysql 高可用 InnoDB Cluster 多节点搭建过程/">
+    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/05/MySQL/MySQL HA/InnoDB Cluster/InnoDB Cluster 多机3实例节点搭建过程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="小强斋太">
@@ -440,7 +440,7 @@
 
           
           
-             <span id="/2017/05/05/MySQL/MySQL HA/InnoDB Cluster/Mysql 高可用 InnoDB Cluster 多节点搭建过程/" class="leancloud_visitors" data-flag-title="多节点3实例搭建InnoDB Cluster环境">
+             <span id="/2017/05/05/MySQL/MySQL HA/InnoDB Cluster/InnoDB Cluster 多机3实例节点搭建过程/" class="leancloud_visitors" data-flag-title="多节点3实例搭建InnoDB Cluster环境">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -531,9 +531,10 @@
 </tbody>
 </table>
 <p><img src="http://image.wangshengzhuang.com/17-5-5/42193296-file_1493993554567_5bbb.png" alt=""></p>
-<p>主要步骤如图所示</p>
-<p><img src="http://image.wangshengzhuang.com/17-5-5/36524170-file_1493993271351_341a.png" alt=""></p>
 <a id="more"></a>
+<p>主要步骤如图所示</p>
+<p><img src="http://image.wangshengzhuang.com/17-5-5/60464800-file_1493998183242_301b.png" alt=""></p>
+<!-- more -->
 <blockquote>
 <p>This section explains how to set up a single-primary InnoDB cluster and configure MySQL Router to achieve high availability. </p>
 <p>This tutorial shows how to use MySQL Shell to create an InnoDB cluster consisting of a MySQL Server instance which provides the seed instance of the InnoDB cluster and holds the initial data set. Two more MySQL server instances are created and added to the InnoDB cluster. Then MySQL Router is deployed and used to route connections to the InnoDB cluster, and high availability is tested. </p>
@@ -641,7 +642,7 @@
     </li>
     <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://wangshengzhuang.com/2017/05/05/MySQL/MySQL HA/InnoDB Cluster/Mysql 高可用 InnoDB Cluster 多节点搭建过程/" title="多节点3实例搭建InnoDB Cluster环境">http://wangshengzhuang.com/2017/05/05/MySQL/MySQL HA/InnoDB Cluster/Mysql 高可用 InnoDB Cluster 多节点搭建过程/</a>
+      <a href="http://wangshengzhuang.com/2017/05/05/MySQL/MySQL HA/InnoDB Cluster/InnoDB Cluster 多机3实例节点搭建过程/" title="多节点3实例搭建InnoDB Cluster环境">http://wangshengzhuang.com/2017/05/05/MySQL/MySQL HA/InnoDB Cluster/InnoDB Cluster 多机3实例节点搭建过程/</a>
     </li>
     <li class="post-copyright-license">
       <strong>版权声明： </strong>
