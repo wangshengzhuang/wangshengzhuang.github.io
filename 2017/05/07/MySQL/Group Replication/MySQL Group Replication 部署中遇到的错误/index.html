@@ -95,10 +95,10 @@
 <meta name="description" content="本文主要描述了MySQL Group Replication 部署中遇到的错误">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MySQL Group Replication 部署中遇到的错误">
-<meta property="og:url" content="http://wangshengzhuang.com/2017/05/08/MySQL/Group Replication/MySQL Group Replication 部署中遇到的错误/index.html">
+<meta property="og:url" content="http://wangshengzhuang.com/2017/05/07/MySQL/Group Replication/MySQL Group Replication 部署中遇到的错误/index.html">
 <meta property="og:site_name" content="小强斋太-Study Notes">
 <meta property="og:description" content="本文主要描述了MySQL Group Replication 部署中遇到的错误">
-<meta property="og:updated_time" content="2017-05-07T16:35:24.348Z">
+<meta property="og:updated_time" content="2017-05-07T16:41:56.285Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MySQL Group Replication 部署中遇到的错误">
 <meta name="twitter:description" content="本文主要描述了MySQL Group Replication 部署中遇到的错误">
@@ -129,7 +129,7 @@
 
 
 
-  <link rel="canonical" href="http://wangshengzhuang.com/2017/05/08/MySQL/Group Replication/MySQL Group Replication 部署中遇到的错误/"/>
+  <link rel="canonical" href="http://wangshengzhuang.com/2017/05/07/MySQL/Group Replication/MySQL Group Replication 部署中遇到的错误/"/>
 
 
 
@@ -338,7 +338,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/08/MySQL/Group Replication/MySQL Group Replication 部署中遇到的错误/">
+    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/07/MySQL/Group Replication/MySQL Group Replication 部署中遇到的错误/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="小强斋太">
@@ -374,8 +374,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-08T00:20:05+08:00">
-                2017-05-08
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-07T00:20:05+08:00">
+                2017-05-07
               </time>
             
 
@@ -425,7 +425,7 @@
 
           
           
-             <span id="/2017/05/08/MySQL/Group Replication/MySQL Group Replication 部署中遇到的错误/" class="leancloud_visitors" data-flag-title="MySQL Group Replication 部署中遇到的错误">
+             <span id="/2017/05/07/MySQL/Group Replication/MySQL Group Replication 部署中遇到的错误/" class="leancloud_visitors" data-flag-title="MySQL Group Replication 部署中遇到的错误">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -450,7 +450,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  1,556
+                  1,564
                 </span>
               
 
@@ -497,7 +497,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">172.17.84.71 mysql001</div><div class="line">172.17.84.72 msyql002</div><div class="line">172.17.84.73 mysql003</div></pre></td></tr></table></figure>
 <p><strong>方法二</strong></p>
 <p>或者在配置文件my.cnf使用report_host=ip，显示指定使用IP，而非默认的主机名</p>
-<h3 id="错误三：mysql初始化，修改root密码，没有禁用日志"><a href="#错误三：mysql初始化，修改root密码，没有禁用日志" class="headerlink" title="错误三：mysql初始化，修改root密码，没有禁用日志"></a>错误三：mysql初始化，修改root密码，没有禁用日志</h3><h4 id="错误信息-2"><a href="#错误信息-2" class="headerlink" title="错误信息"></a>错误信息</h4><p>修改密码操作必须设置binlog不记录，执行后再打开，否则会引起START GROUP_REPLICATION执行报错:</p>
+<h3 id="错误三：mysql初始化，修改root密码，没有禁用日志，导致各节点Executed-Gtid-Set不同"><a href="#错误三：mysql初始化，修改root密码，没有禁用日志，导致各节点Executed-Gtid-Set不同" class="headerlink" title="错误三：mysql初始化，修改root密码，没有禁用日志，导致各节点Executed_Gtid_Set不同"></a>错误三：mysql初始化，修改root密码，没有禁用日志，导致各节点Executed_Gtid_Set不同</h3><h4 id="错误信息-2"><a href="#错误信息-2" class="headerlink" title="错误信息"></a>错误信息</h4><p>修改密码操作必须设置binlog不记录，执行后再打开，否则会引起START GROUP_REPLICATION执行报错:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[ERROR] Plugin group_replication reported: &apos;The member contains transactions not present in the group. The member will now exit the group.&apos;</div><div class="line">[Note] Plugin group_replication reported: &apos;To force this member into the group you can use the group_replication_allow_local_disjoint_gtids_join option&apos;</div></pre></td></tr></table></figure>
 <h4 id="解决办法-2"><a href="#解决办法-2" class="headerlink" title="解决办法"></a>解决办法</h4><p><strong>方法一：</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">mysql&gt; SET SQL_LOG_BIN=0;</div><div class="line">Query OK, 0 rows affected (0.00 sec)</div><div class="line"></div><div class="line">mysql&gt; set password=password(&apos;admin_123&apos;);</div><div class="line">Query OK, 0 rows affected, 1 warning (0.00 sec)</div><div class="line"></div><div class="line">mysql&gt; flush privileges;</div><div class="line">Query OK, 0 rows affected (0.00 sec)</div><div class="line"></div><div class="line">mysql&gt; SET SQL_LOG_BIN=1;</div><div class="line">Query OK, 0 rows affected (0.00 sec)</div><div class="line"></div><div class="line">mysql&gt; show master status \G;</div><div class="line">*************************** 1. row ***************************</div><div class="line">             File: mysql-bin.000002</div><div class="line">         Position: 150</div><div class="line">     Binlog_Do_DB:</div><div class="line"> Binlog_Ignore_DB:</div><div class="line">Executed_Gtid_Set:</div><div class="line">1 row in set (0.00 sec)</div></pre></td></tr></table></figure>
@@ -554,7 +554,7 @@
     </li>
     <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://wangshengzhuang.com/2017/05/08/MySQL/Group Replication/MySQL Group Replication 部署中遇到的错误/" title="MySQL Group Replication 部署中遇到的错误">http://wangshengzhuang.com/2017/05/08/MySQL/Group Replication/MySQL Group Replication 部署中遇到的错误/</a>
+      <a href="http://wangshengzhuang.com/2017/05/07/MySQL/Group Replication/MySQL Group Replication 部署中遇到的错误/" title="MySQL Group Replication 部署中遇到的错误">http://wangshengzhuang.com/2017/05/07/MySQL/Group Replication/MySQL Group Replication 部署中遇到的错误/</a>
     </li>
     <li class="post-copyright-license">
       <strong>版权声明： </strong>
@@ -774,7 +774,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#错误一-未设置白名单导致的无法启动group-replication"><span class="nav-number">1.</span> <span class="nav-text">错误一 未设置白名单导致的无法启动group_replication</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#错误信息"><span class="nav-number">1.1.</span> <span class="nav-text">错误信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决办法"><span class="nav-number">1.2.</span> <span class="nav-text">解决办法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#错误二-无法解析主机名导致member状态一直未recoving"><span class="nav-number">2.</span> <span class="nav-text">错误二 无法解析主机名导致member状态一直未recoving</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#错误信息-1"><span class="nav-number">2.1.</span> <span class="nav-text">错误信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决办法-1"><span class="nav-number">2.2.</span> <span class="nav-text">解决办法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#错误三：mysql初始化，修改root密码，没有禁用日志"><span class="nav-number">3.</span> <span class="nav-text">错误三：mysql初始化，修改root密码，没有禁用日志</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#错误信息-2"><span class="nav-number">3.1.</span> <span class="nav-text">错误信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决办法-2"><span class="nav-number">3.2.</span> <span class="nav-text">解决办法</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#错误一-未设置白名单导致的无法启动group-replication"><span class="nav-number">1.</span> <span class="nav-text">错误一 未设置白名单导致的无法启动group_replication</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#错误信息"><span class="nav-number">1.1.</span> <span class="nav-text">错误信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决办法"><span class="nav-number">1.2.</span> <span class="nav-text">解决办法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#错误二-无法解析主机名导致member状态一直未recoving"><span class="nav-number">2.</span> <span class="nav-text">错误二 无法解析主机名导致member状态一直未recoving</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#错误信息-1"><span class="nav-number">2.1.</span> <span class="nav-text">错误信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决办法-1"><span class="nav-number">2.2.</span> <span class="nav-text">解决办法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#错误三：mysql初始化，修改root密码，没有禁用日志，导致各节点Executed-Gtid-Set不同"><span class="nav-number">3.</span> <span class="nav-text">错误三：mysql初始化，修改root密码，没有禁用日志，导致各节点Executed_Gtid_Set不同</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#错误信息-2"><span class="nav-number">3.1.</span> <span class="nav-text">错误信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决办法-2"><span class="nav-number">3.2.</span> <span class="nav-text">解决办法</span></a></li></ol></li></ol></div>
             
 
           </div>
