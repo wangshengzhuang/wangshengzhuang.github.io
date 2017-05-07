@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wangshengzhuang.com/"/>
-  <updated>2017-05-07T16:41:56.285Z</updated>
+  <updated>2017-05-07T17:47:01.159Z</updated>
   <id>http://wangshengzhuang.com/</id>
   
   <author>
@@ -14,6 +14,87 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>从已有的组复制搭建InnoDB Cluster环境</title>
+    <link href="http://wangshengzhuang.com/2017/05/08/MySQL/MySQL%20HA/InnoDB%20Cluster/%E4%BB%8E%E5%B7%B2%E6%9C%89%E7%9A%84%E7%BB%84%E5%A4%8D%E5%88%B6%E6%90%AD%E5%BB%BAInnoDB%20Cluster%E7%8E%AF%E5%A2%83/"/>
+    <id>http://wangshengzhuang.com/2017/05/08/MySQL/MySQL HA/InnoDB Cluster/从已有的组复制搭建InnoDB Cluster环境/</id>
+    <published>2017-05-07T16:00:00.000Z</published>
+    <updated>2017-05-07T17:47:01.159Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文描述了如何基于已有的MySQL Group Replication，创建一个 Innodb cluster。</p>
+<a id="more"></a>
+<h3 id="1-已有的MySQL-Group-Replication-环境信息"><a href="#1-已有的MySQL-Group-Replication-环境信息" class="headerlink" title="1. 已有的MySQL Group Replication 环境信息"></a>1. 已有的MySQL Group Replication 环境信息</h3><table>
+<thead>
+<tr>
+<th>ip地址</th>
+<th>主机名</th>
+<th>server_id</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>172.17.84.71</td>
+<td>mysql001</td>
+<td>1</td>
+</tr>
+<tr>
+<td>172.17.84.72</td>
+<td>mysql002</td>
+<td>2</td>
+</tr>
+<tr>
+<td>172.17.84.73</td>
+<td>mysql003</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<p>查看组复制当前状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">mysql&gt; SELECT * FROM performance_schema.replication_group_members;</div><div class="line">+---------------------------+--------------------------------------+-------------+-------------+--------------+</div><div class="line">| CHANNEL_NAME              | MEMBER_ID                            | MEMBER_HOST | MEMBER_PORT | MEMBER_STATE |</div><div class="line">+---------------------------+--------------------------------------+-------------+-------------+--------------+</div><div class="line">| group_replication_applier | 80af8598-1520-11e7-a8b9-08002730b4d8 | mysql001    |        3306 | ONLINE       |</div><div class="line">| group_replication_applier | 8abf4eab-1521-11e7-9cc9-080027b95fc4 | mysql002    |        3306 | ONLINE       |</div><div class="line">| group_replication_applier | dcd3068d-15bc-11e7-b264-080027dad0d6 | mysql003    |        3306 | ONLINE       |</div></pre></td></tr></table></figure>
+<h3 id="2-Yum-安装MySQL-Shell"><a href="#2-Yum-安装MySQL-Shell" class="headerlink" title="2. Yum 安装MySQL Shell"></a>2. Yum 安装MySQL Shell</h3><pre><code>wget https://dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpm
+rpm -ivh mysql57-community-release-el7-10.noarch.rpm
+yum install mysql-shell -y
+</code></pre><h3 id="3-创建cluster"><a href="#3-创建cluster" class="headerlink" title="3. 创建cluster"></a>3. 创建cluster</h3><p>通过指定 <code>adoptFromGR</code> option，使用dba.createCluster()</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">mysqlsh --uri root@172.17.84.71:3306</div><div class="line">mysql-js&gt; var cluster = dba.createCluster(&apos;prodCluster&apos;, &#123;adoptFromGR: true&#125;);</div><div class="line">A new InnoDB cluster will be created on instance &apos;root@172.17.84.7:3306&apos;.</div><div class="line"></div><div class="line">Creating InnoDB cluster &apos;prodCluster&apos; on &apos;root@172.17.84.72:3306&apos;...</div><div class="line">Adding Seed Instance...</div><div class="line"></div><div class="line">Cluster successfully created. Use Cluster.addInstance() to add MySQL instances.</div><div class="line">At least 3 instances are needed for the cluster to be able to withstand up to</div><div class="line">one server failure.</div></pre></td></tr></table></figure>
+<p>查看cluster状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; var cluster=dba.getCluster()</div><div class="line">mysql-js&gt; cluster.status()</div><div class="line">&#123;</div><div class="line">    &quot;clusterName&quot;: &quot;prodCluster&quot;,</div><div class="line">    &quot;defaultReplicaSet&quot;: &#123;</div><div class="line">        &quot;name&quot;: &quot;default&quot;,</div><div class="line">        &quot;primary&quot;: &quot;172.17.84.71:3306&quot;,</div><div class="line">        &quot;status&quot;: &quot;OK&quot;,</div><div class="line">        &quot;statusText&quot;: &quot;Cluster is ONLINE and can tolerate up to ONE failure.&quot;,</div><div class="line">        &quot;topology&quot;: &#123;</div><div class="line">            &quot;172.17.84.71:3306&quot;: &#123;</div><div class="line">                &quot;address&quot;: &quot;172.17.84.71:3306&quot;,</div><div class="line">                &quot;mode&quot;: &quot;R/W&quot;,</div><div class="line">                &quot;readReplicas&quot;: &#123;&#125;,</div><div class="line">                &quot;role&quot;: &quot;HA&quot;,</div><div class="line">                &quot;status&quot;: &quot;ONLINE&quot;</div><div class="line">            &#125;,</div><div class="line">            &quot;mysql002:3306&quot;: &#123;</div><div class="line">                &quot;address&quot;: &quot;mysql002:3306&quot;,</div><div class="line">                &quot;mode&quot;: &quot;R/O&quot;,</div><div class="line">                &quot;readReplicas&quot;: &#123;&#125;,</div><div class="line">                &quot;role&quot;: &quot;HA&quot;,</div><div class="line">                &quot;status&quot;: &quot;ONLINE&quot;</div><div class="line">            &#125;,</div><div class="line">            &quot;mysql003:3306&quot;: &#123;</div><div class="line">                &quot;address&quot;: &quot;mysql003:3306&quot;,</div><div class="line">                &quot;mode&quot;: &quot;R/O&quot;,</div><div class="line">                &quot;readReplicas&quot;: &#123;&#125;,</div><div class="line">                &quot;role&quot;: &quot;HA&quot;,</div><div class="line">                &quot;status&quot;: &quot;ONLINE&quot;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="4-持久化配置文件"><a href="#4-持久化配置文件" class="headerlink" title="4. 持久化配置文件"></a>4. 持久化配置文件</h3><p>对于已经在cluster中的实例，可以持久化cluster的配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dba.configureLocalInstance(root@localhost:3306)</div></pre></td></tr></table></figure>
+<p>查看配置文件的变化my.cnf</p>
+<h3 id="5-简单测试Failover"><a href="#5-简单测试Failover" class="headerlink" title="5.简单测试Failover"></a>5.简单测试Failover</h3><p>关闭mysql001实例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">systemctl stop mysqld</div></pre></td></tr></table></figure>
+<p>重启mysql001实例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">systemctl start mysqld</div></pre></td></tr></table></figure>
+<p>查看cluster状态,发现Primary Master已经切换到mysql002</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; cluster.status()</div><div class="line">&#123;</div><div class="line">    &quot;clusterName&quot;: &quot;prodCluster&quot;,</div><div class="line">    &quot;defaultReplicaSet&quot;: &#123;</div><div class="line">        &quot;name&quot;: &quot;default&quot;,</div><div class="line">        &quot;primary&quot;: &quot;172.17.84.72:3306&quot;,</div><div class="line">        &quot;status&quot;: &quot;OK&quot;,</div><div class="line">        &quot;statusText&quot;: &quot;Cluster is ONLINE and can tolerate up to ONE failure.&quot;,</div><div class="line">        &quot;topology&quot;: &#123;</div><div class="line">            &quot;172.17.84.72:3306&quot;: &#123;</div><div class="line">                &quot;address&quot;: &quot;172.17.84.72:3306&quot;,</div><div class="line">                &quot;mode&quot;: &quot;R/W&quot;,</div><div class="line">                &quot;readReplicas&quot;: &#123;&#125;,</div><div class="line">                &quot;role&quot;: &quot;HA&quot;,</div><div class="line">                &quot;status&quot;: &quot;ONLINE&quot;</div><div class="line">            &#125;,</div><div class="line">            &quot;mysql001:3306&quot;: &#123;</div><div class="line">                &quot;address&quot;: &quot;mysql001:3306&quot;,</div><div class="line">                &quot;mode&quot;: &quot;R/O&quot;,</div><div class="line">                &quot;readReplicas&quot;: &#123;&#125;,</div><div class="line">                &quot;role&quot;: &quot;HA&quot;,</div><div class="line">                &quot;status&quot;: &quot;ONLINE&quot;</div><div class="line">            &#125;,</div><div class="line">            &quot;mysql003:3306&quot;: &#123;</div><div class="line">                &quot;address&quot;: &quot;mysql003:3306&quot;,</div><div class="line">                &quot;mode&quot;: &quot;R/O&quot;,</div><div class="line">                &quot;readReplicas&quot;: &#123;&#125;,</div><div class="line">                &quot;role&quot;: &quot;HA&quot;,</div><div class="line">                &quot;status&quot;: &quot;ONLINE&quot;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="6-createCluster语法"><a href="#6-createCluster语法" class="headerlink" title="6.createCluster语法"></a>6.createCluster语法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; dba.help(createCluster());</div><div class="line">ReferenceError: createCluster is not defined</div><div class="line">mysql-js&gt; dba.help(&apos;createCluster&apos;);</div><div class="line"></div><div class="line">Creates a MySQL InnoDB cluster.</div><div class="line"></div><div class="line">SYNTAX</div><div class="line"></div><div class="line">  &lt;Dba&gt;.createCluster(name[, options])</div><div class="line"></div><div class="line">WHERE</div><div class="line"></div><div class="line">  name: The name of the cluster object to be created.</div><div class="line">  options: Dictionary with options that modify the behavior of this function.</div><div class="line"></div><div class="line">DESCRIPTION</div><div class="line"></div><div class="line">Creates a MySQL InnoDB cluster taking as seed instance the active global</div><div class="line">session.</div><div class="line"></div><div class="line">The options dictionary can contain the next values:</div><div class="line"></div><div class="line"> - clusterAdminType: defines the type of management to be done on the cluster</div><div class="line">   instances.</div><div class="line"> - multiMaster: boolean value used to define an InnoDB cluster with multiple</div><div class="line">   writable instances.</div><div class="line"> - force: boolean, confirms that the multiMaster option must be applied.</div><div class="line"> - adoptFromGR: boolean value used to create the InnoDB cluster based on</div><div class="line">   existing replication group.</div><div class="line"> - memberSslMode: SSL mode used to configure the members of the cluster.</div><div class="line"> - ipWhitelist: The list of hosts allowed to connect to the instance for group</div><div class="line">   replication.</div><div class="line"></div><div class="line">The values for clusterAdminType options include: local, manual, guided or ssh,</div><div class="line">however, at the moment only local is supported and is used as default value if</div><div class="line">this attribute is not specified.</div><div class="line"></div><div class="line">A InnoDB cluster may be setup in two ways:</div><div class="line"></div><div class="line"> - Single Master: One member of the cluster allows write operations while the</div><div class="line">   rest are in read only mode.</div><div class="line"> - Multi Master: All the members in the cluster support both read and write</div><div class="line">   operations.</div><div class="line"></div><div class="line">By default this function create a Single Master cluster, use the multiMaster</div><div class="line">option set to true if a Multi Master cluster is required.</div><div class="line"></div><div class="line">The memberSslMode option supports these values:</div><div class="line"></div><div class="line"> - REQUIRED: if used, SSL (encryption) will be enabled for the instances to</div><div class="line">   communicate with other members of the cluster</div><div class="line"> - DISABLED: if used, SSL (encryption) will be disabled</div><div class="line"> - AUTO: if used, SSL (encryption) will be enabled if supported by the</div><div class="line">   instance, otherwise disabled</div><div class="line"></div><div class="line">If memberSslMode is not specified AUTO will be used by default.</div><div class="line"></div><div class="line">The ipWhitelist format is a comma separated list of IP addresses or subnet CIDR</div><div class="line">notation, for example: 192.168.1.0/24,10.0.0.1. By default the value is set to</div><div class="line">AUTOMATIC, allowing addresses from the instance private network to be</div><div class="line">automatically set for the whitelist.</div></pre></td></tr></table></figure>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ol>
+<li><a href="https://dev.mysql.com/doc/refman/5.7/en/mysql-innodb-cluster-working-with-group-replication.html" target="_blank" rel="external">Creating an InnoDB Cluster From an Existing Group Replication Deployment</a></li>
+<li><a href="https://ronniethedba.wordpress.com/2017/04/23/creating-an-innodb-cluster-router-from-an-existing-group-replication-deployment/" target="_blank" rel="external">https://ronniethedba.wordpress.com/2017/04/23/creating-an-innodb-cluster-router-from-an-existing-group-replication-deployment/</a></li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文描述了如何基于已有的MySQL Group Replication，创建一个 Innodb cluster。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="MySQL" scheme="http://wangshengzhuang.com/categories/MySQL/"/>
+    
+      <category term="MySQL HA" scheme="http://wangshengzhuang.com/categories/MySQL/MySQL-HA/"/>
+    
+      <category term="InnoDB Cluster" scheme="http://wangshengzhuang.com/categories/MySQL/MySQL-HA/InnoDB-Cluster/"/>
+    
+    
+      <category term="InnoDB Cluster" scheme="http://wangshengzhuang.com/tags/InnoDB-Cluster/"/>
+    
+      <category term="MySQL" scheme="http://wangshengzhuang.com/tags/MySQL/"/>
+    
+      <category term="Group Replication" scheme="http://wangshengzhuang.com/tags/Group-Replication/"/>
+    
+  </entry>
   
   <entry>
     <title>MySQL Group Replication 部署中遇到的错误</title>
