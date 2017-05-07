@@ -74,7 +74,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="InnoDB Cluster,MySQL," />
+  <meta name="keywords" content="Hexo, NexT" />
 
 
 
@@ -92,19 +92,18 @@
 
 
 
-<meta name="description" content="本文描述了如何通过三个沙盒msyql实例，创建一个Single-Primary Innodb cluster，并通过mysql Router对connections实现路由，实现高可用性。">
-<meta name="keywords" content="InnoDB Cluster,MySQL">
+<meta name="description" content="本文描述了3实例MySQL Group Replication的搭建过程">
 <meta property="og:type" content="article">
-<meta property="og:title" content="沙盒实例搭建InnoDB Cluster环境">
-<meta property="og:url" content="http://wangshengzhuang.com/2017/05/03/MySQL/MySQL HA/InnoDB Cluster/3沙盒实例搭建InnoDB Cluster环境/index.html">
+<meta property="og:title" content="Deploying Group Replication in Single-Primary Mode">
+<meta property="og:url" content="http://wangshengzhuang.com/2017/05/06/MySQL/Group Replication/Deploying Group Replication in Single-Primary Mode/index.html">
 <meta property="og:site_name" content="小强斋太-Study Notes">
-<meta property="og:description" content="本文描述了如何通过三个沙盒msyql实例，创建一个Single-Primary Innodb cluster，并通过mysql Router对connections实现路由，实现高可用性。">
-<meta property="og:image" content="http://image.wangshengzhuang.com/17-5-4/93088466-file_1493910959566_e506.png">
-<meta property="og:updated_time" content="2017-05-04T15:16:41.278Z">
+<meta property="og:description" content="本文描述了3实例MySQL Group Replication的搭建过程">
+<meta property="og:image" content="http://image.wangshengzhuang.com/c0fb0918de7c170b6d6749896862f7bd.png">
+<meta property="og:updated_time" content="2017-05-07T16:12:30.150Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="沙盒实例搭建InnoDB Cluster环境">
-<meta name="twitter:description" content="本文描述了如何通过三个沙盒msyql实例，创建一个Single-Primary Innodb cluster，并通过mysql Router对connections实现路由，实现高可用性。">
-<meta name="twitter:image" content="http://image.wangshengzhuang.com/17-5-4/93088466-file_1493910959566_e506.png">
+<meta name="twitter:title" content="Deploying Group Replication in Single-Primary Mode">
+<meta name="twitter:description" content="本文描述了3实例MySQL Group Replication的搭建过程">
+<meta name="twitter:image" content="http://image.wangshengzhuang.com/c0fb0918de7c170b6d6749896862f7bd.png">
 
 
 
@@ -132,13 +131,13 @@
 
 
 
-  <link rel="canonical" href="http://wangshengzhuang.com/2017/05/03/MySQL/MySQL HA/InnoDB Cluster/3沙盒实例搭建InnoDB Cluster环境/"/>
+  <link rel="canonical" href="http://wangshengzhuang.com/2017/05/06/MySQL/Group Replication/Deploying Group Replication in Single-Primary Mode/"/>
 
 
 
 
 
-  <title>沙盒实例搭建InnoDB Cluster环境 | 小强斋太-Study Notes</title>
+  <title>Deploying Group Replication in Single-Primary Mode | 小强斋太-Study Notes</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -341,7 +340,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/03/MySQL/MySQL HA/InnoDB Cluster/3沙盒实例搭建InnoDB Cluster环境/">
+    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/06/MySQL/Group Replication/Deploying Group Replication in Single-Primary Mode/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="小强斋太">
@@ -362,7 +361,7 @@
             
             
               
-                沙盒实例搭建InnoDB Cluster环境
+                Deploying Group Replication in Single-Primary Mode
               
             
           </h1>
@@ -377,8 +376,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-03T00:00:00+08:00">
-                2017-05-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-06T23:41:22+08:00">
+                2017-05-06
               </time>
             
 
@@ -411,19 +410,8 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MySQL/MySQL-HA/" itemprop="url" rel="index">
-                    <span itemprop="name">MySQL HA</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MySQL/MySQL-HA/InnoDB-Cluster/" itemprop="url" rel="index">
-                    <span itemprop="name">InnoDB Cluster</span>
+                  <a href="/categories/MySQL/Group-Replication/" itemprop="url" rel="index">
+                    <span itemprop="name">Group Replication</span>
                   </a>
                 </span>
 
@@ -439,7 +427,7 @@
 
           
           
-             <span id="/2017/05/03/MySQL/MySQL HA/InnoDB Cluster/3沙盒实例搭建InnoDB Cluster环境/" class="leancloud_visitors" data-flag-title="沙盒实例搭建InnoDB Cluster环境">
+             <span id="/2017/05/06/MySQL/Group Replication/Deploying Group Replication in Single-Primary Mode/" class="leancloud_visitors" data-flag-title="Deploying Group Replication in Single-Primary Mode">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -464,7 +452,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  943
+                  1,195
                 </span>
               
 
@@ -498,53 +486,71 @@
       
 
       
-        <p>本文描述了如何通过三个沙盒msyql实例，创建一个Single-Primary Innodb cluster，并通过mysql Router对connections实现路由，实现高可用性。</p>
-<p><img src="http://image.wangshengzhuang.com/17-5-4/93088466-file_1493910959566_e506.png" alt=""></p>
+        <p>本文描述了3实例MySQL Group Replication的搭建过程</p>
+<p><img src="http://image.wangshengzhuang.com/c0fb0918de7c170b6d6749896862f7bd.png" alt="MGR"></p>
 <a id="more"></a>
-<blockquote>
-<p>This section explains how to set up a single-primary InnoDB cluster and configure MySQL Router to achieve high availability. </p>
-<p>This tutorial shows how to use MySQL Shell to create an InnoDB cluster consisting of a MySQL Server instance which provides the seed instance of the InnoDB cluster and holds the initial data set. Two more sandbox MySQL server instances are created and added to the InnoDB cluster. Then MySQL Router is deployed and used to route connections to the InnoDB cluster, and high availability is tested. </p>
-</blockquote>
-<h3 id="1-Yum-安装MySQL-Shell"><a href="#1-Yum-安装MySQL-Shell" class="headerlink" title="1. Yum 安装MySQL Shell"></a>1. Yum 安装MySQL Shell</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">wget https://dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpm</div><div class="line">rpm -ivh mysql57-community-release-el7-10.noarch.rpm</div><div class="line">yum install mysql-shell -y</div></pre></td></tr></table></figure>
-<h3 id="2-创建三个沙盒实例"><a href="#2-创建三个沙盒实例" class="headerlink" title="2. 创建三个沙盒实例"></a>2. 创建三个沙盒实例</h3><p>Start MySQL Shell </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">shell&gt; mysqlsh</div></pre></td></tr></table></figure>
-<p>MySQL Shell provides two scripting languages: JavaScript and Python. Throughout this guide MySQL Shell is used primarily in JavaScript mode . When MySQL Shell starts it is in JavaScript mode by default. You switch into JavaScript mode, Python mode and SQL mode using the commands <code>\js</code>, <code>\py</code>, and <code>\sql</code>. Ensure you are in JavaScript mode by issuing the <code>\js</code> command, then execute:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; dba.deploySandboxInstance(3310)</div><div class="line">mysql-js&gt; dba.deploySandboxInstance(3320)</div><div class="line">mysql-js&gt; dba.deploySandboxInstance(3330)</div></pre></td></tr></table></figure>
-<h3 id="3-Creating-the-InnoDB-Cluster"><a href="#3-Creating-the-InnoDB-Cluster" class="headerlink" title="3.  Creating the InnoDB Cluster"></a>3.  Creating the InnoDB Cluster</h3><p>Connect MySQL Shell to the seed instance, in this case the one at port 3310:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; \connect root@localhost:3310</div><div class="line">或者</div><div class="line">mysql-js&gt; shell.connect(&apos;root@localhost:3310&apos;)</div></pre></td></tr></table></figure>
-<p>Use the <code>createCluster()</code> method to create the InnoDB cluster with the currently connected instance as the seed:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; var cluster = dba.createCluster(&apos;testCluster&apos;)</div></pre></td></tr></table></figure>
-<h3 id="4-Adding-Instances-to-an-InnoDB-Cluster"><a href="#4-Adding-Instances-to-an-InnoDB-Cluster" class="headerlink" title="4. Adding Instances to an InnoDB Cluster"></a>4. Adding Instances to an InnoDB Cluster</h3><p>配置<code>/etc/hosts</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">127.0.0.1 mysql001</div></pre></td></tr></table></figure>
-<p>Obtaining the <code>cluster</code> Instance Variable</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; var cluster = dba.getCluster(&quot;testCluster&quot;)</div></pre></td></tr></table></figure>
-<p>Add the second instance to the InnoDB cluster:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; cluster.addInstance(&apos;root@localhost:3320&apos;)</div></pre></td></tr></table></figure>
-<p>Add the third instance:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; cluster.addInstance(&apos;root@localhost:3330&apos;)</div></pre></td></tr></table></figure>
-<p>查看cluster 状态</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; cluster.status()</div><div class="line">&#123;</div><div class="line">    &quot;clusterName&quot;: &quot;testCluster&quot;, </div><div class="line">    &quot;defaultReplicaSet&quot;: &#123;</div><div class="line">        &quot;name&quot;: &quot;default&quot;, </div><div class="line">        &quot;primary&quot;: &quot;localhost:3310&quot;, </div><div class="line">        &quot;status&quot;: &quot;OK&quot;, </div><div class="line">        &quot;statusText&quot;: &quot;Cluster is ONLINE and can tolerate up to ONE failure.&quot;, </div><div class="line">        &quot;topology&quot;: &#123;</div><div class="line">            &quot;localhost:3310&quot;: &#123;</div><div class="line">                &quot;address&quot;: &quot;localhost:3310&quot;, </div><div class="line">                &quot;mode&quot;: &quot;R/W&quot;, </div><div class="line">                &quot;readReplicas&quot;: &#123;&#125;, </div><div class="line">                &quot;role&quot;: &quot;HA&quot;, </div><div class="line">                &quot;status&quot;: &quot;ONLINE&quot;</div><div class="line">            &#125;, </div><div class="line">            &quot;localhost:3320&quot;: &#123;</div><div class="line">                &quot;address&quot;: &quot;localhost:3320&quot;, </div><div class="line">                &quot;mode&quot;: &quot;R/O&quot;, </div><div class="line">                &quot;readReplicas&quot;: &#123;&#125;, </div><div class="line">                &quot;role&quot;: &quot;HA&quot;, </div><div class="line">                &quot;status&quot;: &quot;ONLINE&quot;</div><div class="line">            &#125;, </div><div class="line">            &quot;localhost:3330&quot;: &#123;</div><div class="line">                &quot;address&quot;: &quot;localhost:3330&quot;, </div><div class="line">                &quot;mode&quot;: &quot;R/O&quot;, </div><div class="line">                &quot;readReplicas&quot;: &#123;&#125;, </div><div class="line">                &quot;role&quot;: &quot;HA&quot;, </div><div class="line">                &quot;status&quot;: &quot;ONLINE&quot;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="5-安装配置-MySQL-Router"><a href="#5-安装配置-MySQL-Router" class="headerlink" title="5. 安装配置 MySQL Router"></a>5. 安装配置 MySQL Router</h3><p>Yum安装</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">wget https://dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpm</div><div class="line">rpm -ivh mysql57-community-release-el7-10.noarch.rpm</div><div class="line">yum install mysql-router -y</div></pre></td></tr></table></figure>
-<p> bootstrap 生成配置文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">shell&gt; mysqlrouter --bootstrap root@localhost:3310 --user=mysqlrouter</div></pre></td></tr></table></figure>
-<p>配置文件<code>/etc/mysqlrouter/mysqlrouter.conf</code>内容</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line">shell &gt; cat  /etc/mysqlrouter/mysqlrouter.conf</div><div class="line"># File automatically generated during MySQL Router bootstrap</div><div class="line">[DEFAULT]</div><div class="line">name=system</div><div class="line">user=mysqlrouter</div><div class="line">keyring_path=/var/lib/mysqlrouter/keyring</div><div class="line">master_key_path=/etc/mysqlrouter/mysqlrouter.key</div><div class="line"></div><div class="line">[logger]</div><div class="line">level = INFO</div><div class="line"></div><div class="line">[metadata_cache:testCluster]</div><div class="line">router_id=3</div><div class="line">bootstrap_server_addresses=mysql://localhost:3310,mysql://localhost:3320,mysql://localhost:3330</div><div class="line">user=mysql_router3_c3j5z9t7rjgk</div><div class="line">metadata_cluster=testCluster</div><div class="line">ttl=300</div><div class="line"></div><div class="line">[routing:testCluster_default_rw]</div><div class="line">bind_address=0.0.0.0</div><div class="line">bind_port=6446</div><div class="line">destinations=metadata-cache://testCluster/default?role=PRIMARY</div><div class="line">mode=read-write</div><div class="line">protocol=classic</div><div class="line"></div><div class="line">[routing:testCluster_default_ro]</div><div class="line">bind_address=0.0.0.0</div><div class="line">bind_port=6447</div><div class="line">destinations=metadata-cache://testCluster/default?role=SECONDARY</div><div class="line">mode=read-only</div><div class="line">protocol=classic</div><div class="line"></div><div class="line">[routing:testCluster_default_x_rw]</div><div class="line">bind_address=0.0.0.0</div><div class="line">bind_port=64460</div><div class="line">destinations=metadata-cache://testCluster/default?role=PRIMARY</div><div class="line">mode=read-write</div><div class="line">protocol=x</div><div class="line"></div><div class="line">[routing:testCluster_default_x_ro]</div><div class="line">bind_address=0.0.0.0</div><div class="line">bind_port=64470</div><div class="line">destinations=metadata-cache://testCluster/default?role=SECONDARY</div><div class="line">mode=read-only</div><div class="line">protocol=x</div></pre></td></tr></table></figure>
-<p>启动mysqlrouter(记得修改下权限 默认权限不对)</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">chown mysqlrouter.mysqlrouter /var/lib/mysqlrouter</div><div class="line">systemctl start mysqlrouter</div></pre></td></tr></table></figure>
-<p>测试连接</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">shell&gt; mysqlsh --uri root@localhost:6446</div><div class="line">mysql-js&gt; \sql</div><div class="line">Switching to SQL mode... Commands end with ;</div><div class="line">mysql-sql&gt; select @@port;</div><div class="line">+--------+</div><div class="line">| @@port |</div><div class="line">+--------+</div><div class="line">|   3310 |</div><div class="line">+--------+</div><div class="line">1 row in set (0.00 sec)</div></pre></td></tr></table></figure>
-<h3 id="6-Testing-Failover"><a href="#6-Testing-Failover" class="headerlink" title="6. Testing Failover"></a>6. Testing Failover</h3><p>killing the <code>PRIMARY</code> instance 3310</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; dba.killSandboxInstance(3310)</div></pre></td></tr></table></figure>
-<p>测试连接（第一次失败，第二次成功）</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; \sql</div><div class="line">Switching to SQL mode... Commands end with ;</div><div class="line">mysql-sql&gt; SELECT @@port;</div><div class="line">ERROR: 2013 (HY000): Lost connection to MySQL server during query</div><div class="line">The global session got disconnected.</div><div class="line">Attempting to reconnect to &apos;root@localhost:6446&apos;...</div><div class="line">The global session was successfully reconnected.</div><div class="line">mysql-sql&gt; select @@port;</div><div class="line">+--------+</div><div class="line">| @@port |</div><div class="line">+--------+</div><div class="line">|   3330 |</div><div class="line">+--------+</div><div class="line">1 row in set (0.00 sec)</div></pre></td></tr></table></figure>
-<p>查看cluster状态, 可以发现3320实例已经变成Primary</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; cluster.status()</div><div class="line">&#123;</div><div class="line">    &quot;clusterName&quot;: &quot;testCluster&quot;, </div><div class="line">    &quot;defaultReplicaSet&quot;: &#123;</div><div class="line">        &quot;name&quot;: &quot;default&quot;, </div><div class="line">        &quot;primary&quot;: &quot;localhost:3320&quot;, </div><div class="line">        &quot;status&quot;: &quot;OK_NO_TOLERANCE&quot;, </div><div class="line">        &quot;statusText&quot;: &quot;Cluster is NOT tolerant to any failures. 1 member is not active&quot;, </div><div class="line">        &quot;topology&quot;: &#123;</div><div class="line">            &quot;localhost:3310&quot;: &#123;</div><div class="line">                &quot;address&quot;: &quot;localhost:3310&quot;, </div><div class="line">                &quot;mode&quot;: &quot;R/O&quot;, </div><div class="line">                &quot;readReplicas&quot;: &#123;&#125;, </div><div class="line">                &quot;role&quot;: &quot;HA&quot;, </div><div class="line">                &quot;status&quot;: &quot;(MISSING)&quot;</div><div class="line">            &#125;, </div><div class="line">            &quot;localhost:3320&quot;: &#123;</div><div class="line">                &quot;address&quot;: &quot;localhost:3320&quot;, </div><div class="line">                &quot;mode&quot;: &quot;R/W&quot;, </div><div class="line">                &quot;readReplicas&quot;: &#123;&#125;, </div><div class="line">                &quot;role&quot;: &quot;HA&quot;, </div><div class="line">                &quot;status&quot;: &quot;ONLINE&quot;</div><div class="line">            &#125;, </div><div class="line">            &quot;localhost:3330&quot;: &#123;</div><div class="line">                &quot;address&quot;: &quot;localhost:3330&quot;, </div><div class="line">                &quot;mode&quot;: &quot;R/O&quot;, </div><div class="line">                &quot;readReplicas&quot;: &#123;&#125;, </div><div class="line">                &quot;role&quot;: &quot;HA&quot;, </div><div class="line">                &quot;status&quot;: &quot;ONLINE&quot;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p> bring the instance that you killed back online.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; dba.startSandboxInstance(3310)</div><div class="line">mysql-js&gt; cluster.rejoinInstance(&apos;root@localhost:3310&apos;)</div><div class="line">mysql-js&gt; cluster.status()</div></pre></td></tr></table></figure>
-<p>重新查看cluster状态</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; cluster.status()</div><div class="line">&#123;</div><div class="line">    &quot;clusterName&quot;: &quot;testCluster&quot;, </div><div class="line">    &quot;defaultReplicaSet&quot;: &#123;</div><div class="line">        &quot;name&quot;: &quot;default&quot;, </div><div class="line">        &quot;primary&quot;: &quot;localhost:3320&quot;, </div><div class="line">        &quot;status&quot;: &quot;OK&quot;, </div><div class="line">        &quot;statusText&quot;: &quot;Cluster is ONLINE and can tolerate up to ONE failure.&quot;, </div><div class="line">        &quot;topology&quot;: &#123;</div><div class="line">            &quot;localhost:3310&quot;: &#123;</div><div class="line">                &quot;address&quot;: &quot;localhost:3310&quot;, </div><div class="line">                &quot;mode&quot;: &quot;R/O&quot;, </div><div class="line">                &quot;readReplicas&quot;: &#123;&#125;, </div><div class="line">                &quot;role&quot;: &quot;HA&quot;, </div><div class="line">                &quot;status&quot;: &quot;ONLINE&quot;</div><div class="line">            &#125;, </div><div class="line">            &quot;localhost:3320&quot;: &#123;</div><div class="line">                &quot;address&quot;: &quot;localhost:3320&quot;, </div><div class="line">                &quot;mode&quot;: &quot;R/W&quot;, </div><div class="line">                &quot;readReplicas&quot;: &#123;&#125;, </div><div class="line">                &quot;role&quot;: &quot;HA&quot;, </div><div class="line">                &quot;status&quot;: &quot;ONLINE&quot;</div><div class="line">            &#125;, </div><div class="line">            &quot;localhost:3330&quot;: &#123;</div><div class="line">                &quot;address&quot;: &quot;localhost:3330&quot;, </div><div class="line">                &quot;mode&quot;: &quot;R/O&quot;, </div><div class="line">                &quot;readReplicas&quot;: &#123;&#125;, </div><div class="line">                &quot;role&quot;: &quot;HA&quot;, </div><div class="line">                &quot;status&quot;: &quot;ONLINE&quot;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://dev.mysql.com/doc/refman/5.7/en/mysql-innodb-cluster-getting-started.html" target="_blank" rel="external"> Getting Started with InnoDB Cluster</a></p>
+<h3 id="一、环境信息"><a href="#一、环境信息" class="headerlink" title="一、环境信息"></a>一、环境信息</h3><table>
+<thead>
+<tr>
+<th>ip地址</th>
+<th>主机名</th>
+<th>server_id</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>172.17.84.71</td>
+<td>mysql001</td>
+<td>1</td>
+</tr>
+<tr>
+<td>172.17.84.72</td>
+<td>mysql002</td>
+<td>2</td>
+</tr>
+<tr>
+<td>172.17.84.73</td>
+<td>mysql003</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<h3 id="二、搭建前准备"><a href="#二、搭建前准备" class="headerlink" title="二、搭建前准备"></a>二、搭建前准备</h3><ol>
+<li>关闭selinux(略)     </li>
+<li><p>开启端口3306 33061</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">##Add</div><div class="line">firewall-cmd --permanent --zone=public --add-port=3306/tcp</div><div class="line">firewall-cmd --permanent --zone=public --add-port=33061/tcp</div><div class="line"></div><div class="line">##Reload</div><div class="line">firewall-cmd --reload</div><div class="line"> </div><div class="line">## 检查是否生效</div><div class="line">firewall-cmd --zone=public --query-port=3306/tcp</div><div class="line">firewall-cmd --zone=public --query-port=33061/tcp</div><div class="line"> </div><div class="line">## 列出所有的开放端口</div><div class="line">firewall-cmd --list-all</div></pre></td></tr></table></figure>
+</li>
+<li><p>配置/etc/hosts ip和主机名对应关系</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@mysql003 ~]# cat /etc/hosts</div><div class="line">172.17.84.71 mysql001</div><div class="line">172.17.84.72 msyql002</div><div class="line">172.17.84.73 mysql003</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="三、初始化三个数据库实例"><a href="#三、初始化三个数据库实例" class="headerlink" title="三、初始化三个数据库实例"></a>三、初始化三个数据库实例</h3><h4 id="3-1-初始化3个mysql实例"><a href="#3-1-初始化3个mysql实例" class="headerlink" title="3.1 初始化3个mysql实例"></a>3.1 初始化3个mysql实例</h4><p>mysql001配置文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div></pre></td><td class="code"><pre><div class="line">[root@mysql001 ~]# cat /usr/local/mysql/etc/my.cnf</div><div class="line">[client]</div><div class="line">port = 3306</div><div class="line">socket = /usr/local/mysql/run/mysql.sock</div><div class="line"></div><div class="line">[mysqld]</div><div class="line">port = 3306</div><div class="line">socket = /usr/local/mysql/run/mysql.sock</div><div class="line">pid_file = /usr/local/mysql/run/mysql.pid</div><div class="line">datadir = /usr/local/mysql/data</div><div class="line">default_storage_engine = InnoDB</div><div class="line">max_allowed_packet = 512M</div><div class="line">max_connections = 2048</div><div class="line">open_files_limit = 65535</div><div class="line"></div><div class="line">lower_case_table_names=1</div><div class="line"></div><div class="line">character-set-server = utf8mb4</div><div class="line">collation-server = utf8mb4_unicode_ci</div><div class="line">init_connect=&apos;SET NAMES utf8mb4&apos;</div><div class="line"></div><div class="line"></div><div class="line">innodb_buffer_pool_size = 1024M</div><div class="line">innodb_log_file_size = 2048M</div><div class="line">innodb_file_per_table = 1</div><div class="line">innodb_flush_log_at_trx_commit = 0</div><div class="line"></div><div class="line"></div><div class="line">key_buffer_size = 64M</div><div class="line"></div><div class="line">log-error = /usr/local/mysql/log/mysql_error.log</div><div class="line">log-bin = /usr/local/mysql/binlogs/mysql-bin</div><div class="line">slow_query_log = 1</div><div class="line">slow_query_log_file = /usr/local/mysql/log/mysql_slow_query.log</div><div class="line">long_query_time = 5</div><div class="line"></div><div class="line"></div><div class="line">tmp_table_size = 32M</div><div class="line">max_heap_table_size = 32M</div><div class="line">query_cache_type = 0</div><div class="line">query_cache_size = 0</div><div class="line"></div><div class="line">server-id=1</div><div class="line">gtid_mode = ON</div><div class="line">enforce_gtid_consistency = ON</div><div class="line">binlog_checksum=NONE</div><div class="line">log_slave_updates = ON</div><div class="line">master_info_repository = TABLE</div><div class="line">relay_log_info_repository = TABLE</div><div class="line"></div><div class="line">transaction_write_set_extraction=XXHASH64</div><div class="line">loose-group_replication_group_name=&quot;aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa&quot;</div><div class="line">loose-group_replication_start_on_boot=off</div><div class="line">loose-group_replication_local_address= &quot;172.17.84.71:33061&quot;</div><div class="line">loose-group_replication_group_seeds= &quot;172.17.84.71:33061,172.17.84.72:33061,172.17.84.73:33061&quot;</div><div class="line">loose-group_replication_bootstrap_group= off</div><div class="line">loose-group_replication_ip_whitelist=&apos;172.17.84.71,172.17.84.72,172.17.84.73&apos;</div></pre></td></tr></table></figure></p>
+<p>参数说明见<a href="https://dev.mysql.com/doc/refman/5.7/en/group-replication-options.html" target="_blank" rel="external">Group Replication System Variables</a></p>
+<p>初始化实例 并启动</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mysqld --initialize --user=mysql --basedir=/usr/local/mysql --datadir=/usr/local/mysql/data</div><div class="line">systemctl start mysqld</div></pre></td></tr></table></figure>
+<p>到错误日志文件中找到临时密码进行登录，登录后修改临时密码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@mysql001 /]# grep &apos;temporary password&apos; /usr/local/mysql/log/mysql_error.log</div><div class="line">2017-04-24T03:37:44.558511Z 1 [Note] A temporary password is generated for root@localhost: 3yFK,#qtjAl;</div></pre></td></tr></table></figure></p>
+<p>修改root密码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">mysql&gt; SET SQL_LOG_BIN=0;</div><div class="line">Query OK, 0 rows affected (0.00 sec)</div><div class="line"></div><div class="line">mysql&gt; set password=password(&apos;admin_123&apos;);</div><div class="line">Query OK, 0 rows affected, 1 warning (0.00 sec)</div><div class="line"></div><div class="line">mysql&gt; flush privileges;</div><div class="line">Query OK, 0 rows affected (0.00 sec)</div><div class="line"></div><div class="line">mysql&gt; SET SQL_LOG_BIN=1;</div><div class="line">Query OK, 0 rows affected (0.00 sec)</div><div class="line"></div><div class="line">mysql&gt; show master status \G;</div><div class="line">*************************** 1. row ***************************</div><div class="line">             File: mysql-bin.000002</div><div class="line">         Position: 150</div><div class="line">     Binlog_Do_DB:</div><div class="line"> Binlog_Ignore_DB:</div><div class="line">Executed_Gtid_Set:</div><div class="line">1 row in set (0.00 sec)</div><div class="line"></div><div class="line">ERROR:</div><div class="line">No query specified</div></pre></td></tr></table></figure></p>
+<p>修改密码操作必须设置binlog不记录，执行后再打开，否则会引起START GROUP_REPLICATION执行报错。全新的环境可以通过reset master解决这个问题。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[ERROR] Plugin group_replication reported: &apos;The member contains transactions not present in the group. The member will now exit the group.&apos;</div><div class="line">[Note] Plugin group_replication reported: &apos;To force this member into the group you can use the group_replication_allow_local_disjoint_gtids_join option&apos;</div></pre></td></tr></table></figure></p>
+<h3 id="四、配置MGR"><a href="#四、配置MGR" class="headerlink" title="四、配置MGR"></a>四、配置MGR</h3><h4 id="4-1-创建复制账号"><a href="#4-1-创建复制账号" class="headerlink" title="4.1 创建复制账号"></a>4.1 创建复制账号</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">mysql&gt; SET SQL_LOG_BIN=0;</div><div class="line">Query OK, 0 rows affected (0.00 sec)</div><div class="line"></div><div class="line">mysql&gt; CREATE USER rpl_user@&apos;%&apos;;</div><div class="line">Query OK, 0 rows affected (0.01 sec)</div><div class="line"></div><div class="line">mysql&gt; GRANT REPLICATION SLAVE ON *.* TO rpl_user@&apos;%&apos; IDENTIFIED BY &apos;rpl_pass&apos;;</div><div class="line">Query OK, 0 rows affected, 1 warning (0.00 sec)</div><div class="line"></div><div class="line">mysql&gt; FLUSH PRIVILEGES;</div><div class="line">Query OK, 0 rows affected (0.00 sec)</div><div class="line"></div><div class="line">mysql&gt; SET SQL_LOG_BIN=1;</div><div class="line">Query OK, 0 rows affected (0.00 sec)</div></pre></td></tr></table></figure>
+<h4 id="4-2-使用change-master命令配置server"><a href="#4-2-使用change-master命令配置server" class="headerlink" title="4.2 使用change master命令配置server"></a>4.2 使用change master命令配置server</h4><p>在下次需要从其他成员恢复其状态时，使用group_replication_recovery复制通道的给定凭据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mysql&gt; CHANGE MASTER TO MASTER_USER=&apos;rpl_user&apos;, MASTER_PASSWORD=&apos;rpl_pass&apos;  FOR CHANNEL &apos;group_replication_recovery&apos;;</div><div class="line">Query OK, 0 rows affected, 2 warnings (0.02 sec)</div></pre></td></tr></table></figure></p>
+<h4 id="4-3-安装复制组插件"><a href="#4-3-安装复制组插件" class="headerlink" title="4.3 安装复制组插件"></a>4.3 安装复制组插件</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mysql&gt; install plugin group_replication soname &apos;group_replication.so&apos;;</div><div class="line">Query OK, 0 rows affected (0.26 sec)</div></pre></td></tr></table></figure>
+<h4 id="4-4-查看插件是否安装成功"><a href="#4-4-查看插件是否安装成功" class="headerlink" title="4.4 查看插件是否安装成功"></a>4.4 查看插件是否安装成功</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">mysql&gt; show plugins;</div><div class="line">+----------------------------+----------+--------------------+----------------------+---------+</div><div class="line">| Name                       | Status   | Type               | Library              | License |</div><div class="line">+----------------------------+----------+--------------------+----------------------+---------+</div><div class="line">| binlog                     | ACTIVE   | STORAGE ENGINE     | NULL                 | GPL     |</div><div class="line">| mysql_native_password      | ACTIVE   | AUTHENTICATION     | NULL                 | GPL     |</div><div class="line">.</div><div class="line">.</div><div class="line">.</div><div class="line">| group_replication          | ACTIVE   | GROUP REPLICATION  | group_replication.so | GPL     |</div><div class="line">+----------------------------+----------+--------------------+----------------------+---------+</div></pre></td></tr></table></figure>
+<h4 id="4-5、配置引导组，并启动GROUP-REPLICATION"><a href="#4-5、配置引导组，并启动GROUP-REPLICATION" class="headerlink" title="4.5、配置引导组，并启动GROUP_REPLICATION"></a>4.5、配置引导组，并启动GROUP_REPLICATION</h4><p>此引导应仅有单个server独立完成，该server启动组并且只启动一次<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">#### 设置group_replication_bootstrap_group 只需要在mysql001上执行一次，另外两个实例不执行这句</div><div class="line">mysql&gt; SET GLOBAL group_replication_bootstrap_group=ON;  </div><div class="line">Query OK, 0 rows affected (0.00 sec)</div><div class="line"></div><div class="line">mysql&gt; START GROUP_REPLICATION;</div><div class="line">ERROR 3092 (HY000): The server is not configured properly to be an active member of the group. Please see more details on error log.</div></pre></td></tr></table></figure></p>
+<p>查看log，发现是白名单问题导致的，my.cnf添加白名单后重新启动组复制<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">mysql&gt; set global group_replication_ip_whitelist = &apos;172.17.84.71,172.17.84.72,172.17.84.73&apos;;</div><div class="line">Query OK, 0 rows affected (0.00 sec)</div><div class="line"></div><div class="line">mysql&gt; START GROUP_REPLICATION;</div><div class="line">Query OK, 0 rows affected (1.02 sec)</div><div class="line"></div><div class="line">mysql&gt; SET GLOBAL group_replication_bootstrap_group=OFF;</div><div class="line">Query OK, 0 rows affected (0.00 sec)</div></pre></td></tr></table></figure></p>
+<p>直接添加白名单到my.cnf,防止下次启动再重新问题</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">loose-group_replication_ip_whitelist=&apos;172.17.84.71,172.17.84.72,172.17.84.73&apos;</div></pre></td></tr></table></figure>
+<h4 id="4-6-查看状态"><a href="#4-6-查看状态" class="headerlink" title="4.6 查看状态"></a>4.6 查看状态</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">mysql&gt; SELECT * FROM performance_schema.replication_group_members;</div><div class="line">+---------------------------+--------------------------------------+-------------+-------------+--------------+</div><div class="line">| CHANNEL_NAME              | MEMBER_ID                            | MEMBER_HOST | MEMBER_PORT | MEMBER_STATE |</div><div class="line">+---------------------------+--------------------------------------+-------------+-------------+--------------+</div><div class="line">| group_replication_applier | 60b61f19-289f-11e7-b97d-08002730b4d8 | mysql001    |        3306 | ONLINE       |</div><div class="line">+---------------------------+--------------------------------------+-------------+-------------+--------------+</div><div class="line">1 row in set (0.01 sec)</div><div class="line"></div><div class="line">mysql&gt; show master status \G;</div><div class="line">*************************** 1. row ***************************</div><div class="line">             File: mysql-bin.000003</div><div class="line">         Position: 434</div><div class="line">     Binlog_Do_DB:</div><div class="line"> Binlog_Ignore_DB:</div><div class="line">Executed_Gtid_Set: aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa:1</div><div class="line">1 row in set (0.00 sec)</div></pre></td></tr></table></figure>
+<h4 id="4-7-向组中添加实例mysql002-mysql003"><a href="#4-7-向组中添加实例mysql002-mysql003" class="headerlink" title="4.7 向组中添加实例mysql002 mysql003"></a>4.7 向组中添加实例mysql002 mysql003</h4><p>mysql002 mysql003的操作和mysql001相同，除了不需要SET GLOBAL group_replication_bootstrap_group=ON;</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mysql&gt; START GROUP_REPLICATION;</div><div class="line">Query OK, 0 rows affected (1.02 sec)</div></pre></td></tr></table></figure>
+<p>查看最终状态<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">mysql&gt; SELECT * FROM performance_schema.replication_group_members;</div><div class="line">+---------------------------+--------------------------------------+-------------+-------------+--------------+</div><div class="line">| CHANNEL_NAME              | MEMBER_ID                            | MEMBER_HOST | MEMBER_PORT | MEMBER_STATE |</div><div class="line">+---------------------------+--------------------------------------+-------------+-------------+--------------+</div><div class="line">| group_replication_applier | 80af8598-1520-11e7-a8b9-08002730b4d8 | mysql001    |        3306 | ONLINE       |</div><div class="line">| group_replication_applier | 8abf4eab-1521-11e7-9cc9-080027b95fc4 | mysql002    |        3306 | ONLINE       |</div><div class="line">| group_replication_applier | dcd3068d-15bc-11e7-b264-080027dad0d6 | mysql003    |        3306 | ONLINE       |</div><div class="line">+---------------------------+--------------------------------------+-------------+-------------+--------------+</div><div class="line">3 rows in set (0.00 sec)</div></pre></td></tr></table></figure></p>
+<h4 id="4-8-修改-group-replication-start-on-boot-on"><a href="#4-8-修改-group-replication-start-on-boot-on" class="headerlink" title="4.8 修改 group_replication_start_on_boot=on"></a>4.8 修改 group_replication_start_on_boot=on</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">loose-group_replication_start_on_boot=on</div></pre></td></tr></table></figure>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ol>
+<li><a href="https://dev.mysql.com/doc/refman/5.7/en/group-replication-deploying-in-single-primary-mode.html" target="_blank" rel="external">Deploying Group Replication in Single-Primary Mode</a></li>
+<li><a href="http://www.niugebbs.com/HRT152/1244148.html" target="_blank" rel="external">http://www.niugebbs.com/HRT152/1244148.html</a></li>
+<li><a href="http://blog.csdn.net/dbaxiaosa/article/details/70226540" target="_blank" rel="external">http://blog.csdn.net/dbaxiaosa/article/details/70226540</a></li>
+<li><a href="http://hbxflihua.iteye.com/blog/2358031" target="_blank" rel="external">MySQL Group Replication多机多实例安装配置</a></li>
+<li><a href="http://fordba.com/mysql-group-replication-install.html" target="_blank" rel="external">MySQL Group Replication 9节点快速部署</a></li>
+</ol>
 
       
     </div>
@@ -594,7 +600,7 @@
     </li>
     <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://wangshengzhuang.com/2017/05/03/MySQL/MySQL HA/InnoDB Cluster/3沙盒实例搭建InnoDB Cluster环境/" title="沙盒实例搭建InnoDB Cluster环境">http://wangshengzhuang.com/2017/05/03/MySQL/MySQL HA/InnoDB Cluster/3沙盒实例搭建InnoDB Cluster环境/</a>
+      <a href="http://wangshengzhuang.com/2017/05/06/MySQL/Group Replication/Deploying Group Replication in Single-Primary Mode/" title="Deploying Group Replication in Single-Primary Mode">http://wangshengzhuang.com/2017/05/06/MySQL/Group Replication/Deploying Group Replication in Single-Primary Mode/</a>
     </li>
     <li class="post-copyright-license">
       <strong>版权声明： </strong>
@@ -608,14 +614,6 @@
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/InnoDB-Cluster/" rel="tag"> <i class="fa fa-tag"> </i> InnoDB Cluster</a>
-          
-            <a href="/tags/MySQL/" rel="tag"> <i class="fa fa-tag"> </i> MySQL</a>
-          
-        </div>
-      
 
       
         
@@ -625,8 +623,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/05/02/MySQL/MySQL HA/InnoDB Cluster/InnoDB Cluster简介/" rel="next" title="InnoDB Cluster简介">
-                <i class="fa fa-chevron-left"></i> InnoDB Cluster简介
+              <a href="/2017/05/05/MySQL/MySQL HA/InnoDB Cluster/InnoDB Cluster 多机3实例节点搭建过程/" rel="next" title="多节点3实例搭建InnoDB Cluster环境">
+                <i class="fa fa-chevron-left"></i> 多节点3实例搭建InnoDB Cluster环境
               </a>
             
           </div>
@@ -635,8 +633,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/05/04/MySQL/MySQL HA/InnoDB Cluster/单机3实例搭建InnoDB Cluster环境/" rel="prev" title="单机3实例搭建InnoDB Cluster环境">
-                单机3实例搭建InnoDB Cluster环境 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/05/08/MySQL/Group Replication/MySQL Group Replication 部署中遇到的错误/" rel="prev" title="MySQL Group Replication 部署中遇到的错误">
+                MySQL Group Replication 部署中遇到的错误 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -826,7 +824,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Yum-安装MySQL-Shell"><span class="nav-number">1.</span> <span class="nav-text">1. Yum 安装MySQL Shell</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-创建三个沙盒实例"><span class="nav-number">2.</span> <span class="nav-text">2. 创建三个沙盒实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Creating-the-InnoDB-Cluster"><span class="nav-number">3.</span> <span class="nav-text">3.  Creating the InnoDB Cluster</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Adding-Instances-to-an-InnoDB-Cluster"><span class="nav-number">4.</span> <span class="nav-text">4. Adding Instances to an InnoDB Cluster</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-安装配置-MySQL-Router"><span class="nav-number">5.</span> <span class="nav-text">5. 安装配置 MySQL Router</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-Testing-Failover"><span class="nav-number">6.</span> <span class="nav-text">6. Testing Failover</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、环境信息"><span class="nav-number">1.</span> <span class="nav-text">一、环境信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、搭建前准备"><span class="nav-number">2.</span> <span class="nav-text">二、搭建前准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、初始化三个数据库实例"><span class="nav-number">3.</span> <span class="nav-text">三、初始化三个数据库实例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-初始化3个mysql实例"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 初始化3个mysql实例</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、配置MGR"><span class="nav-number">4.</span> <span class="nav-text">四、配置MGR</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-创建复制账号"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 创建复制账号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-使用change-master命令配置server"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 使用change master命令配置server</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-安装复制组插件"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 安装复制组插件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4-查看插件是否安装成功"><span class="nav-number">4.4.</span> <span class="nav-text">4.4 查看插件是否安装成功</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-5、配置引导组，并启动GROUP-REPLICATION"><span class="nav-number">4.5.</span> <span class="nav-text">4.5、配置引导组，并启动GROUP_REPLICATION</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-6-查看状态"><span class="nav-number">4.6.</span> <span class="nav-text">4.6 查看状态</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-7-向组中添加实例mysql002-mysql003"><span class="nav-number">4.7.</span> <span class="nav-text">4.7 向组中添加实例mysql002 mysql003</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-8-修改-group-replication-start-on-boot-on"><span class="nav-number">4.8.</span> <span class="nav-text">4.8 修改 group_replication_start_on_boot=on</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>

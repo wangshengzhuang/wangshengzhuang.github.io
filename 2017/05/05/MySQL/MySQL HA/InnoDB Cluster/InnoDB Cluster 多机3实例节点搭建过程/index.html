@@ -101,7 +101,7 @@
 <meta property="og:description" content="本文描述了如何通过单机三个msyql实例，创建一个Single-Primary Innodb cluster，并通过mysql Router对connections实现路由，实现高可用性。    ip地址 主机名 server_id     192.168.0.101 mysql001 1   192.168.0.102 mysql002 2   192.168.0.103 mysql003 3">
 <meta property="og:image" content="http://image.wangshengzhuang.com/17-5-5/42193296-file_1493993554567_5bbb.png">
 <meta property="og:image" content="http://image.wangshengzhuang.com/17-5-5/60464800-file_1493998183242_301b.png">
-<meta property="og:updated_time" content="2017-05-05T15:31:24.374Z">
+<meta property="og:updated_time" content="2017-05-05T15:38:59.799Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="多节点3实例搭建InnoDB Cluster环境">
 <meta name="twitter:description" content="本文描述了如何通过单机三个msyql实例，创建一个Single-Primary Innodb cluster，并通过mysql Router对connections实现路由，实现高可用性。    ip地址 主机名 server_id     192.168.0.101 mysql001 1   192.168.0.102 mysql002 2   192.168.0.103 mysql003 3">
@@ -465,7 +465,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  1,603
+                  1,517
                 </span>
               
 
@@ -534,11 +534,6 @@
 <a id="more"></a>
 <p>主要步骤如图所示</p>
 <p><img src="http://image.wangshengzhuang.com/17-5-5/60464800-file_1493998183242_301b.png" alt=""></p>
-<!-- more -->
-<blockquote>
-<p>This section explains how to set up a single-primary InnoDB cluster and configure MySQL Router to achieve high availability. </p>
-<p>This tutorial shows how to use MySQL Shell to create an InnoDB cluster consisting of a MySQL Server instance which provides the seed instance of the InnoDB cluster and holds the initial data set. Two more MySQL server instances are created and added to the InnoDB cluster. Then MySQL Router is deployed and used to route connections to the InnoDB cluster, and high availability is tested. </p>
-</blockquote>
 <h3 id="1-安装3个mysql实例"><a href="#1-安装3个mysql实例" class="headerlink" title="1. 安装3个mysql实例"></a>1. 安装3个mysql实例</h3><p>注意：修改root密码时候设置SQL_LOG_BIN=0;此步骤主要是避免Executed_Gtid_Set不一致</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">mysql&gt;  SET SQL_LOG_BIN=0;</div><div class="line">Query OK, 0 rows affected (0.00 sec)</div><div class="line"></div><div class="line">mysql&gt; set password=password('admin_123');</div><div class="line">Query OK, 0 rows affected, 1 warning (0.01 sec)</div><div class="line"></div><div class="line">mysql&gt; GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'admin_123' WITH GRANT OPTION;</div><div class="line">Query OK, 0 rows affected, 1 warning (0.01 sec)</div><div class="line"></div><div class="line">mysql&gt; flush privileges;</div><div class="line">Query OK, 0 rows affected (0.01 sec)</div><div class="line"></div><div class="line">mysql&gt;  SET SQL_LOG_BIN=1;</div><div class="line">Query OK, 0 rows affected (0.00 sec)</div></pre></td></tr></table></figure>
 <p>一句话执行</p>
@@ -683,6 +678,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2017/05/06/MySQL/Group Replication/Deploying Group Replication in Single-Primary Mode/" rel="prev" title="Deploying Group Replication in Single-Primary Mode">
+                Deploying Group Replication in Single-Primary Mode <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -777,7 +776,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -788,7 +787,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-count">4</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
