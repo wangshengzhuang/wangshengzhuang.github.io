@@ -112,6 +112,76 @@
   </entry>
   
   <entry>
+    <title>cd命令</title>
+    <link href="http://wangshengzhuang.com/2017/05/10/Linux/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4/cd%E5%91%BD%E4%BB%A4/"/>
+    <id>http://wangshengzhuang.com/2017/05/10/Linux/每天一个Linux命令/cd命令/</id>
+    <published>2017-05-10T14:12:49.000Z</published>
+    <updated>2017-05-11T14:43:40.740Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文主要记录cd命令的用法</p>
+<a id="more"></a>
+<h3 id="1、作用"><a href="#1、作用" class="headerlink" title="1、作用"></a><strong>1、作用</strong></h3><p><strong>cd</strong>（Change Directory 改变目录）命令用来切换工作目录至dirname。 其中dirName表示法可为绝对路径或相对路径。若目录名称省略，则变换至使用者的home directory(也就是刚login时所在的目录)。另外，~也表示为home directory的意思，.则是表示目前所在的目录，..则表示目前目录位置的上一层目录。</p>
+<h3 id="2、用法"><a href="#2、用法" class="headerlink" title="2、用法"></a><strong>2、用法</strong></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cd    (选项)   (参数)</div></pre></td></tr></table></figure>
+<h3 id="3、选项"><a href="#3、选项" class="headerlink" title="3、选项"></a>3、选项</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">-p  如果要切换到的目标目录是一个符号连接，直接切换到符号连接指向的目标目录</div><div class="line">-L  如果要切换的目标目录是一个符号的连接，直接切换到字符连接名代表的目录，而非符号连接所指向的目标目录。</div><div class="line"> -   当仅实用&quot;-&quot;一个选项时，当前工作目录将被切换到环境变量&quot;OLDPWD&quot;所表示的目录。每当你更改目录时，shell都会将上一个目录位置记录在环境变量OLDPWD中</div></pre></td></tr></table></figure>
+<h4 id="4、实例"><a href="#4、实例" class="headerlink" title="4、实例"></a>4、实例</h4><h4 id="1、cd-进入用户主目录；"><a href="#1、cd-进入用户主目录；" class="headerlink" title="1、cd 进入用户主目录；"></a>1、cd 进入用户主目录；</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@cent6 init.d]# cd</div><div class="line">[root@cent6 ~]# pwd</div><div class="line">/root</div></pre></td></tr></table></figure>
+<h4 id="2、cd-进入用户主目录；"><a href="#2、cd-进入用户主目录；" class="headerlink" title="2、cd ~ 进入用户主目录；"></a>2、cd ~ 进入用户主目录；</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@cent6 ~]# cd ~</div><div class="line">[root@cent6 ~]# pwd</div><div class="line">/root</div><div class="line">[root@cent6 ~]#</div></pre></td></tr></table></figure>
+<h4 id="3、cd-返回进入此目录之前所在的目录"><a href="#3、cd-返回进入此目录之前所在的目录" class="headerlink" title="3、cd - 返回进入此目录之前所在的目录"></a>3、cd - 返回进入此目录之前所在的目录</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[root@cent6 ~]# pwd</div><div class="line">/root</div><div class="line">[root@cent6 ~]# cd /home</div><div class="line">[root@cent6 home]# cd -</div><div class="line">/root</div><div class="line">[root@cent6 ~]# pwd</div><div class="line">/root</div></pre></td></tr></table></figure>
+<h4 id="4、cd-返回上级目录"><a href="#4、cd-返回上级目录" class="headerlink" title="4、cd .. 返回上级目录"></a>4、cd .. 返回上级目录</h4><p>（若当前目录为“/“，则执行完后还在“/“；”..”为上级目录的意思）；</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@cent6 init.d]# pwd</div><div class="line">/etc/init.d</div><div class="line">[root@cent6 init.d]# cd ..</div><div class="line">[root@cent6 etc]# pwd</div><div class="line">/etc</div></pre></td></tr></table></figure>
+<h4 id="5、cd-返回上两级目录；"><a href="#5、cd-返回上两级目录；" class="headerlink" title="5、cd ../.. 返回上两级目录；"></a>5、cd ../.. 返回上两级目录；</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@cent6 init.d]# pwd</div><div class="line">/etc/init.d</div><div class="line">[root@cent6 init.d]# cd ../..</div><div class="line">[root@cent6 /]# pwd</div><div class="line">/</div></pre></td></tr></table></figure>
+<h4 id="6、cd-把上个命令的参数作为cd参数使用"><a href="#6、cd-把上个命令的参数作为cd参数使用" class="headerlink" title="6、cd !$ 把上个命令的参数作为cd参数使用"></a>6、cd !$ 把上个命令的参数作为cd参数使用</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@cent6 /]# ls -ld /media/</div><div class="line">drwxr-xr-x. 2 root root 4096 Sep 23  2011 /media/</div><div class="line">[root@cent6 /]# cd !$</div><div class="line">cd /media/</div><div class="line">[root@cent6 media]# pwd</div><div class="line">/media</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文主要记录cd命令的用法&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Linux" scheme="http://wangshengzhuang.com/categories/Linux/"/>
+    
+      <category term="每天一个Linux命令" scheme="http://wangshengzhuang.com/categories/Linux/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4/"/>
+    
+    
+      <category term="每天一个linux命令" scheme="http://wangshengzhuang.com/tags/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AAlinux%E5%91%BD%E4%BB%A4/"/>
+    
+      <category term="cd" scheme="http://wangshengzhuang.com/tags/cd/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>pwd命令</title>
+    <link href="http://wangshengzhuang.com/2017/05/09/Linux/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4/pwd%E5%91%BD%E4%BB%A4/"/>
+    <id>http://wangshengzhuang.com/2017/05/09/Linux/每天一个Linux命令/pwd命令/</id>
+    <published>2017-05-09T14:12:49.000Z</published>
+    <updated>2017-05-11T14:36:17.259Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文主要记录pwd命令的用法</p>
+<a id="more"></a>
+<h3 id="1、命令简介"><a href="#1、命令简介" class="headerlink" title="1、命令简介"></a>1、命令简介</h3><p><strong>pwd</strong>（print work directory 打印当前目录）命令以绝对路径的方式显示用户当前工作目录。</p>
+<h3 id="2、用法"><a href="#2、用法" class="headerlink" title="2、用法"></a>2、用法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pwd  [-LP]</div></pre></td></tr></table></figure>
+<h3 id="3、选项"><a href="#3、选项" class="headerlink" title="3、选项"></a>3、选项</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">-L    --logical    当目录为连接路径时，显示连接路径</div><div class="line">-P    --physical    显示实际物理路径，而非使用连接（link）路径</div></pre></td></tr></table></figure>
+<h3 id="4、实例"><a href="#4、实例" class="headerlink" title="4、实例"></a>4、实例</h3><h4 id="4-1-显示当前目录所在路径-pwd"><a href="#4-1-显示当前目录所在路径-pwd" class="headerlink" title="4.1 显示当前目录所在路径 pwd"></a>4.1 显示当前目录所在路径 pwd</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@cent6 ~]# pwd</div><div class="line">/root</div></pre></td></tr></table></figure>
+<h4 id="4-2-显示当前目录的物理路径-pwd-–P"><a href="#4-2-显示当前目录的物理路径-pwd-–P" class="headerlink" title="4.2 显示当前目录的物理路径 pwd –P"></a>4.2 显示当前目录的物理路径 pwd –P</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@cent6 ~]# cd /etc/init.d </div><div class="line">[root@cent6 init.d]# pwd -P</div><div class="line">/etc/rc.d/init.d</div></pre></td></tr></table></figure>
+<h4 id="4-3-显示当前目录的连接路径：pwd-L"><a href="#4-3-显示当前目录的连接路径：pwd-L" class="headerlink" title="4.3 显示当前目录的连接路径：pwd -L"></a>4.3 显示当前目录的连接路径：pwd -L</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@cent6 init.d]# cd /etc/init.d </div><div class="line">[root@cent6 init.d]# pwd -L</div><div class="line">/etc/init.d</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文主要记录pwd命令的用法&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Linux" scheme="http://wangshengzhuang.com/categories/Linux/"/>
+    
+      <category term="每天一个Linux命令" scheme="http://wangshengzhuang.com/categories/Linux/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4/"/>
+    
+    
+      <category term="每天一个linux命令" scheme="http://wangshengzhuang.com/tags/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AAlinux%E5%91%BD%E4%BB%A4/"/>
+    
+      <category term="pwd" scheme="http://wangshengzhuang.com/tags/pwd/"/>
+    
+  </entry>
+  
+  <entry>
     <title>从已有的组复制搭建InnoDB Cluster环境</title>
     <link href="http://wangshengzhuang.com/2017/05/08/MySQL/MySQL%20HA/InnoDB%20Cluster/%E4%BB%8E%E5%B7%B2%E6%9C%89%E7%9A%84%E7%BB%84%E5%A4%8D%E5%88%B6%E6%90%AD%E5%BB%BAInnoDB%20Cluster%E7%8E%AF%E5%A2%83/"/>
     <id>http://wangshengzhuang.com/2017/05/08/MySQL/MySQL HA/InnoDB Cluster/从已有的组复制搭建InnoDB Cluster环境/</id>

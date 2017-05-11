@@ -74,7 +74,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="InnoDB Cluster,MySQL," />
+  <meta name="keywords" content="Hexo, NexT" />
 
 
 
@@ -92,20 +92,15 @@
 
 
 
-<meta name="description" content="一、InnoDB Cluster简介前几天 Mysql 团队愉快的发布了 InnoDB Cluster 的 GA（General Availability 正式发布） 版本 InnoDB Cluster 是 Mysql 的一套完整的高可用解决方案  MySQL InnoDB cluster is a collection of products that work together to prov">
-<meta name="keywords" content="InnoDB Cluster,MySQL">
-<meta property="og:type" content="article">
-<meta property="og:title" content="InnoDB Cluster简介">
-<meta property="og:url" content="http://wangshengzhuang.com/2017/05/02/MySQL/MySQL HA/InnoDB Cluster/InnoDB Cluster简介/index.html">
+<meta name="description" content="Stay hungry. Stay foolish">
+<meta property="og:type" content="website">
+<meta property="og:title" content="小强斋太-Study Notes">
+<meta property="og:url" content="http://wangshengzhuang.com/page/2/index.html">
 <meta property="og:site_name" content="小强斋太-Study Notes">
-<meta property="og:description" content="一、InnoDB Cluster简介前几天 Mysql 团队愉快的发布了 InnoDB Cluster 的 GA（General Availability 正式发布） 版本 InnoDB Cluster 是 Mysql 的一套完整的高可用解决方案  MySQL InnoDB cluster is a collection of products that work together to prov">
-<meta property="og:image" content="http://image.wangshengzhuang.com/0acc4ee7b48fa39a7685491e99bbccfb.png">
-<meta property="og:image" content="http://image.wangshengzhuang.com/17-5-3/23165946-file_1493815367505_f827.png">
-<meta property="og:updated_time" content="2017-05-05T15:23:53.587Z">
+<meta property="og:description" content="Stay hungry. Stay foolish">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="InnoDB Cluster简介">
-<meta name="twitter:description" content="一、InnoDB Cluster简介前几天 Mysql 团队愉快的发布了 InnoDB Cluster 的 GA（General Availability 正式发布） 版本 InnoDB Cluster 是 Mysql 的一套完整的高可用解决方案  MySQL InnoDB cluster is a collection of products that work together to prov">
-<meta name="twitter:image" content="http://image.wangshengzhuang.com/0acc4ee7b48fa39a7685491e99bbccfb.png">
+<meta name="twitter:title" content="小强斋太-Study Notes">
+<meta name="twitter:description" content="Stay hungry. Stay foolish">
 
 
 
@@ -133,13 +128,13 @@
 
 
 
-  <link rel="canonical" href="http://wangshengzhuang.com/2017/05/02/MySQL/MySQL HA/InnoDB Cluster/InnoDB Cluster简介/"/>
+  <link rel="canonical" href="http://wangshengzhuang.com/page/2/"/>
 
 
 
 
 
-  <title>InnoDB Cluster简介 | 小强斋太-Study Notes</title>
+  <title>小强斋太-Study Notes</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -174,7 +169,9 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail ">
+  <div class="container sidebar-position-left 
+   page-home 
+ ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -331,9 +328,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-
-  <div id="posts" class="posts-expand">
+  <section id="posts" class="posts-expand">
     
+      
 
   
 
@@ -363,7 +360,10 @@
             
             
               
-                InnoDB Cluster简介
+                
+                <a class="post-title-link" href="/2017/05/02/MySQL/MySQL HA/InnoDB Cluster/InnoDB Cluster简介/" itemprop="url">
+                  InnoDB Cluster简介
+                </a>
               
             
           </h1>
@@ -499,164 +499,59 @@
       
 
       
-        <h3 id="一、InnoDB-Cluster简介"><a href="#一、InnoDB-Cluster简介" class="headerlink" title="一、InnoDB Cluster简介"></a>一、InnoDB Cluster简介</h3><p>前几天 Mysql 团队愉快的发布了 InnoDB Cluster 的 GA（General Availability 正式发布） 版本</p>
+        
+          <h3 id="一、InnoDB-Cluster简介"><a href="#一、InnoDB-Cluster简介" class="headerlink" title="一、InnoDB Cluster简介"></a>一、InnoDB Cluster简介</h3><p>前几天 Mysql 团队愉快的发布了 InnoDB Cluster 的 GA（General Availability 正式发布） 版本</p>
 <p>InnoDB Cluster 是 Mysql 的一套完整的高可用解决方案</p>
 <blockquote>
 <p>MySQL InnoDB cluster is a collection of products that work together to provide a complete High Availability solution for MySQL.</p>
 </blockquote>
 <p><img src="http://image.wangshengzhuang.com/0acc4ee7b48fa39a7685491e99bbccfb.png" alt=""></p>
-<a id="more"></a>
-<p>InnoDB Cluster 由下面3个核心组件构成：</p>
-<ul>
-<li><p><a href="https://dev.mysql.com/doc/refman/5.7/en/mysql-shell.html" target="_blank" rel="external">MySQL Shell</a>    通过内置的 AdminAPI 来创建和管理整个 InnoDB Clusters</p>
-<blockquote>
-<p>Includes the AdminAPI, which enables you to script the creation and administration of an InnoDB cluster, using either JavaScript or Python.</p>
-</blockquote>
-</li>
-<li><p><a href="https://dev.mysql.com/doc/mysql-router/2.1/en/" target="_blank" rel="external">MySQL Router</a>   缓存 InnoDB cluster 的元数据，负责把 client 的 read/write 请求路由到当前的主数据库节点，还可以对 client 的请求进行负载均衡，并且在主数据库节点出现故障时，保证 client 的请求被路由到新的主服务器节点</p>
-<blockquote>
-<p>Caches the metadata of the InnoDB cluster and routes read/write client requests to the current primary. If the primary instance becomes unavailable, MySQL Router automatically routes client requests to a promoted secondary (the new primary). </p>
-</blockquote>
-</li>
-<li><p><a href="https://dev.mysql.com/doc/refman/5.7/en/group-replication.html" target="_blank" rel="external"><em>Group Replication</em></a>  MySQL Server 5.7.17 or higher. 可以把数据同步到集群内的所有成员中，并支持 <strong>容错</strong> 、 <strong>自动故障转移</strong> 、 <strong>灵活扩展</strong>   等重要特性</p>
-<blockquote>
-<p>This provides the MySQL Group Replication mechanism to allow data to be replicated within the cluster, with built-in failover. Group Replication </p>
-</blockquote>
-<p><img src="http://image.wangshengzhuang.com/17-5-3/23165946-file_1493815367505_f827.png" alt=""></p>
-<p>​</p>
-</li>
-</ul>
-
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/05/02/MySQL/MySQL HA/InnoDB Cluster/InnoDB Cluster简介/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
       
     </div>
 
     <div>
       
-        
-
-      
     </div>
 
     <div>
       
-        
-  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
-    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
-    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
-      <span>赏</span>
-    </button>
-    <div id="QR" style="display: none;">
-      
-        <div id="wechat" style="display: inline-block">
-          <img id="wechat_qr" src="/uploads/wechatpay.jpg" alt="小强斋太 WeChat Pay"/>
-          <p>微信打赏</p>
-        </div>
-      
-      
-        <div id="alipay" style="display: inline-block">
-          <img id="alipay_qr" src="/uploads/alipay.jpg" alt="小强斋太 Alipay"/>
-          <p>支付宝打赏</p>
-        </div>
-      
-    </div>
-  </div>
-
-
-      
     </div>
 
     <div>
-      
-        
-  <ul class="post-copyright">
-    <li class="post-copyright-author">
-      <strong>本文作者：</strong>
-      小强斋太
-    </li>
-    <li class="post-copyright-link">
-      <strong>本文链接：</strong>
-      <a href="http://wangshengzhuang.com/2017/05/02/MySQL/MySQL HA/InnoDB Cluster/InnoDB Cluster简介/" title="InnoDB Cluster简介">http://wangshengzhuang.com/2017/05/02/MySQL/MySQL HA/InnoDB Cluster/InnoDB Cluster简介/</a>
-    </li>
-    <li class="post-copyright-license">
-      <strong>版权声明： </strong>
-      本文版权归作者所有,转载请注明出处！'
-    </li>
-  </ul>
-
-
       
     </div>
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/InnoDB-Cluster/" rel="tag"> <i class="fa fa-tag"> </i> InnoDB Cluster</a>
-          
-            <a href="/tags/MySQL/" rel="tag"> <i class="fa fa-tag"> </i> MySQL</a>
-          
-        </div>
+
       
 
       
-        
-      
 
       
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2017/05/01/hello-world/" rel="next" title="Hello World">
-                <i class="fa fa-chevron-left"></i> Hello World
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/05/03/MySQL/MySQL HA/InnoDB Cluster/3沙盒实例搭建InnoDB Cluster环境/" rel="prev" title="沙盒实例搭建InnoDB Cluster环境">
-                沙盒实例搭建InnoDB Cluster环境 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
       
-
-      
+        <div class="post-eof"></div>
       
     </footer>
   </article>
 
 
+    
+  </section>
 
-    <div class="post-spread">
-      
-        ﻿<!--MOB SHARE BEGIN-->
-                            <div class="-mob-share-ui-button -mob-share-open">分享</div>
-                            <div class="-mob-share-ui" style="display: none">
-                                <ul class="-mob-share-list">
-				    <li class="-mob-share-weixin"><p>微信</p></li>
-                                    <li class="-mob-share-qq"><p>QQ好友</p></li>
-				    <li class="-mob-share-qzone"><p>QQ空间</p></li>
-				    <li class="-mob-share-youdao"><p>有道云笔记</p></li>
-				    <li class="-mob-share-weibo"><p>新浪微博</p></li>
-                                    <li class="-mob-share-tencentweibo"><p>腾讯微博</p></li>
-                                    <li class="-mob-share-douban"><p>豆瓣</p></li>
-                                    <li class="-mob-share-facebook"><p>Facebook</p></li>
-                                    <li class="-mob-share-twitter"><p>Twitter</p></li>
-                                    <li class="-mob-share-google"><p>Google+</p></li>
-                                    <li class="-mob-share-linkedin"><p>LinkedIn</p></li>
-                                </ul>
-                                <div class="-mob-share-close">取消</div>
-                            </div>
-<div class="-mob-share-ui-bg"></div>
-<script id="-mob-share" src="http://f1.webshare.mob.com/code/mob-share.js?appkey=b21b3b396423fbd4db32b55d570db922"></script>
-<!--MOB SHARE END-->
-      
-    </div>
-  </div>
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
+
 
 
           </div>
@@ -664,12 +559,6 @@
 
 
           
-  <div class="comments" id="comments">
-    
-      <div id="lv-container" data-id="city" data-uid="MTAyMC8yODQyMi80OTkz"></div>
-    
-  </div>
-
 
         </div>
         
@@ -689,17 +578,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel">
+      <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/uploads/avatar.png"
@@ -797,22 +677,6 @@
 
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、InnoDB-Cluster简介"><span class="nav-number">1.</span> <span class="nav-text">一、InnoDB Cluster简介</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
@@ -914,10 +778,6 @@
   
 
   
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
-
-
 
   
 
@@ -952,17 +812,6 @@
 
 
 
-  
-    <script type="text/javascript">
-      (function(d, s) {
-        var j, e = d.getElementsByTagName(s)[0];
-        if (typeof LivereTower === 'function') { return; }
-        j = d.createElement(s);
-        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-        j.async = true;
-        e.parentNode.insertBefore(j, e);
-      })(document, 'script');
-    </script>
   
 
 
