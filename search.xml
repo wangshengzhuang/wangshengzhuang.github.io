@@ -8,6 +8,9 @@
         <category>运维相关</category>
         <category>Ansible</category>
       </categories>
+      <tags>
+        <tag>Ansible</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[Supervisor简介、安装、配置]]></title>
@@ -57,9 +60,9 @@
         <category>InnoDB Cluster</category>
       </categories>
       <tags>
+        <tag>Group Replication</tag>
         <tag>InnoDB Cluster</tag>
         <tag>MySQL</tag>
-        <tag>Group Replication</tag>
       </tags>
   </entry>
   <entry>

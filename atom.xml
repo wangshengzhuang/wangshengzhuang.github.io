@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wangshengzhuang.com/"/>
-  <updated>2017-05-19T15:29:45.420Z</updated>
+  <updated>2017-05-19T15:34:23.626Z</updated>
   <id>http://wangshengzhuang.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://wangshengzhuang.com/2017/05/19/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/Ansible%E5%AE%89%E8%A3%85/"/>
     <id>http://wangshengzhuang.com/2017/05/19/运维相关/Ansible/Ansible安装/</id>
     <published>2017-05-19T15:26:47.000Z</published>
-    <updated>2017-05-19T15:29:45.420Z</updated>
+    <updated>2017-05-19T15:34:23.626Z</updated>
     
     <content type="html"><![CDATA[<p>本文主要记录了ansible的安装方法。</p>
 <p><img src="http://image.wangshengzhuang.com/17-5-19/88214161-file_1495207716369_76e1.jpg" alt=""></p>
@@ -60,6 +60,8 @@
     
       <category term="Ansible" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/"/>
     
+    
+      <category term="Ansible" scheme="http://wangshengzhuang.com/tags/Ansible/"/>
     
   </entry>
   
@@ -302,11 +304,11 @@ yum install mysql-shell -y
       <category term="InnoDB Cluster" scheme="http://wangshengzhuang.com/categories/MySQL/MySQL-HA/InnoDB-Cluster/"/>
     
     
+      <category term="Group Replication" scheme="http://wangshengzhuang.com/tags/Group-Replication/"/>
+    
       <category term="InnoDB Cluster" scheme="http://wangshengzhuang.com/tags/InnoDB-Cluster/"/>
     
       <category term="MySQL" scheme="http://wangshengzhuang.com/tags/MySQL/"/>
-    
-      <category term="Group Replication" scheme="http://wangshengzhuang.com/tags/Group-Replication/"/>
     
   </entry>
   

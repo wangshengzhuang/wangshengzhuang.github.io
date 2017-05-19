@@ -5,12 +5,14 @@
     
   <url>
     <loc>http://wangshengzhuang.com/2017/05/19/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/Ansible%E5%AE%89%E8%A3%85/</loc>
-    <lastmod>2017-05-19T15:29:45.420Z</lastmod>
+    <lastmod>2017-05-19T15:34:23.626Z</lastmod>
     <data>
         <display>
         <title>Ansible安装</title>
         <pubTime>2017-05-19T15:26:47.000Z</pubTime>
         
+        <tag>Ansible</tag>
+         
          
            
              
@@ -105,11 +107,11 @@
         <title>从已有的组复制搭建InnoDB Cluster环境</title>
         <pubTime>2017-05-07T16:00:00.000Z</pubTime>
         
+        <tag>Group Replication</tag>
+         
         <tag>InnoDB Cluster</tag>
          
         <tag>MySQL</tag>
-         
-        <tag>Group Replication</tag>
          
          
            
