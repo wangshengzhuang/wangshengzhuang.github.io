@@ -4,12 +4,225 @@
 
     
   <url>
-    <loc>http://wangshengzhuang.com/2017/05/19/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/Ansible%E5%AE%89%E8%A3%85/</loc>
-    <lastmod>2017-05-19T15:34:23.626Z</lastmod>
+    <loc>http://wangshengzhuang.com/2017/05/20/Linux/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4/rmdir%E5%91%BD%E4%BB%A4/</loc>
+    <lastmod>2017-06-07T15:00:06.669Z</lastmod>
+    <data>
+        <display>
+        <title>rmdir命令</title>
+        <pubTime>2017-05-20T14:55:56.000Z</pubTime>
+        
+        <tag>每天一个linux命令</tag>
+         
+        <tag>rmdir</tag>
+         
+         
+           
+             
+              <breadCrumb title="Linux" url="http://wangshengzhuang.com/categories/Linux/"/>
+          
+             
+              <breadCrumb title="每天一个Linux命令" url="http://wangshengzhuang.com/categories/Linux/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://wangshengzhuang.com/2017/05/19/Linux/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4/mkdir%E5%91%BD%E4%BB%A4/</loc>
+    <lastmod>2017-06-07T14:56:16.022Z</lastmod>
+    <data>
+        <display>
+        <title>mkdir命令</title>
+        <pubTime>2017-05-19T14:43:25.000Z</pubTime>
+        
+        <tag>每天一个Linux命令</tag>
+         
+        <tag>mkdir</tag>
+         
+         
+           
+             
+              <breadCrumb title="Linux" url="http://wangshengzhuang.com/categories/Linux/"/>
+          
+             
+              <breadCrumb title="每天一个Linux命令" url="http://wangshengzhuang.com/categories/Linux/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://wangshengzhuang.com/2017/05/12/Linux/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4/ls%E5%91%BD%E4%BB%A4/</loc>
+    <lastmod>2017-06-07T14:44:43.749Z</lastmod>
+    <data>
+        <display>
+        <title>ls命令</title>
+        <pubTime>2017-05-12T14:29:25.000Z</pubTime>
+        
+        <tag>每天一个linux命令</tag>
+         
+        <tag>ls</tag>
+         
+         
+           
+             
+              <breadCrumb title="Linux" url="http://wangshengzhuang.com/categories/Linux/"/>
+          
+             
+              <breadCrumb title="每天一个Linux命令" url="http://wangshengzhuang.com/categories/Linux/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://wangshengzhuang.com/2017/05/18/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/Playbook%20%E8%A7%92%E8%89%B2(Roles)%20%E5%92%8C%20Include%20%E8%AF%AD%E5%8F%A5/</loc>
+    <lastmod>2017-05-23T14:50:07.420Z</lastmod>
+    <data>
+        <display>
+        <title>Playbook 角色(Roles) 和 Include 语句</title>
+        <pubTime>2017-05-18T15:26:47.000Z</pubTime>
+        
+        <tag>Ansible</tag>
+         
+         
+           
+             
+              <breadCrumb title="运维相关" url="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/"/>
+          
+             
+              <breadCrumb title="Ansible" url="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://wangshengzhuang.com/2017/05/17/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/Ansilbe%20Playbook/</loc>
+    <lastmod>2017-05-23T14:07:09.954Z</lastmod>
+    <data>
+        <display>
+        <title>Ansible Playbook</title>
+        <pubTime>2017-05-17T15:26:47.000Z</pubTime>
+        
+        <tag>Ansible</tag>
+         
+         
+           
+             
+              <breadCrumb title="运维相关" url="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/"/>
+          
+             
+              <breadCrumb title="Ansible" url="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://wangshengzhuang.com/2017/05/12/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/%E5%88%9D%E8%AF%86Ansible/</loc>
+    <lastmod>2017-05-23T14:03:55.504Z</lastmod>
+    <data>
+        <display>
+        <title>初识Ansible</title>
+        <pubTime>2017-05-12T15:26:47.000Z</pubTime>
+        
+        <tag>Ansible</tag>
+         
+         
+           
+             
+              <breadCrumb title="运维相关" url="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/"/>
+          
+             
+              <breadCrumb title="Ansible" url="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://wangshengzhuang.com/2017/05/16/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/Ad-hoc%E4%B8%8E%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%A8%A1%E5%9D%97/</loc>
+    <lastmod>2017-05-23T14:01:57.134Z</lastmod>
+    <data>
+        <display>
+        <title>ad-hoc命令</title>
+        <pubTime>2017-05-16T15:26:47.000Z</pubTime>
+        
+        <tag>Ansible</tag>
+         
+         
+           
+             
+              <breadCrumb title="运维相关" url="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/"/>
+          
+             
+              <breadCrumb title="Ansible" url="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://wangshengzhuang.com/2017/05/15/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/Ansible%E5%8F%82%E6%95%B0%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6ansible.cfg/</loc>
+    <lastmod>2017-05-23T14:01:46.251Z</lastmod>
+    <data>
+        <display>
+        <title>Ansible参数配置文件ansible.cfg</title>
+        <pubTime>2017-05-15T15:26:47.000Z</pubTime>
+        
+        <tag>Ansible</tag>
+         
+         
+           
+             
+              <breadCrumb title="运维相关" url="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/"/>
+          
+             
+              <breadCrumb title="Ansible" url="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://wangshengzhuang.com/2017/05/14/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/Ansible%E4%B8%BB%E6%9C%BA%E6%B8%85%E5%8D%95Inventory%E6%96%87%E4%BB%B6hosts/</loc>
+    <lastmod>2017-05-23T14:01:33.718Z</lastmod>
+    <data>
+        <display>
+        <title>Ansible主机清单Inventory文件hosts</title>
+        <pubTime>2017-05-14T15:26:47.000Z</pubTime>
+        
+        <tag>Ansible</tag>
+         
+         
+           
+             
+              <breadCrumb title="运维相关" url="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/"/>
+          
+             
+              <breadCrumb title="Ansible" url="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://wangshengzhuang.com/2017/05/13/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/Ansible%E5%AE%89%E8%A3%85/</loc>
+    <lastmod>2017-05-23T13:58:16.014Z</lastmod>
     <data>
         <display>
         <title>Ansible安装</title>
-        <pubTime>2017-05-19T15:26:47.000Z</pubTime>
+        <pubTime>2017-05-13T15:26:47.000Z</pubTime>
         
         <tag>Ansible</tag>
          
@@ -107,11 +320,11 @@
         <title>从已有的组复制搭建InnoDB Cluster环境</title>
         <pubTime>2017-05-07T16:00:00.000Z</pubTime>
         
-        <tag>Group Replication</tag>
-         
         <tag>InnoDB Cluster</tag>
          
         <tag>MySQL</tag>
+         
+        <tag>Group Replication</tag>
          
          
            
