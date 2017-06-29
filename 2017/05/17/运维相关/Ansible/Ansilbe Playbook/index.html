@@ -10,7 +10,21 @@
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*��������ɫ*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*��Ӱ��ɫ*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*�ϱ߿���ɫ*/
+        border-left-color: #1E92FB;    /*���߿���ɫ*/
+    }
+</style>
 
 
 
@@ -173,6 +187,7 @@
 
   <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
+	<a href="https://github.com/wangshengzhuang"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
@@ -500,13 +515,13 @@
 <p>Playbooks 的格式是YAML 语法做到最小化,意在避免 playbooks 成为一种编程语言或是脚本</p>
 <p>playbook 由一个或多个 ‘plays’ 组成.它的内容是一个以 ‘plays’ 为元素的列表.play 的内容,被称为 tasks,即任务.在基本层次的应用中,一个任务是一个对 ansible 模块的调用。playbook命令根据自上而下的顺序依次执行。‘plays’ 好似音符,playbook 好似由 ‘plays’ 构成的曲谱,通过 playbook,可以编排步骤进行多机器的部署,比如在 webservers 组的所有机器上运行一定的步骤, 然后在 database server 组运行一些步骤,最后回到 webservers 组,再运行一些步骤,诸如此类.使得你可以实现一些复杂的部署机制,这是ansible命令无法实现的。</p>
 <p>playbook通过ansible-playbook命令使用,它的参数和ansible命令类似,ansible-playbook的简单使用方法: </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ansible-playbook example-play.yml</div></pre></td></tr></table></figure>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">ansible-playbook</span> <span class="selector-tag">example-play</span><span class="selector-class">.yml</span></div></pre></td></tr></table></figure>
 <h3 id="一、一个简单的示例"><a href="#一、一个简单的示例" class="headerlink" title="一、一个简单的示例"></a>一、一个简单的示例</h3><p>下面是一个简单的ansible-playbook示例，可以了解其构成:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">---</div><div class="line">- hosts: webservers</div><div class="line">  vars:</div><div class="line">    http_port: 80</div><div class="line">    max_clients: 200</div><div class="line">  remote_user: root</div><div class="line">  tasks:</div><div class="line">  - name: ensure apache is at the latest version</div><div class="line">    yum: pkg=httpd state=latest</div><div class="line">  - name: write the apache config file</div><div class="line">    template: src=/srv/httpd.j2 dest=/etc/httpd.conf</div><div class="line">    notify:</div><div class="line">    - restart apache</div><div class="line">  - name: ensure apache is running</div><div class="line">    service: name=httpd state=started</div><div class="line">  handlers:</div><div class="line">    - name: restart apache</div><div class="line">      service: name=httpd state=restarted</div></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="meta">---</span></div><div class="line"><span class="attr">- hosts:</span> <span class="string">webservers</span></div><div class="line"><span class="attr">  vars:</span></div><div class="line"><span class="attr">    http_port:</span> <span class="number">80</span></div><div class="line"><span class="attr">    max_clients:</span> <span class="number">200</span></div><div class="line"><span class="attr">  remote_user:</span> <span class="string">root</span></div><div class="line"><span class="attr">  tasks:</span></div><div class="line"><span class="attr">  - name:</span> <span class="string">ensure</span> <span class="string">apache</span> <span class="string">is</span> <span class="string">at</span> <span class="string">the</span> <span class="string">latest</span> <span class="string">version</span></div><div class="line"><span class="attr">    yum:</span> <span class="string">pkg=httpd</span> <span class="string">state=latest</span></div><div class="line"><span class="attr">  - name:</span> <span class="string">write</span> <span class="string">the</span> <span class="string">apache</span> <span class="string">config</span> <span class="string">file</span></div><div class="line"><span class="attr">    template:</span> <span class="string">src=/srv/httpd.j2</span> <span class="string">dest=/etc/httpd.conf</span></div><div class="line"><span class="attr">    notify:</span></div><div class="line"><span class="bullet">    -</span> <span class="string">restart</span> <span class="string">apache</span></div><div class="line"><span class="attr">  - name:</span> <span class="string">ensure</span> <span class="string">apache</span> <span class="string">is</span> <span class="string">running</span></div><div class="line"><span class="attr">    service:</span> <span class="string">name=httpd</span> <span class="string">state=started</span></div><div class="line"><span class="attr">  handlers:</span></div><div class="line"><span class="attr">    - name:</span> <span class="string">restart</span> <span class="string">apache</span></div><div class="line"><span class="attr">      service:</span> <span class="string">name=httpd</span> <span class="string">state=restarted</span></div></pre></td></tr></table></figure>
 <h3 id="二、playbook的构成"><a href="#二、playbook的构成" class="headerlink" title="二、playbook的构成"></a>二、playbook的构成</h3><p>playbook 由一个或多个 ‘plays’ 组成.它的内容是一个以 ‘plays’ 为元素的列表.play 的内容,被称为 tasks,即任务.在基本层次的应用中,一个任务是一个对 ansible 模块的调用。将多个play组织在一个playbook中即可以让它们联同起来按事先编排的机制同唱一台大戏。其主要有以下四部分构成:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">playbooks组成：</div><div class="line">  Target section：   定义将要执行 playbook 的远程主机组</div><div class="line">  Variable section： 定义 playbook 运行时需要使用的变量</div><div class="line">  Task section：     定义将要在远程主机上执行的任务列表</div><div class="line">  Handler section：  定义 task 执行完成以后需要调用的任务</div></pre></td></tr></table></figure>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">playbooks组成：</div><div class="line">  Target section：   定义将要执行 playbook 的远程主机组</div><div class="line">  <span class="keyword">Variable</span> section： 定义 playbook 运行时需要使用的变量</div><div class="line">  Task <span class="comment">section</span>：     定义将要在远程主机上执行的任务列表</div><div class="line">  Handler <span class="comment">section</span>：  定义<span class="comment"> task</span> 执行完成以后需要调用的任务</div></pre></td></tr></table></figure>
 <p>而其对应的目录层为五个，如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">一般所需的目录层有：(视情况可变化)</div><div class="line">  vars     变量层</div><div class="line">  tasks    任务层</div><div class="line">  handlers 触发条件</div><div class="line">  files    文件</div><div class="line">  template 模板</div></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">一般所需的目录层有：(视情况可变化)</div><div class="line">  vars     变量层</div><div class="line">  tasks    任务层</div><div class="line">  handlers 触发条件</div><div class="line">  files    文件</div><div class="line">  <span class="keyword">template</span> 模板</div></pre></td></tr></table></figure>
 <h4 id="1、Hosts和Users"><a href="#1、Hosts和Users" class="headerlink" title="1、Hosts和Users"></a>1、Hosts和Users</h4><p>playbook中的每一个play的目的都是为了让某个或某些主机以某个指定的用户身份执行任务。</p>
 <ul>
 <li>hosts：用于指定要执行指定任务的主机其可以是一个或多个由冒号分隔主机组。</li>
@@ -519,20 +534,20 @@
 <h4 id="2、任务列表和action"><a href="#2、任务列表和action" class="headerlink" title="2、任务列表和action"></a>2、任务列表和action</h4><p>play的主体部分是任务列表。任务列表中的各任务按次序逐个在hosts中指定的所有主机上执行即在所有主机上完成第一个任务后再开始第二个。在自上而下运行某playbook时如果中途发生错误，所有已执行任务都将回滚因此在更正playbook后重新执行一次即可。 </p>
 <p>​ task的目的是使用指定的参数执行模块，而在模块参数中可以使用变量。模块执行是幂等的，这意味着多次执行是安全的，因为其结果均一致。module 具有”幂等”性,所以当远端系统被人改动时,可以重放 playbooks 达到恢复的目的. playbooks 本身可以识别这种改动,并且有一个基本的 event system（事件系统）,可以响应这种改动.</p>
 <p>每个task都应该有其name用于playbook的执行结果输出，建议其内容尽可能清晰地描述任务执行步骤。如果未提供name则action的结果将用于输出。 </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">tasks:</div><div class="line">  - name: make sure apache is running</div><div class="line">    service: name=httpd state=running</div></pre></td></tr></table></figure>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">tasks:</div><div class="line">  - <span class="built_in">name</span>: make sure apache <span class="keyword">is</span> <span class="built_in">running</span></div><div class="line">    service: <span class="built_in">name</span>=httpd state=<span class="built_in">running</span></div></pre></td></tr></table></figure>
 <p>如果命令或脚本的退出码不为零可以使用如下方式替代</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">tasks:</div><div class="line">  - name: run this command and ignore the result</div><div class="line">    shell: /usr/bin/somecommand || /bin/true</div></pre></td></tr></table></figure>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">tasks:</div><div class="line">  - name: <span class="keyword">run</span><span class="bash"> this <span class="built_in">command</span> and ignore the result</span></div><div class="line">    <span class="keyword">shell</span><span class="bash">: /usr/bin/somecommand || /bin/<span class="literal">true</span></span></div></pre></td></tr></table></figure>
 <p>使用ignore_errors来忽略错误信息</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">tasks:</div><div class="line">  - name: run this command and ignore the result</div><div class="line">    shell: /usr/bin/somecommand</div><div class="line">    ignore_errors: True</div></pre></td></tr></table></figure>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">tasks:</div><div class="line">  - name: <span class="keyword">run</span><span class="bash"> this <span class="built_in">command</span> and ignore the result</span></div><div class="line">    <span class="keyword">shell</span><span class="bash">: /usr/bin/somecommand</span></div><div class="line">    ignore_errors: True</div></pre></td></tr></table></figure>
 <h4 id="3、handlers：-在发生改变时执行的操作"><a href="#3、handlers：-在发生改变时执行的操作" class="headerlink" title="3、handlers： 在发生改变时执行的操作"></a>3、handlers： 在发生改变时执行的操作</h4><p>“notify”这个action可用于在每个play的最后被触发，这样可以避免多次有改变发生时每次都执行指定的操作，取而代之仅在所有的变化发生完成后一次性地执行指定操作。在notify中列出的操作称为handler也即notify中调用handler中定义的操作。 </p>
 <p>注意：在notify中定义内容一定要和tasks中定义的 - name 内容一样，这样才能达到触发的效果，否则会不生效。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">- name: template configuration file</div><div class="line">  template: src=template.j2 dest=/etc/foo.conf</div><div class="line">  notify:</div><div class="line">  - restart memcached</div><div class="line">  - restart apache</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">#handler是task列表这些task与前述的task并没有本质上的不同。</div><div class="line">handlers:</div><div class="line">  - name: restart memcached</div><div class="line">    service: name=memcached state=restarted</div><div class="line">  - name: restart apache</div><div class="line">    service: name=apache state=restarted</div></pre></td></tr></table></figure>
+<figure class="highlight haml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">-<span class="ruby"> <span class="symbol">name:</span> template configuration file</span></div><div class="line">  template: src=template.j2 dest=/etc/foo.conf</div><div class="line">  notify:</div><div class="line">  -<span class="ruby"> restart memcached</span></div><div class="line">  -<span class="ruby"> restart apache</span></div></pre></td></tr></table></figure>
+<figure class="highlight pf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#handler是task列表这些task与前述的task并没有本质上的不同。</span></div><div class="line">handlers:</div><div class="line">  - name: restart memcached</div><div class="line">    service: name=memcached <span class="keyword">state</span>=restarted</div><div class="line">  - name: restart apache</div><div class="line">    service: name=apache <span class="keyword">state</span>=restarted</div></pre></td></tr></table></figure>
 <h4 id="4、tags"><a href="#4、tags" class="headerlink" title="4、tags"></a>4、tags</h4><p>tags用于让用户选择运行或略过playbook中的部分代码。ansible具有幂等性，因此会自动跳过没有变化的部分，即便如此，有些代码为测试其确实没有发生变化的时间依然会非常地长。此时如果确信其没有变化就可以通过tags跳过这些代码片断。</p>
 <h3 id="三、列出影响的主机"><a href="#三、列出影响的主机" class="headerlink" title="三、列出影响的主机"></a>三、列出影响的主机</h3><p>在执行一个 playbook 之前,想看看这个 playbook 的执行会影响到哪些 hosts,你可以这样做:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ansible-playbook playbook.yml --list-hosts</div></pre></td></tr></table></figure>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ansible-playbook playbook<span class="selector-class">.yml</span> --list-hosts</div></pre></td></tr></table></figure>
 <h3 id="执行一个-playbook"><a href="#执行一个-playbook" class="headerlink" title="执行一个 playbook"></a>执行一个 playbook</h3><p>如何运行一个 playbook 呢？这很简单,这里的示例是并行的运行 playbook,并行的级别 是10</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ansible-playbook playbook.yml -f 10</div></pre></td></tr></table></figure>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ansible-playbook playbook<span class="selector-class">.yml</span> -f <span class="number">10</span></div></pre></td></tr></table></figure>
       
     </div>
 
@@ -718,7 +733,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">31</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -729,7 +744,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -740,7 +755,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -811,7 +826,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、一个简单的示例"><span class="nav-number">1.</span> <span class="nav-text">一、一个简单的示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、playbook的构成"><span class="nav-number">2.</span> <span class="nav-text">二、playbook的构成</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、Hosts和Users"><span class="nav-number">2.1.</span> <span class="nav-text">1、Hosts和Users</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、任务列表和action"><span class="nav-number">2.2.</span> <span class="nav-text">2、任务列表和action</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、handlers：-在发生改变时执行的操作"><span class="nav-number">2.3.</span> <span class="nav-text">3、handlers： 在发生改变时执行的操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、tags"><span class="nav-number">2.4.</span> <span class="nav-text">4、tags</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、列出影响的主机"><span class="nav-number">3.</span> <span class="nav-text">三、列出影响的主机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#执行一个-playbook"><span class="nav-number">4.</span> <span class="nav-text">执行一个 playbook</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、一个简单的示例"><span class="nav-text">一、一个简单的示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、playbook的构成"><span class="nav-text">二、playbook的构成</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、Hosts和Users"><span class="nav-text">1、Hosts和Users</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、任务列表和action"><span class="nav-text">2、任务列表和action</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、handlers：-在发生改变时执行的操作"><span class="nav-text">3、handlers： 在发生改变时执行的操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、tags"><span class="nav-text">4、tags</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、列出影响的主机"><span class="nav-text">三、列出影响的主机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#执行一个-playbook"><span class="nav-text">执行一个 playbook</span></a></li></ol></div>
             
 
           </div>

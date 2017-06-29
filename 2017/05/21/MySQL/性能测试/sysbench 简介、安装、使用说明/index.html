@@ -1,0 +1,1566 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*��������ɫ*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*��Ӱ��ɫ*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*�ϱ߿���ɫ*/
+        border-left-color: #1E92FB;    /*���߿���ɫ*/
+    }
+</style>
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="MySQL,sysbench," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小强斋太-Study Notes" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="本文主要介绍了sysbench的安装和使用。">
+<meta name="keywords" content="MySQL,sysbench">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sysbench压力测试工具的安装和使用">
+<meta property="og:url" content="http://wangshengzhuang.com/2017/05/21/MySQL/性能测试/sysbench 简介、安装、使用说明/index.html">
+<meta property="og:site_name" content="小强斋太-Study Notes">
+<meta property="og:description" content="本文主要介绍了sysbench的安装和使用。">
+<meta property="og:updated_time" content="2017-06-28T15:00:13.871Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="sysbench压力测试工具的安装和使用">
+<meta name="twitter:description" content="本文主要介绍了sysbench的安装和使用。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wangshengzhuang.com/2017/05/21/MySQL/性能测试/sysbench 简介、安装、使用说明/"/>
+
+
+
+
+
+  <title>sysbench压力测试工具的安装和使用 | 小强斋太-Study Notes</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d5edeb6a5e3eb7303821bb702fa1df54";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/wangshengzhuang"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小强斋太-Study Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay hungry. Stay foolish</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-[object Object]"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/21/MySQL/性能测试/sysbench 简介、安装、使用说明/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小强斋太">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小强斋太-Study Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                sysbench压力测试工具的安装和使用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-21T22:29:25+08:00">
+                2017-05-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MySQL/" itemprop="url" rel="index">
+                    <span itemprop="name">MySQL</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MySQL/性能测试/" itemprop="url" rel="index">
+                    <span itemprop="name">性能测试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/05/21/MySQL/性能测试/sysbench 简介、安装、使用说明/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/05/21/MySQL/性能测试/sysbench 简介、安装、使用说明/" class="leancloud_visitors" data-flag-title="sysbench压力测试工具的安装和使用">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  2,954
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长预计</span>
+                
+                <span title="阅读时长预计">
+                  17
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文主要介绍了sysbench的安装和使用。</p>
+<a id="more"></a>
+<h1 id="1-sysbench简介"><a href="#1-sysbench简介" class="headerlink" title="1. sysbench简介"></a>1. sysbench简介</h1><p>sysbench is a scriptable multi-threaded benchmark tool based on LuaJIT. It is most frequently used for database benchmarks, but can also be used to create arbitrarily complex workloads that do not involve a database server.</p>
+<p>sysbench 支持如下的基准测试：</p>
+<ul>
+<li><code>oltp_*.lua</code>: a collection of OLTP-like database benchmarks   （OLTP数据库 如MySQL、Oracle、PostgreSQL）</li>
+<li><code>fileio</code>: a filesystem-level benchmark    (文件I/O性能）</li>
+<li><code>cpu</code>: a simple CPU benchmark                    （CPU性能测试）</li>
+<li><code>memory</code>: a memory access benchmark    （内存访问）</li>
+<li><code>threads</code>: a thread-based scheduler benchmark   （基于线程的调度性能）</li>
+<li><code>mutex</code>: a POSIX mutex benchmark</li>
+</ul>
+<h1 id="2-特点"><a href="#2-特点" class="headerlink" title="2. 特点"></a>2. 特点</h1><ul>
+<li>extensive statistics about rate(速率) and latency(延迟) is available, including latency percentiles（统计） and histograms（直方图）;</li>
+<li>low overhead even with thousands of concurrent threads. sysbench is capable of generating and tracking hundreds of millions of events per second;</li>
+<li>new benchmarks can be easily created by implementing pre-defined hooks in user-provided Lua scripts;</li>
+</ul>
+<h1 id="3-安装"><a href="#3-安装" class="headerlink" title="3. 安装"></a>3. 安装</h1><h2 id="3-1-二进制安装"><a href="#3-1-二进制安装" class="headerlink" title="3.1 二进制安装"></a>3.1 二进制安装</h2><ul>
+<li><p>Debian/Ubuntu</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">curl -s <span class="symbol">https:</span>/<span class="regexp">/packagecloud.io/install</span><span class="regexp">/repositories/akopytov</span><span class="regexp">/sysbench/script</span>.deb.sh | sudo bash</div><div class="line">sudo apt -y install sysbench</div></pre></td></tr></table></figure>
+</li>
+<li><p>RHEL/CentOS:</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">curl -s <span class="symbol">https:</span>/<span class="regexp">/packagecloud.io/install</span><span class="regexp">/repositories/akopytov</span><span class="regexp">/sysbench/script</span>.rpm.sh | sudo bash</div><div class="line">sudo yum -y install sysbench</div></pre></td></tr></table></figure>
+</li>
+<li><p>Fedora:</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">curl -s <span class="symbol">https:</span>/<span class="regexp">/packagecloud.io/install</span><span class="regexp">/repositories/akopytov</span><span class="regexp">/sysbench/script</span>.rpm.sh | sudo bash	</div><div class="line">sudo dnf -y install sysbench</div></pre></td></tr></table></figure>
+</li>
+<li><p>macOS:</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Add --with-postgresql if you need PostgreSQL support</span></div><div class="line"><span class="keyword">brew </span><span class="keyword">install </span>sysbench</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="3-2-源码构建"><a href="#3-2-源码构建" class="headerlink" title="3.2 源码构建"></a>3.2 源码构建</h2><p>推荐使用二进制安装</p>
+<h3 id="3-2-1-Build-Requirements"><a href="#3-2-1-Build-Requirements" class="headerlink" title="3.2.1 Build Requirements"></a>3.2.1 Build Requirements</h3><p><strong>Debian</strong>/<strong>Ubuntu</strong></p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">apt -y <span class="keyword">install </span>make automake libtool pkg-<span class="built_in">config</span> libaio-dev vim-common</div><div class="line"><span class="comment"># For MySQL support</span></div><div class="line">apt -y <span class="keyword">install </span>libmysqlclient-dev</div><div class="line"><span class="comment"># For PostgreSQL support</span></div><div class="line">apt -y <span class="keyword">install </span>libpq-dev</div></pre></td></tr></table></figure>
+<p><strong>RHEL/CentOS</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">yum -y <span class="keyword">install</span> make automake libtool pkgconfig libaio-devel vim-common</div><div class="line"># <span class="keyword">For</span> MySQL support, <span class="keyword">replace</span> <span class="keyword">with</span> mysql-devel <span class="keyword">on</span> RHEL/CentOS <span class="number">5</span></div><div class="line">yum -y <span class="keyword">install</span> mariadb-devel</div><div class="line"># <span class="keyword">For</span> PostgreSQL support</div><div class="line">yum -y <span class="keyword">install</span> postgresql-devel</div></pre></td></tr></table></figure>
+<p><strong>Fedora</strong></p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">dnf -y <span class="keyword">install</span> make automake libtool pkgconfig libaio-devel vim-common</div><div class="line"><span class="comment"># For MySQL support</span></div><div class="line">dnf -y <span class="keyword">install</span> mariadb-devel</div><div class="line"><span class="comment"># For PostgreSQL support</span></div><div class="line">dnf -y <span class="keyword">install</span> postgresql-devel</div></pre></td></tr></table></figure>
+<p><strong>macOS</strong></p>
+<p><em>**</em>Assuming you have Xcode (or Xcode Command Line Tools) and Homebrew installed:</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">brew </span><span class="keyword">install </span>automake pkg-<span class="built_in">config</span></div><div class="line"><span class="comment"># For MySQL support</span></div><div class="line"><span class="keyword">brew </span><span class="keyword">install </span>mysql</div><div class="line"><span class="comment"># For PostgreSQL support</span></div><div class="line"><span class="keyword">brew </span><span class="keyword">install </span>postgresql</div></pre></td></tr></table></figure>
+<h3 id="3-2-2-Build-and-Install"><a href="#3-2-2-Build-and-Install" class="headerlink" title="3.2.2 Build and Install"></a>3.2.2 Build and Install</h3><figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">git clone http<span class="variable">s:</span>//github.<span class="keyword">com</span>/akopytov/sysbench.git</div><div class="line"><span class="keyword">cd</span> sysbench</div><div class="line">./autogen.<span class="keyword">sh</span></div><div class="line"># Add --with-pgsql <span class="keyword">to</span> build with PostgreSQL support</div><div class="line">./configure</div><div class="line"><span class="keyword">make</span></div><div class="line"><span class="keyword">make</span> install</div></pre></td></tr></table></figure>
+<p>The above will build sysbench with MySQL support by default. If you have MySQL headers and libraries in non-standard locations (and no <code>mysql_config</code> can be found in the <code>PATH</code>), you can specify them explicitly with <code>--with-mysql-includes</code> and <code>--with-mysql-libs</code> options to <code>./configure</code>.</p>
+<p>To compile sysbench without MySQL support, use <code>--without-mysql</code>. If no database drivers are available database-related scripts will not work, but other benchmarks will be functional.</p>
+<p>See <a href="https://github.com/akopytov/sysbench/blob/master/README-Oracle.md" target="_blank" rel="external">README-Oracle.md</a> for instructions on building with Oracle client libraries.</p>
+<h1 id="4-语法说明"><a href="#4-语法说明" class="headerlink" title="4. 语法说明"></a>4. 语法说明</h1><h2 id="4-1-sysbench-–help"><a href="#4-1-sysbench-–help" class="headerlink" title="4.1 sysbench –help"></a>4.1 sysbench –help</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# sysbench --help</div><div class="line">Usage:</div><div class="line">  sysbench [options]... [testname] [command]</div><div class="line"></div><div class="line">Commands implemented by most tests: prepare run cleanup help</div><div class="line"></div><div class="line">General options:</div><div class="line">  --threads=N                     number of threads to use [1]</div><div class="line">  --events=N                      limit for total number of events [0]</div><div class="line">  --time=N                        limit for total execution time in seconds [10]</div><div class="line">  --forced-shutdown=STRING        number of seconds to wait after the --time limit before forcing shutdown, or 'off' to disable [off]</div><div class="line">  --thread-stack-size=SIZE        size of stack per thread [64K]</div><div class="line">  --rate=N                        average transactions rate. 0 for unlimited rate [0]</div><div class="line">  --report-interval=N             periodically report intermediate statistics with a specified interval in seconds. 0 disables intermediate reports [0]</div><div class="line">  --report-checkpoints=[LIST,...] dump full statistics and reset all counters at specified points in time. The argument is a list of comma-separated values representing the amount of time in seconds elapsed from start of test when report checkpoint(s) must be performed. Report checkpoints are off by default. []</div><div class="line">  --debug[=on|off]                print more debugging info [off]</div><div class="line">  --validate[=on|off]             perform validation checks where possible [off]</div><div class="line">  --help[=on|off]                 print help and exit [off]</div><div class="line">  --version[=on|off]              print version and exit [off]</div><div class="line">  --config-file=FILENAME          File containing command line options</div><div class="line">  --tx-rate=N                     deprecated alias for --rate [0]</div><div class="line">  --max-requests=N                deprecated alias for --events [0]</div><div class="line">  --max-time=N                    deprecated alias for --time [0]</div><div class="line">  --num-threads=N                 deprecated alias for --threads [1]</div><div class="line"></div><div class="line">Pseudo-Random Numbers Generator options:</div><div class="line">  --rand-type=STRING random numbers distribution &#123;uniform,gaussian,special,pareto&#125; [special]</div><div class="line">  --rand-spec-iter=N number of iterations used for numbers generation [12]</div><div class="line">  --rand-spec-pct=N  percentage of values to be treated as 'special' (for special distribution) [1]</div><div class="line">  --rand-spec-res=N  percentage of 'special' values to use (for special distribution) [75]</div><div class="line">  --rand-seed=N      seed for random number generator. When 0, the current time is used as a RNG seed. [0]</div><div class="line">  --rand-pareto-h=N  parameter h for pareto distibution [0.2]</div><div class="line"></div><div class="line">Log options:</div><div class="line">  --verbosity=N verbosity level &#123;5 - debug, 0 - only critical messages&#125; [3]</div><div class="line"></div><div class="line">  --percentile=N       percentile to calculate in latency statistics (1-100). Use the special value of 0 to disable percentile calculations [95]</div><div class="line">  --histogram[=on|off] print latency histogram in report [off]</div><div class="line"></div><div class="line">General database options:</div><div class="line"></div><div class="line">  --db-driver=STRING  specifies database driver to use ('help' to get list of available drivers)</div><div class="line">  --db-ps-mode=STRING prepared statements usage mode &#123;auto, disable&#125; [auto]</div><div class="line">  --db-debug[=on|off] print database-specific debug information [off]</div><div class="line"></div><div class="line"></div><div class="line">Compiled-in database drivers:</div><div class="line">  mysql - MySQL driver</div><div class="line">  pgsql - PostgreSQL driver</div><div class="line"></div><div class="line">mysql options:</div><div class="line">  --mysql-host=[LIST,...]          MySQL server host [localhost]</div><div class="line">  --mysql-port=[LIST,...]          MySQL server port [3306]</div><div class="line">  --mysql-socket=[LIST,...]        MySQL socket</div><div class="line">  --mysql-user=STRING              MySQL user [sbtest]</div><div class="line">  --mysql-password=STRING          MySQL password []</div><div class="line">  --mysql-db=STRING                MySQL database name [sbtest]</div><div class="line">  --mysql-ssl[=on|off]             use SSL connections, if available in the client library [off]</div><div class="line">  --mysql-ssl-cipher=STRING        use specific cipher for SSL connections []</div><div class="line">  --mysql-compression[=on|off]     use compression, if available in the client library [off]</div><div class="line">  --mysql-debug[=on|off]           trace all client library calls [off]</div><div class="line">  --mysql-ignore-errors=[LIST,...] list of errors to ignore, or "all" [1213,1020,1205]</div><div class="line">  --mysql-dry-run[=on|off]         Dry run, pretend that all MySQL client API calls are successful without executing them [off]</div><div class="line"></div><div class="line">pgsql options:</div><div class="line">  --pgsql-host=STRING     PostgreSQL server host [localhost]</div><div class="line">  --pgsql-port=N          PostgreSQL server port [5432]</div><div class="line">  --pgsql-user=STRING     PostgreSQL user [sbtest]</div><div class="line">  --pgsql-password=STRING PostgreSQL password []</div><div class="line">  --pgsql-db=STRING       PostgreSQL database name [sbtest]</div><div class="line"></div><div class="line">Compiled-in tests:</div><div class="line">  fileio - File I/O test</div><div class="line">  cpu - CPU performance test</div><div class="line">  memory - Memory functions speed test</div><div class="line">  threads - Threads subsystem performance test</div><div class="line">  mutex - Mutex performance test</div><div class="line"></div><div class="line">See 'sysbench <span class="tag">&lt;<span class="name">testname</span>&gt;</span> help' for a list of options for each test.</div></pre></td></tr></table></figure>
+<h2 id="4-2-命令说明"><a href="#4-2-命令说明" class="headerlink" title="4.2 命令说明"></a>4.2 命令说明</h2><p>通用语法</p>
+<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sysbench <span class="string">[options]</span>... <span class="string">[testname]</span> <span class="string">[command]</span></div></pre></td></tr></table></figure>
+<h3 id="4-2-1-testname"><a href="#4-2-1-testname" class="headerlink" title="4.2.1 testname"></a>4.2.1 testname</h3><blockquote>
+<p><em>testname</em> is an optional name of a built-in test (e.g. <code>fileio</code>, <code>memory</code>, <code>cpu</code>, etc.), or a name of one of the bundled Lua scripts (e.g. <code>oltp_read_only</code>), or a <em>path</em> to a custom Lua script. If no test name is specified on the command line (and thus, there is no <em>command</em> too, as in that case it would be parsed as a <em>testname</em>), or the test name is a dash (“<code>-</code>“), then sysbench expects a Lua script to execute on its standard input.</p>
+</blockquote>
+<ul>
+<li>testname 可以是一个内置的测试 ( 当前支持5种 <code>fileio</code>,<code>memory</code>, <code>cpu</code>,<code>threads</code>, <code>mutex</code>.), </li>
+<li>也可以是一个内置的lua脚本名 (e.g. <code>oltp_read_only</code>), </li>
+<li>a <em>path</em> to a custom Lua script. </li>
+<li>不指定的情况, then sysbench expects a Lua script to execute on its standard input.</li>
+</ul>
+<h3 id="4-2-2-command"><a href="#4-2-2-command" class="headerlink" title="4.2.2 command"></a>4.2.2 command</h3><blockquote>
+<p><em>command</em> is an optional argument that will be passed by sysbench to the built-in test or script specified with <em>testname</em>. <em>command</em> defines the <em>action</em> that must be performed by the test. The list of available commands depends on a particular test. Some tests also implement their own custom commands.</p>
+</blockquote>
+<p>Below is a description of typical test commands and their purpose:</p>
+<ul>
+<li><code>prepare</code>: performs preparative actions for those tests which need them, e.g. creating the necessary files on disk for the <code>fileio</code> test, or filling the test database for database benchmarks.</li>
+<li><code>run</code>: runs the actual test specified with the <em>testname</em> argument. This command is provided by all tests.</li>
+<li><code>cleanup</code>: removes temporary data after the test run in those tests which create one.</li>
+<li><code>help</code>: displays usage information for the test specified with the <em>testname</em> argument. This includes the full list of commands provided by the test, so it should be used to get the available commands.</li>
+</ul>
+<h3 id="4-2-3-options"><a href="#4-2-3-options" class="headerlink" title="4.2.3 options"></a>4.2.3 options</h3><p>options 包括通用的选项，另外不同的testname也包含特定的option，如mysql测试包含的数据库连接信息。特定测试的option可以通过<code>sysbench testname help</code> 查看。<code>sysbench --help</code>可以查看通用的option</p>
+<h4 id="通用命令行选项"><a href="#通用命令行选项" class="headerlink" title="通用命令行选项"></a>通用命令行选项</h4><p>The table below lists the supported common options, their descriptions and default values:</p>
+<table>
+<thead>
+<tr>
+<th><em>Option</em></th>
+<th><em>Description</em></th>
+<th></th>
+<th><em>Default value</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--threads</code></td>
+<td>The total number of worker threads to create</td>
+<td>创建测试线程的数目。默认为1.</td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>--events</code></td>
+<td>Limit for total number of requests. 0 (the default) means no limit</td>
+<td>请求的最大数目。0代表不限制</td>
+<td>0</td>
+</tr>
+<tr>
+<td><code>--time</code></td>
+<td>Limit for total execution time in seconds. 0 means no limit</td>
+<td>最大执行时间，单位是s。</td>
+<td>10</td>
+</tr>
+<tr>
+<td>–forced-shutdown=STRING</td>
+<td>number of seconds to wait after the –time limit before forcing shutdown, or ‘off’ to disable [off]</td>
+<td>超过–time强制中断。默认是off</td>
+<td>off</td>
+</tr>
+<tr>
+<td><code>--thread-stack-size</code></td>
+<td>Size of stack for each thread</td>
+<td>每个线程的堆栈大小。</td>
+<td>64K</td>
+</tr>
+<tr>
+<td><code>--rate</code></td>
+<td>Average transactions rate. The number specifies how many events (transactions) per seconds should be executed by all threads on average. 0 (default) means unlimited rate, i.e. events are executed as fast as possible</td>
+<td></td>
+<td>0</td>
+</tr>
+<tr>
+<td><code>--report-interval</code></td>
+<td>periodically report intermediate statistics with a specified interval in seconds. 0 disables intermediate reports [0]</td>
+<td>执行过程中，显示执行结果的时间间隔</td>
+<td>0</td>
+</tr>
+<tr>
+<td><code>--debug</code></td>
+<td>Print more debug info</td>
+<td>是否显示debug信息</td>
+<td>off</td>
+</tr>
+<tr>
+<td><code>--validate</code></td>
+<td>Perform validation of test results where possible</td>
+<td>在可能情况下执行验证检查。</td>
+<td>off</td>
+</tr>
+<tr>
+<td><code>--help</code></td>
+<td>Print help on general syntax or on a specified test, and exit</td>
+<td>查看帮助</td>
+<td>off</td>
+</tr>
+<tr>
+<td><code>--verbosity</code></td>
+<td>verbosity level {5 - debug, 0 - only critical messages} [3]</td>
+<td>日志详细级别</td>
+<td>3</td>
+</tr>
+<tr>
+<td><code>--percentile</code></td>
+<td>percentile to calculate in latency statistics (1-100). Use the special value of 0 to disable percentile calculations [95]</td>
+<td>表示设定采样比例，默认是 95%，即丢弃5%的长请求，在剩余的99%里取最大值</td>
+<td>95</td>
+</tr>
+<tr>
+<td>–histogram[=on\</td>
+<td>off]</td>
+<td>print latency histogram in report [off]</td>
+<td>report延迟直方图</td>
+<td>off</td>
+</tr>
+<tr>
+<td><code>--luajit-cmd</code></td>
+<td>perform a LuaJIT control command. This option is equivalent to <code>luajit -j</code>. See <a href="http://luajit.org/running.html" target="_blank" rel="external">LuaJIT documentation</a> for more information</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h4 id="特定测试相关的选项"><a href="#特定测试相关的选项" class="headerlink" title="特定测试相关的选项"></a>特定测试相关的选项</h4><p>可以通过<code>sysbench testname help</code> 查看</p>
+<p><strong>sysbench  fileio help</strong></p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">sysbench fileio <span class="keyword">help</span></div><div class="line">sysbench 1.0.7 (using bundled LuaJIT 2.1.0-beta2)</div><div class="line"></div><div class="line">fileio options:</div><div class="line">  --<span class="keyword">file</span>-num=<span class="keyword">N</span>              number of files to create [128]创建测试文件的数量。默认是128</div><div class="line">  --<span class="keyword">file</span>-block-size=<span class="keyword">N</span>       block size to <span class="keyword">use</span> <span class="keyword">in</span> all IO operations [16384]测试时文件块的大小。默认是16384(16K)</div><div class="line">  --<span class="keyword">file</span>-<span class="keyword">total</span>-size=SIZE    <span class="keyword">total</span> size of files to create [2G]测试文件的总大小。默认是2G</div><div class="line">  --<span class="keyword">file</span>-<span class="keyword">test</span>-mode=STRING   <span class="keyword">test</span> mode &#123;seqwr, seqrewr, seqrd, rndrd, rndwr, rndrw&#125;文件测试模式&#123;seqwr(顺序写), seqrewr(顺序读写), seqrd(顺序读), rndrd(随机读), rndwr(随机写), rndrw(随机读写)&#125;</div><div class="line">  --<span class="keyword">file</span>-io-mode=STRING     <span class="keyword">file</span> operations mode &#123;sync,async,mmap&#125; [sync] 文件操作模式&#123;sync(同步),async(异步),fastmmap(快速map映射),slowmmap(慢map映射)&#125;。默认是sync</div><div class="line">  --<span class="keyword">file</span>-extra-flags=STRING additional flags to <span class="keyword">use</span> <span class="keyword">on</span> opening files &#123;sync,dsync,direct&#125; []使用额外的标志来打开文件&#123;sync,dsync,direct&#125; 。默认为空</div><div class="line">  --<span class="keyword">file</span>-fsync-freq=<span class="keyword">N</span>       <span class="keyword">do</span> fsync() after this number of requests (0 - don't <span class="keyword">use</span> fsync()) [100]执行fsync()的频率。(0 – 不使用fsync())。默认是100</div><div class="line">  --<span class="keyword">file</span>-fsync-all[=<span class="keyword">on</span>|off] <span class="keyword">do</span> fsync() after each write operation [off]每执行完一次写操作就执行一次fsync。默认是off</div><div class="line">  --<span class="keyword">file</span>-fsync-end[=<span class="keyword">on</span>|off] <span class="keyword">do</span> fsync() at the end of <span class="keyword">test</span> [<span class="keyword">on</span>]在测试结束时才执行fsync。默认是<span class="keyword">on</span></div><div class="line">  --<span class="keyword">file</span>-fsync-mode=STRING  <span class="keyword">which</span> method to <span class="keyword">use</span> <span class="keyword">for</span> synchronization &#123;fsync, fdatasync&#125; [fsync]使用哪种方法进行同步&#123;fsync, fdatasync&#125;。默认是fsync</div><div class="line">  --<span class="keyword">file</span>-merged-requests=<span class="keyword">N</span>  <span class="keyword">merge</span> at most this number of IO requests <span class="keyword">if</span> possible (0 - don't <span class="keyword">merge</span>) [0]如果可以，合并最多的IO请求数(0 – 表示不合并)。默认是0</div><div class="line">  --<span class="keyword">file</span>-rw-<span class="keyword">ratio</span>=<span class="keyword">N</span>         reads/writes <span class="keyword">ratio</span> <span class="keyword">for</span> combined <span class="keyword">test</span> [1.5]     测试时的读写比例。默认是1.5</div></pre></td></tr></table></figure>
+<p><strong>sysbench  cpu help</strong></p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">sysbench  <span class="meta">cpu</span> help</div><div class="line">sysbench <span class="number">1.0</span><span class="meta">.7</span> (using bundled LuaJIT <span class="number">2.1</span><span class="meta">.0</span>-beta2)</div><div class="line"></div><div class="line"><span class="meta">cpu</span> options:</div><div class="line">  --<span class="meta">cpu</span>-max-prime=N upper limit for primes generator [<span class="number">10000</span>] 最大质数发生器数量。默认是<span class="number">10000</span></div></pre></td></tr></table></figure>
+<p><strong>sysbench  memory help</strong></p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">--<span class="keyword">memory</span>-block-size=SIZE    size of <span class="keyword">memory</span> block <span class="keyword">for</span> <span class="keyword">test</span> [1K]  测试时内存块大小。默认是1K</div><div class="line">--<span class="keyword">memory</span>-<span class="keyword">total</span>-size=SIZE    <span class="keyword">total</span> size of data to transfer [100G] 传输数据的总大小。默认是100G</div><div class="line">--<span class="keyword">memory</span>-scope=STRING       <span class="keyword">memory</span> access scope &#123;<span class="keyword">global</span>,<span class="keyword">local</span>&#125; [<span class="keyword">global</span>] 内存访问范围&#123;<span class="keyword">global</span>,<span class="keyword">local</span>&#125;。默认是<span class="keyword">global</span></div><div class="line">--<span class="keyword">memory</span>-oper=STRING        <span class="keyword">type</span> of <span class="keyword">memory</span> operations &#123;<span class="keyword">read</span>, write, none&#125; [write]     内存操作类型。&#123;<span class="keyword">read</span>, write, none&#125; 默认是write</div><div class="line">--<span class="keyword">memory</span>-access-mode=STRING <span class="keyword">memory</span> access mode &#123;seq,rnd&#125; [seq] 存储器存取方式&#123;seq,rnd&#125; 默认是seq</div></pre></td></tr></table></figure>
+<p><strong>sysbench  threads help</strong></p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">sysbench  threads <span class="keyword">help</span></div><div class="line">sysbench <span class="number">1.0</span>.<span class="number">7</span> (using bundled LuaJIT <span class="number">2.1</span>.<span class="number">0</span>-beta2)</div><div class="line"></div><div class="line">threads option<span class="variable">s:</span></div><div class="line">  --thread-yields=<span class="keyword">N</span> <span class="keyword">number</span> of yields <span class="keyword">to</span> <span class="keyword">do</span> per request [<span class="number">1000</span>] 每个请求产生多少个线程。默认是<span class="number">1000</span></div><div class="line">  --thread-locks=<span class="keyword">N</span>  <span class="keyword">number</span> of locks per thread [<span class="number">8</span>] 每个线程的锁的数量。默认是<span class="number">8</span></div></pre></td></tr></table></figure>
+<p><strong>sysbench  mutex help</strong></p>
+<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">sysbench  mutex help</div><div class="line">sysbench <span class="number">1.0</span>.<span class="number">7</span> (<span class="keyword">using</span> bundled LuaJIT <span class="number">2.1</span>.<span class="number">0</span>-beta2)</div><div class="line"></div><div class="line">mutex options:</div><div class="line">  --mutex-num=N   total size <span class="keyword">of</span> mutex <span class="keyword">array</span> [<span class="number">4096</span>] 数组互斥的总大小。默认是<span class="number">4096</span></div><div class="line">  --mutex-locks=N number <span class="keyword">of</span> mutex locks <span class="keyword">to</span> <span class="keyword">do</span> per thread [<span class="number">50000</span>] 每个线程互斥锁的数量。默认是<span class="number">50000</span></div><div class="line">  --mutex-loops=N number <span class="keyword">of</span> <span class="keyword">empty</span> loops <span class="keyword">to</span> <span class="keyword">do</span> outside mutex lock [<span class="number">10000</span>] 内部互斥锁的空循环数量。默认是<span class="number">10000</span></div></pre></td></tr></table></figure>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# sysbench --<span class="keyword">test</span>=cpu <span class="keyword">help</span></div><div class="line">sysbench 1.0.7 (using bundled LuaJIT 2.1.0-beta2)</div><div class="line"></div><div class="line">cpu options:</div><div class="line">  --cpu-max-prime=<span class="keyword">N</span> upper limit <span class="keyword">for</span> primes generator [10000]</div><div class="line"></div><div class="line">[root@localhost ~]# sysbench fileio <span class="keyword">help</span></div><div class="line">sysbench 1.0.7 (using bundled LuaJIT 2.1.0-beta2)</div><div class="line"></div><div class="line">fileio options:</div><div class="line">  --<span class="keyword">file</span>-num=<span class="keyword">N</span>              number of files to create [128]</div><div class="line">  --<span class="keyword">file</span>-block-size=<span class="keyword">N</span>       block size to <span class="keyword">use</span> <span class="keyword">in</span> all IO operations [16384]</div><div class="line">  --<span class="keyword">file</span>-<span class="keyword">total</span>-size=SIZE    <span class="keyword">total</span> size of files to create [2G]</div><div class="line">  --<span class="keyword">file</span>-<span class="keyword">test</span>-mode=STRING   <span class="keyword">test</span> mode &#123;seqwr, seqrewr, seqrd, rndrd, rndwr, rndrw&#125;</div><div class="line">  --<span class="keyword">file</span>-io-mode=STRING     <span class="keyword">file</span> operations mode &#123;sync,async,mmap&#125; [sync]</div><div class="line">  --<span class="keyword">file</span>-async-backlog=<span class="keyword">N</span>    number of asynchronous operatons to queue per thread [128]</div><div class="line">  --<span class="keyword">file</span>-extra-flags=STRING additional flags to <span class="keyword">use</span> <span class="keyword">on</span> opening files &#123;sync,dsync,direct&#125; []</div><div class="line">  --<span class="keyword">file</span>-fsync-freq=<span class="keyword">N</span>       <span class="keyword">do</span> fsync() after this number of requests (0 - don't <span class="keyword">use</span> fsync()) [100]</div><div class="line">  --<span class="keyword">file</span>-fsync-all[=<span class="keyword">on</span>|off] <span class="keyword">do</span> fsync() after each write operation [off]</div><div class="line">  --<span class="keyword">file</span>-fsync-end[=<span class="keyword">on</span>|off] <span class="keyword">do</span> fsync() at the end of <span class="keyword">test</span> [<span class="keyword">on</span>]</div><div class="line">  --<span class="keyword">file</span>-fsync-mode=STRING  <span class="keyword">which</span> method to <span class="keyword">use</span> <span class="keyword">for</span> synchronization &#123;fsync, fdatasync&#125; [fsync]</div><div class="line">  --<span class="keyword">file</span>-merged-requests=<span class="keyword">N</span>  <span class="keyword">merge</span> at most this number of IO requests <span class="keyword">if</span> possible (0 - don't <span class="keyword">merge</span>) [0]</div><div class="line">  --<span class="keyword">file</span>-rw-<span class="keyword">ratio</span>=<span class="keyword">N</span>         reads/writes <span class="keyword">ratio</span> <span class="keyword">for</span> combined <span class="keyword">test</span> [1.5]</div><div class="line"></div><div class="line">[root@localhost ~]# sysbench <span class="keyword">memory</span> <span class="keyword">help</span></div><div class="line">sysbench 1.0.7 (using bundled LuaJIT 2.1.0-beta2)</div><div class="line"></div><div class="line"><span class="keyword">memory</span> options:</div><div class="line">  --<span class="keyword">memory</span>-block-size=SIZE    size of <span class="keyword">memory</span> block <span class="keyword">for</span> <span class="keyword">test</span> [1K]</div><div class="line">  --<span class="keyword">memory</span>-<span class="keyword">total</span>-size=SIZE    <span class="keyword">total</span> size of data to transfer [100G]</div><div class="line">  --<span class="keyword">memory</span>-scope=STRING       <span class="keyword">memory</span> access scope &#123;<span class="keyword">global</span>,<span class="keyword">local</span>&#125; [<span class="keyword">global</span>]</div><div class="line">  --<span class="keyword">memory</span>-hugetlb[=<span class="keyword">on</span>|off]   allocate <span class="keyword">memory</span> from HugeTLB pool [off]</div><div class="line">  --<span class="keyword">memory</span>-oper=STRING        <span class="keyword">type</span> of <span class="keyword">memory</span> operations &#123;<span class="keyword">read</span>, write, none&#125; [write]</div><div class="line">  --<span class="keyword">memory</span>-access-mode=STRING <span class="keyword">memory</span> access mode &#123;seq,rnd&#125; [seq]</div><div class="line"></div><div class="line">[root@localhost ~]# sysbench threads <span class="keyword">help</span></div><div class="line">sysbench 1.0.7 (using bundled LuaJIT 2.1.0-beta2)</div><div class="line"></div><div class="line">threads options:</div><div class="line">  --thread-yields=<span class="keyword">N</span> number of yields to <span class="keyword">do</span> per request [1000]</div><div class="line">  --thread-locks=<span class="keyword">N</span>  number of locks per thread [8]</div></pre></td></tr></table></figure>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://www.cnblogs.com/zhoujinyi/archive/2013/04/19/3029134.html" target="_blank" rel="external">sysbench 安装、使用和测试</a></p>
+<p><a href="https://github.com/akopytov/sysbench" target="_blank" rel="external">https://github.com/akopytov/sysbench</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/wechatpay.jpg" alt="小强斋太 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/alipay.jpg" alt="小强斋太 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      小强斋太
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://wangshengzhuang.com/2017/05/21/MySQL/性能测试/sysbench 简介、安装、使用说明/" title="sysbench压力测试工具的安装和使用">http://wangshengzhuang.com/2017/05/21/MySQL/性能测试/sysbench 简介、安装、使用说明/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本文版权归作者所有,转载请注明出处！'
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MySQL/" rel="tag"> <i class="fa fa-tag"> </i> MySQL</a>
+          
+            <a href="/tags/sysbench/" rel="tag"> <i class="fa fa-tag"> </i> sysbench</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/20/Linux/每天一个Linux命令/rmdir命令/" rel="next" title="rmdir命令">
+                <i class="fa fa-chevron-left"></i> rmdir命令
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/22/MySQL/性能测试/Sysbench进行CPU 内存 IO 线程 mutex测试例子/" rel="prev" title="使用Sysbench进行CPU、 内存、 IO 、线程、 mutex压力测试">
+                使用Sysbench进行CPU、 内存、 IO 、线程、 mutex压力测试 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        ﻿<!--MOB SHARE BEGIN-->
+                            <div class="-mob-share-ui-button -mob-share-open">分享</div>
+                            <div class="-mob-share-ui" style="display: none">
+                                <ul class="-mob-share-list">
+				    <li class="-mob-share-weixin"><p>微信</p></li>
+                                    <li class="-mob-share-qq"><p>QQ好友</p></li>
+				    <li class="-mob-share-qzone"><p>QQ空间</p></li>
+				    <li class="-mob-share-youdao"><p>有道云笔记</p></li>
+				    <li class="-mob-share-weibo"><p>新浪微博</p></li>
+                                    <li class="-mob-share-tencentweibo"><p>腾讯微博</p></li>
+                                    <li class="-mob-share-douban"><p>豆瓣</p></li>
+                                    <li class="-mob-share-facebook"><p>Facebook</p></li>
+                                    <li class="-mob-share-twitter"><p>Twitter</p></li>
+                                    <li class="-mob-share-google"><p>Google+</p></li>
+                                    <li class="-mob-share-linkedin"><p>LinkedIn</p></li>
+                                </ul>
+                                <div class="-mob-share-close">取消</div>
+                            </div>
+<div class="-mob-share-ui-bg"></div>
+<script id="-mob-share" src="http://f1.webshare.mob.com/code/mob-share.js?appkey=b21b3b396423fbd4db32b55d570db922"></script>
+<!--MOB SHARE END-->
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.png"
+               alt="小强斋太" />
+          <p class="site-author-name" itemprop="name">小强斋太</p>
+           
+              <p class="site-description motion-element" itemprop="description">Stay hungry. Stay foolish</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wangshengzhuang" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wangshengzhuang.com" title="小强斋太-Study Notes" target="_blank">小强斋太-Study Notes</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        <br/>
+<div>
+<span> 总访问量(PV): <img src="http://cc.amazingcounters.com/counter.php?i=3214342&c=9643339" alt="UV" title="总访问量">
+独立访客(UV): <img src="http://cc.amazingcounters.com/counter.php?i=3214343&c=9643342" alt="PV" title="访问人数"> 
+</span>
+</div>
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-sysbench简介"><span class="nav-text">1. sysbench简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-特点"><span class="nav-text">2. 特点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-安装"><span class="nav-text">3. 安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-二进制安装"><span class="nav-text">3.1 二进制安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-源码构建"><span class="nav-text">3.2 源码构建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-1-Build-Requirements"><span class="nav-text">3.2.1 Build Requirements</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-2-Build-and-Install"><span class="nav-text">3.2.2 Build and Install</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-语法说明"><span class="nav-text">4. 语法说明</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-sysbench-–help"><span class="nav-text">4.1 sysbench –help</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-命令说明"><span class="nav-text">4.2 命令说明</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-1-testname"><span class="nav-text">4.2.1 testname</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-2-command"><span class="nav-text">4.2.2 command</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-3-options"><span class="nav-text">4.2.3 options</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#通用命令行选项"><span class="nav-text">通用命令行选项</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特定测试相关的选项"><span class="nav-text">特定测试相关的选项</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小强斋太</span>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "e97c4421445f4327b7168d5d1f51a36c",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      $('#local-search-input').focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("wtjyw6ICkB3kdGGpS6e750op-gzGzoHsz", "1VgU4A2cb7V5hk7UskuqbrWr");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

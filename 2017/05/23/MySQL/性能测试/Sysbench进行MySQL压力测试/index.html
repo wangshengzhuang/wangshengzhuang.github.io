@@ -10,7 +10,21 @@
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*��������ɫ*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*��Ӱ��ɫ*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*�ϱ߿���ɫ*/
+        border-left-color: #1E92FB;    /*���߿���ɫ*/
+    }
+</style>
 
 
 
@@ -74,7 +88,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="supervisor," />
+  <meta name="keywords" content="Sysbench,MySQL," />
 
 
 
@@ -92,21 +106,17 @@
 
 
 
-<meta name="description" content="本文主要介绍了supervisor的安装、使用。">
-<meta name="keywords" content="supervisor">
+<meta name="description" content="本文主要介绍了如何使用Sysbench进行MySQL压力测试。">
+<meta name="keywords" content="Sysbench,MySQL">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Supervisor简介、安装、配置">
-<meta property="og:url" content="http://wangshengzhuang.com/2017/05/11/Linux/Supervisor/Supervisor简介/index.html">
+<meta property="og:title" content="使用Sysbench进行MySQL压力测试">
+<meta property="og:url" content="http://wangshengzhuang.com/2017/05/23/MySQL/性能测试/Sysbench进行MySQL压力测试/index.html">
 <meta property="og:site_name" content="小强斋太-Study Notes">
-<meta property="og:description" content="本文主要介绍了supervisor的安装、使用。">
-<meta property="og:image" content="http://image.wangshengzhuang.com/17-5-11/27833402-file_1494510301732_82f7.jpg">
-<meta property="og:image" content="http://image.wangshengzhuang.com/17-5-11/65946564-file_1494502213044_176b5.png">
-<meta property="og:image" content="http://supervisord.org/_images/subprocess-transitions.png">
-<meta property="og:updated_time" content="2017-05-11T14:05:29.697Z">
+<meta property="og:description" content="本文主要介绍了如何使用Sysbench进行MySQL压力测试。">
+<meta property="og:updated_time" content="2017-06-28T14:59:22.327Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Supervisor简介、安装、配置">
-<meta name="twitter:description" content="本文主要介绍了supervisor的安装、使用。">
-<meta name="twitter:image" content="http://image.wangshengzhuang.com/17-5-11/27833402-file_1494510301732_82f7.jpg">
+<meta name="twitter:title" content="使用Sysbench进行MySQL压力测试">
+<meta name="twitter:description" content="本文主要介绍了如何使用Sysbench进行MySQL压力测试。">
 
 
 
@@ -134,13 +144,13 @@
 
 
 
-  <link rel="canonical" href="http://wangshengzhuang.com/2017/05/11/Linux/Supervisor/Supervisor简介/"/>
+  <link rel="canonical" href="http://wangshengzhuang.com/2017/05/23/MySQL/性能测试/Sysbench进行MySQL压力测试/"/>
 
 
 
 
 
-  <title>Supervisor简介、安装、配置 | 小强斋太-Study Notes</title>
+  <title>使用Sysbench进行MySQL压力测试 | 小强斋太-Study Notes</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -177,6 +187,7 @@
 
   <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
+	<a href="https://github.com/wangshengzhuang"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
@@ -343,7 +354,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/11/Linux/Supervisor/Supervisor简介/">
+    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/23/MySQL/性能测试/Sysbench进行MySQL压力测试/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="小强斋太">
@@ -364,7 +375,7 @@
             
             
               
-                Supervisor简介、安装、配置
+                使用Sysbench进行MySQL压力测试
               
             
           </h1>
@@ -379,8 +390,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-11T00:00:00+08:00">
-                2017-05-11
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-23T22:29:25+08:00">
+                2017-05-23
               </time>
             
 
@@ -402,8 +413,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
+                  <a href="/categories/MySQL/" itemprop="url" rel="index">
+                    <span itemprop="name">MySQL</span>
                   </a>
                 </span>
 
@@ -413,8 +424,8 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/Supervisor/" itemprop="url" rel="index">
-                    <span itemprop="name">Supervisor</span>
+                  <a href="/categories/MySQL/性能测试/" itemprop="url" rel="index">
+                    <span itemprop="name">性能测试</span>
                   </a>
                 </span>
 
@@ -431,7 +442,7 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a class="cloud-tie-join-count" href="/2017/05/11/Linux/Supervisor/Supervisor简介/#comments" itemprop="discussionUrl">
+                <a class="cloud-tie-join-count" href="/2017/05/23/MySQL/性能测试/Sysbench进行MySQL压力测试/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count join-count" itemprop="commentCount"></span>
                 </a>
               </span>
@@ -440,7 +451,7 @@
 
           
           
-             <span id="/2017/05/11/Linux/Supervisor/Supervisor简介/" class="leancloud_visitors" data-flag-title="Supervisor简介、安装、配置">
+             <span id="/2017/05/23/MySQL/性能测试/Sysbench进行MySQL压力测试/" class="leancloud_visitors" data-flag-title="使用Sysbench进行MySQL压力测试">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -465,7 +476,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  3,106
+                  1,404
                 </span>
               
 
@@ -481,7 +492,7 @@
                   <span class="post-meta-item-text">阅读时长预计</span>
                 
                 <span title="阅读时长预计">
-                  13
+                  8
                 </span>
               
             </div>
@@ -499,77 +510,33 @@
       
 
       
-        <p>本文主要介绍了supervisor的安装、使用。</p>
-<p><img src="http://image.wangshengzhuang.com/17-5-11/27833402-file_1494510301732_82f7.jpg" alt=""></p>
+        <p>本文主要介绍了如何使用Sysbench进行MySQL压力测试。</p>
 <a id="more"></a>
-<h3 id="1-什么是supervisor"><a href="#1-什么是supervisor" class="headerlink" title="1. 什么是supervisor"></a>1. <strong>什么是supervisor</strong></h3><p> Supervisor是一个Python开发的client/server系统，可以管理和监控类unix上面的进程。类似daemontools</p>
-<p>什么情况下我们需要进程管理呢？就是执行一些需要以守护进程方式执行的程序，比如一个后台任务，如经常会碰到要写一些守护进程，简单做法放入后台：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">shell&gt; nohup python xxx.py &amp;</div></pre></td></tr></table></figure>
-<p>除此之外，Supervisor 还能很友好的管理程序在命令行上输出的日志，可以将日志重定向到自定义的日志文件中，还能按文件大小对日志进行分割。</p>
-<h3 id="2-为啥用supervisor"><a href="#2-为啥用supervisor" class="headerlink" title="2. 为啥用supervisor"></a>2. 为啥用supervisor</h3><p><strong>方便</strong></p>
-<p>为啥简单呢？因为咱们通常管理linux进程的时候，一般来说都需要自己编写一个能够实现进程start/stop/restart/reload功能的脚本，然后丢到/etc/init.d/下面。这么做有很多不好的地方，第一我们要编写这个脚本，这就很耗时耗力了。第二，当这个进程挂掉的时候，linux不会自动重启它的，想要自动重启的话，我们还要自己写一个监控重启脚本。而supervisor则可以完美的解决这些问题。supervisor管理进程，是通过fork/exec的方式把这些被管理的进程，当作supervisor的子进程来启动。这样的话，我们只要在supervisor的配置文件中，把要管理的进程的可执行文件的路径写进去就OK了。这样就省下了我们如同linux管理进程的时自己写控制脚本的麻烦了。第二，被管理进程作为supervisor的子进程，当子进程挂掉的时候，父进程可以准确获取子进程挂掉的信息的，所以当然也就可以对挂掉的子进程进行自动重启了，当然重启还是不重启，也要看你的配置文件里面有木有设置autostart=true了。</p>
-<p><strong>精确</strong></p>
-<p> Supervisord将进程作为子进程启动，因此可以一直知晓子进程的状态，可以方便查询。而基于pid文件文件获取进程状态有时候不靠谱</p>
-<p><strong>权限代理</strong></p>
-<p>某些进程需要root或者sudo权限运行，而又不方便把机器的root权限和sudo权限开放给用户的时候，普通用户可以借助supervisor的命令和web UI进行进程的启动和关闭</p>
-<p><strong>进程组</strong></p>
-<p>linux系统没有批量启动关闭进程的功能，我们想要停止多个进程，只能一个一个的去停止，要么就自己写个脚本去批量停止。Supervisor 允许赋予进程优先级，可以使用supervisorctl 的“start all”, and “restart all”，按照优先级顺序启动。并且进程可以分组，相关的进程可以作为一个单元启动。</p>
-<h3 id="3-supervisor特点"><a href="#3-supervisor特点" class="headerlink" title="3. supervisor特点"></a>3. supervisor特点</h3><ul>
-<li><strong>简单</strong> :supervisor通过一个 INI-style的文件配置，简单易学。提供了许多诸如重启失败进程、自动日子归档的功能</li>
-<li><strong>中心化</strong>:    可以在在同一个地方启动 停止 监控子进程，进程可以单独控制，也可以分组控制，并提供命令行和web接口配置supervisor</li>
-<li><strong>高效</strong>:    通过 fork/exec启动子进程</li>
-<li><strong>可扩展</strong>:  提供了simple event notification protocol和XML-RPC interface，方便通过各种语言进行配置管理</li>
-<li><strong>兼容性强</strong>: 类Unix都支持，不支持windows，基于Python</li>
-<li><strong>作为一款已经被使用了十多年的软件，可用性已经被广泛证明</strong></li>
-</ul>
-<h3 id="4-Supervisor-组成"><a href="#4-Supervisor-组成" class="headerlink" title="4. Supervisor 组成"></a>4. Supervisor 组成</h3><ol>
-<li><strong>supervisord</strong>：supervisord是supervisor的服务端程序。负责启动子程序，应答客户端命令，重启crash进程，子程序日志记录，对进程变化发送事件通知等</li>
-<li><strong>supervisorctl：</strong>  客户端命令行工具，可以连接服务器端，进行进程的启动、关闭、重启、状态查看等。重要的一点是，supervisorctl不仅可以连接到本机上的supervisord，还可以连接到远程的supervisord，当然在本机上面是通过UNIX socket连接的，远程是通过TCP socket连接的。supervisorctl和supervisord之间的通信，是通过xml_rpc完成的。    相应的配置在[supervisorctl]块里面</li>
-<li><strong>Web Server</strong>   可以在界面上管理进程的WEB UI, 通过[inet_http_server] section配置，默认<a href="http://localhost:9001/`" target="_blank" rel="external">http://localhost:9001/`</a></li>
-<li><strong>XML-RPC Interface</strong> XML-RPC接口，提供XML-RPC服务来对子进程进行管理，监控，参照 <a href="http://supervisord.org/api.html#xml-rpc" target="_blank" rel="external"><em>XML-RPC API Documentation</em></a>.</li>
-</ol>
-<h3 id="5-安装"><a href="#5-安装" class="headerlink" title="5 安装"></a>5 安装</h3><h4 id="5-1-yum-安装-推荐"><a href="#5-1-yum-安装-推荐" class="headerlink" title="5.1 yum 安装(推荐)"></a>5.1 yum 安装(推荐)</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install supervisor</div></pre></td></tr></table></figure>
-<p>会自动安装成服务形式，可以使用systemctl进行管理</p>
-<h4 id="5-2-使用Setuptools安装"><a href="#5-2-使用Setuptools安装" class="headerlink" title="5.2 使用Setuptools安装"></a>5.2 使用Setuptools安装</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">wget -q http://peak.telecommunity.com/dist/ez_setup.py</div><div class="line">python ez_setup.py</div><div class="line">easy_install supervisor</div></pre></td></tr></table></figure>
-<p>或者</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">yum install python-setuptools</div><div class="line">easy_install supervisor</div></pre></td></tr></table></figure>
-<h4 id="5-3-安装方式3"><a href="#5-3-安装方式3" class="headerlink" title="5.3 安装方式3"></a>5.3 安装方式3</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">wget https://pypi.python.org/packages/80/37/964c0d53cbd328796b1aeb7abea4c0f7b0e8c7197ea9b0b9967b7d004def/supervisor-3.3.1.tar.gz</div><div class="line">tar -zxvf supervisor-3.3.1.tar.gz </div><div class="line">cd supervisor-3.3.1</div><div class="line">python setup.py install</div></pre></td></tr></table></figure>
-<h4 id="5-4生成配置文件"><a href="#5-4生成配置文件" class="headerlink" title="5.4生成配置文件"></a>5.4生成配置文件</h4><p><code>yum 安装方式不需要此步骤，因为已经自动生产了supervisord.conf 和supervisord.d文件夹</code></p>
-<p>安装完 supervisor 之后，可以运行<code>echo_supervisord_conf</code> 命令输出默认的配置项，也可以重定向到一个配置文件里：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">echo_supervisord_conf &gt; /etc/supervisord.conf</div></pre></td></tr></table></figure>
-<h4 id="5-5启动"><a href="#5-5启动" class="headerlink" title="5.5启动"></a>5.5启动</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">supervisord -c /etc/supervisord.conf</div></pre></td></tr></table></figure>
-<h3 id="6-配置文件-etc-supervisord-conf"><a href="#6-配置文件-etc-supervisord-conf" class="headerlink" title="6. 配置文件/etc/supervisord.conf"></a>6. 配置文件/etc/supervisord.conf</h3><p>上面我们已经把 supervisrod 运行起来了，现在可以添加我们要管理的进程的配置文件。可以把所有配置项都写到 supervisord.conf 文件里，但并不推荐这样做，而是通过 include 的方式把不同的程序（组）写到不同的配置文件里。yum方式安装，会自动配置。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[include]</div><div class="line">files = supervisord.d/*.ini    ; 可以是 *.conf 或 *.ini</div></pre></td></tr></table></figure>
-<p>/etc/supervisord.conf 参数说明</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">[unix_http_server]</div><div class="line">file=/tmp/supervisor.sock   ; UNIX socket 文件，supervisorctl 会使用</div><div class="line">;chmod=0700                 ; socket 文件的 mode，默认是 0700</div><div class="line">;chown=nobody:nogroup       ; socket 文件的 owner，格式： uid:gid</div><div class="line"> </div><div class="line">;[inet_http_server]         ; HTTP 服务器，提供 web 管理界面</div><div class="line">;port=127.0.0.1:9001        ; Web 管理后台运行的 IP 和端口，如果开放到公网，需要注意安全性</div><div class="line">;username=user              ; 登录管理后台的用户名</div><div class="line">;password=123               ; 登录管理后台的密码</div><div class="line"> </div><div class="line">[supervisord]</div><div class="line">logfile=/tmp/supervisord.log ; 日志文件，默认是 $CWD/supervisord.log</div><div class="line">logfile_maxbytes=50MB        ; 日志文件大小，超出会 rotate，默认 50MB</div><div class="line">logfile_backups=10           ; 日志文件保留备份数量默认 10</div><div class="line">loglevel=info                ; 日志级别，默认 info，其它: debug,warn,trace</div><div class="line">pidfile=/tmp/supervisord.pid ; pid 文件</div><div class="line">nodaemon=false               ; 是否在前台启动，默认是 false，即以 daemon 的方式启动</div><div class="line">minfds=1024                  ; 可以打开的文件描述符的最小值，默认 1024</div><div class="line">minprocs=200                 ; 可以打开的进程数的最小值，默认 200</div><div class="line"> </div><div class="line">; the below section must remain in the config file for RPC</div><div class="line">; (supervisorctl/web interface) to work, additional interfaces may be</div><div class="line">; added by defining them in separate rpcinterface: sections</div><div class="line">[rpcinterface:supervisor]</div><div class="line">supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface</div><div class="line"> </div><div class="line">[supervisorctl]</div><div class="line">serverurl=unix:///tmp/supervisor.sock ; 通过 UNIX socket 连接 supervisord，路径与 unix_http_server 部分的 file 一致</div><div class="line">;serverurl=http://127.0.0.1:9001 ; 通过 HTTP 的方式连接 supervisord</div><div class="line"> </div><div class="line">; 包含其他的配置文件</div><div class="line">[include]</div><div class="line">files = /etc/supervisord.d/*.ini    ; 可以是 *.conf 或 *.ini</div></pre></td></tr></table></figure>
-<h3 id="7-添加一个被管理的进程"><a href="#7-添加一个被管理的进程" class="headerlink" title="7. 添加一个被管理的进程"></a>7. 添加一个被管理的进程</h3><p>我们假如有一个hello.py</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">import web</div><div class="line">urls = (     &apos;/(.*)&apos;,&apos;hello&apos; )</div><div class="line">app = web.application(urls, globals())</div><div class="line">class hello:</div><div class="line">    def GET(self, name):</div><div class="line">        return &apos;hello: &apos; + name</div><div class="line"></div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    app.run()</div></pre></td></tr></table></figure>
-<p>所以直接在命令行启动的方式可能是这样的：(需要先安装web.py <code>easy_install web.py</code>)</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python  /opt/hello.py</div></pre></td></tr></table></figure>
-<p>现在编写一份配置文件<code>/etc/supervisord.d/hello.ini</code>来管理这个进程</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[program:hello]</div><div class="line">directory = /opt    ; 程序的启动目录</div><div class="line">command = python /opt/hello.py  ; 启动命令，可以看出与手动在命令行启动的命令是一样的</div><div class="line">autostart = true     ; 在 supervisord 启动的时候也自动启动</div><div class="line">startsecs = 5        ; 启动 5 秒后没有异常退出，就当作已经正常启动了</div><div class="line">autorestart = true   ; 程序异常退出后自动重启</div><div class="line">startretries = 3     ; 启动失败自动重试次数，默认是 3</div><div class="line">user = xqzt          ; 用哪个用户启动</div><div class="line">redirect_stderr = true  ; 把 stderr 重定向到 stdout，默认 false</div><div class="line">stdout_logfile_maxbytes = 20MB  ; stdout 日志文件大小，默认 50MB</div><div class="line">stdout_logfile_backups = 20     ; stdout 日志文件备份数</div><div class="line">; stdout 日志文件，需要注意当指定目录不存在时无法正常启动，所以需要手动创建目录（supervisord 会自动创建日志文件）</div><div class="line">stdout_logfile = /var/log/supervisor/hello.log</div></pre></td></tr></table></figure>
-<p>一份配置文件至少需要一个 <code>[program:x]</code> 部分的配置，来告诉 supervisord 需要管理那个进程。<code>[program:x]</code> 语法中的 <code>x</code> 表示 program name，会在客户端（supervisorctl 或 web 界面）显示，在 supervisorctl 中通过这个值来对程序进行 start、restart、stop 等操作。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">supervisor&gt; status</div><div class="line">hello                            RUNNING   pid 2809, uptime 0:00:06</div></pre></td></tr></table></figure>
-<h3 id="8-使用-supervisorctl"><a href="#8-使用-supervisorctl" class="headerlink" title="8. 使用 supervisorctl"></a>8. 使用 supervisorctl</h3><p>Supervisorctl 是 supervisord 的一个命令行客户端工具，启动时需要指定与 supervisord 使用同一份配置文件，否则与 supervisord 一样按照顺序查找配置文件。supervisorctl 这个命令会进入 supervisorctl 的 shell 界面，然后可以执行不同的命令了，也可以直接在 bash 终端运行。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"># supervisorctl --help</div><div class="line">supervisorctl -- control applications run by supervisord from the cmd line.</div><div class="line"></div><div class="line">Usage: /usr/bin/supervisorctl [options] [action [arguments]]</div><div class="line"></div><div class="line">Options:</div><div class="line">-c/--configuration -- configuration file path (default /etc/supervisord.conf)</div><div class="line">-h/--help -- print usage message and exit</div><div class="line">-i/--interactive -- start an interactive shell after executing commands</div><div class="line">-s/--serverurl URL -- URL on which supervisord server is listening</div><div class="line">     (default &quot;http://localhost:9001&quot;).</div><div class="line">-u/--username -- username to use for authentication with server</div><div class="line">-p/--password -- password to use for authentication with server</div><div class="line">-r/--history-file -- keep a readline history (if readline is available)</div></pre></td></tr></table></figure>
-<p>输入help,可以查看支持的命令及用法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">supervisor&gt; help</div><div class="line"></div><div class="line">default commands (type help &lt;topic&gt;):</div><div class="line">=====================================</div><div class="line">add    clear  fg        open  quit    remove  restart   start   stop  update </div><div class="line">avail  exit   maintail  pid   reload  reread  shutdown  status  tail  version</div><div class="line"></div><div class="line">supervisor&gt; help start</div><div class="line">start &lt;name&gt;		Start a process</div><div class="line">start &lt;gname&gt;:*		Start all processes in a group</div><div class="line">start &lt;name&gt; &lt;name&gt;	Start multiple processes or groups</div><div class="line">start all		Start all processes</div></pre></td></tr></table></figure>
-<p>常用命令</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"># 停止某一个进程，program_name 为 [program:x] 里的 x</div><div class="line">supervisorctl stop program_name</div><div class="line"># 启动某个进程</div><div class="line">supervisorctl start program_name</div><div class="line"># 重启某个进程</div><div class="line">supervisorctl restart program_name</div><div class="line"># 结束所有属于名为 groupworker 这个分组的进程 (start，restart 同理)</div><div class="line">supervisorctl stop groupworker:</div><div class="line"># 结束 groupworker:name1 这个进程 (start，restart 同理)</div><div class="line">supervisorctl stop groupworker:name1</div><div class="line"># 停止全部进程，注：start、restart、stop 都不会载入最新的配置文件</div><div class="line">supervisorctl stop all</div><div class="line"># 载入最新的配置文件，停止原有进程并按新的配置启动、管理所有进程</div><div class="line">supervisorctl reload</div><div class="line"># 根据最新的配置文件，启动新配置或有改动的进程，配置没有改动的进程不会受影响而重启</div><div class="line">supervisorctl update</div></pre></td></tr></table></figure>
-<h3 id="9-supervisor-Web-UI"><a href="#9-supervisor-Web-UI" class="headerlink" title="9. supervisor Web UI"></a>9. supervisor Web UI</h3><p>除了 supervisorctl 之外，还可以配置 supervisrod 启动 web 管理界面，这个 web 后台使用 Basic Auth 的方式进行身份认证。将supervisord.conf中[inet_http_server]部分做相应配置，在supervisorctl中reload即可启动web管理界面</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[inet_http_server] ; HTTP 服务器，提供 web 管理界面</div><div class="line">port=172.17.84.64:9001 ; Web 管理后台运行的 IP 和端口，如果开放到公网，需要注意安全性</div><div class="line">username=user ; 登录管理后台的用户名</div><div class="line">password=123 ; 登录管理后台的密码</div></pre></td></tr></table></figure>
-<p>在浏览器中输入<a href="http://127.0.0.1:9001，可进入web管理界面" target="_blank" rel="external">http://127.0.0.1:9001，可进入web管理界面</a></p>
-<p><img src="http://image.wangshengzhuang.com/17-5-11/65946564-file_1494502213044_176b5.png" alt=""></p>
-<h3 id="10-将多个进程按组管理"><a href="#10-将多个进程按组管理" class="headerlink" title="10.  将多个进程按组管理"></a>10.  将多个进程按组管理</h3><p>Supervisor 同时还提供了另外一种进程组的管理方式，通过这种方式，可以使用 supervisorctl 命令来管理一组进程。跟 [program:x] 的进程组不同的是，这里的进程是一个个的 [program:x] 。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[group:thegroupname]</div><div class="line">programs=progname1,progname2  ; each refers to &apos;x&apos; in [program:x] definitions</div><div class="line">priority=999                  ; the relative start priority (default 999)</div></pre></td></tr></table></figure>
-<p>当添加了上述配置后，<code>progname1</code> 和 <code>progname2</code> 的进程名就会变成 <code>thegroupname:progname1</code> 和 <code>thegroupname:progname2</code> 以后就要用这个名字来管理进程了，而不是之前的 <code>progname1</code>。</p>
-<p>以后执行 <code>supervisorctl stop thegroupname:</code> 就能同时结束 <code>progname1</code> 和 <code>progname2</code>，执行 <code>supervisorctl stop thegroupname:progname1</code> 就能结束 <code>progname1</code>。如下所示</p>
-<p><code>/etc/supervisord.d/hello.ini</code>文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[group:group1]</div><div class="line">programs=hello</div><div class="line"></div><div class="line">[program:hello]</div><div class="line">directory = /opt    ; 程序的启动目录</div><div class="line">command = python /opt/hello.py  ; 启动命令，可以看出与手动在命令行启动的命令是一样的</div><div class="line">autostart = true     ; 在 supervisord 启动的时候也自动启动</div><div class="line">startsecs = 5        ; 启动 5 秒后没有异常退出，就当作已经正常启动了</div><div class="line">autorestart = true   ; 程序异常退出后自动重启</div><div class="line">startretries = 3     ; 启动失败自动重试次数，默认是 3</div><div class="line">user = xqzt          ; 用哪个用户启动</div><div class="line">redirect_stderr = true  ; 把 stderr 重定向到 stdout，默认 false</div><div class="line">stdout_logfile_maxbytes = 20MB  ; stdout 日志文件大小，默认 50MB</div><div class="line">stdout_logfile_backups = 20     ; stdout 日志文件备份数</div><div class="line">; stdout 日志文件，需要注意当指定目录不存在时无法正常启动，所以需要手动创建目录（supervisord 会自动创建日志文件）</div><div class="line">; stdout_logfile = /var/log/supervisor/hello.log</div></pre></td></tr></table></figure>
-<p>进程状态</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@centos7 etc]# supervisorctl </div><div class="line">group1:hello                     RUNNING   pid 2842, uptime 0:02:53</div></pre></td></tr></table></figure>
-<h3 id="11-Subprocesses进程状态变化"><a href="#11-Subprocesses进程状态变化" class="headerlink" title="11. Subprocesses进程状态变化"></a>11. Subprocesses进程状态变化</h3><p><img src="http://supervisord.org/_images/subprocess-transitions.png" alt="http://supervisord.org/_images/subprocess-transitions.png"></p>
-<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="http://supervisord.org/#" target="_blank" rel="external">官方文档</a></p>
+<p>安装完sysbench后,<code>/usr/share/sysbench</code>下对数据库压力测试的lua文件：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="number">1</span>. bulk_insert<span class="selector-class">.lua</span>  批量写入操作</div><div class="line"></div><div class="line"><span class="number">2</span>. oltp_delete<span class="selector-class">.lua</span> 写入和删除并行操作</div><div class="line"></div><div class="line"><span class="number">3</span>. oltp_insert<span class="selector-class">.lua</span>  纯写入操作</div><div class="line"></div><div class="line"><span class="number">4</span>. oltp_point_select<span class="selector-class">.lua</span>  只读操作，条件为唯一索引列</div><div class="line"></div><div class="line"><span class="number">5</span>. oltp_read_only<span class="selector-class">.lua</span>  只读操作，包含聚合，去重等操作</div><div class="line"></div><div class="line"><span class="number">6</span>. oltp_read_write<span class="selector-class">.lua</span> 读写混合操作，最常用的脚本</div><div class="line"></div><div class="line"><span class="number">7</span>. oltp_update_index<span class="selector-class">.lua</span> 更新操作，通过主键进行更新</div><div class="line"></div><div class="line"><span class="number">8</span>. oltp_update_non_index<span class="selector-class">.lua</span> 更新操作，不通过索引列</div><div class="line"></div><div class="line"><span class="number">9</span>. oltp_write_only<span class="selector-class">.lua</span> 纯写操作，常用脚本，包括insert update delete</div><div class="line"></div><div class="line"><span class="number">10</span>. select_random_points<span class="selector-class">.lua</span> 随机集合只读操作，常用脚本，聚集索引列的selete <span class="keyword">in</span>操作</div><div class="line"></div><div class="line"><span class="number">11</span>. select_random_ranges<span class="selector-class">.lua</span> 随机范围只读操作，常用脚本，聚集索引列的selete between操作</div></pre></td></tr></table></figure>
+<p>数据库测试分为3步：prepare(准备测试数据)，run(开始测试),cleanup(清除测试数据)</p>
+<p>​    参数解析：</p>
+<p>​        –db-driver：用到的数据库类型</p>
+<p>​        –mysql-host：数据库的IP</p>
+<p>​        –mysql-port：数据库的端口</p>
+<p>​        –mysql-socket：socket的路径</p>
+<p>​        –mysql-user：数据库用户名</p>
+<p>​        –mysql-password：用户密码</p>
+<p>​        –mysql-db：数据库名字，默认为sysbench，需要提前创建创好</p>
+<p>​        –tables：生成表的个数</p>
+<p>​        –table-size：每个表的行数</p>
+<p>​        –report-interval：每隔多久在屏幕打印一次信息</p>
+<p>​        –time：压测时间</p>
+<p>​        –threads：启动多少个线程，即模拟多少个用户</p>
+<p>创建测试数据库</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">CREATE</span> <span class="keyword">DATABASE</span> <span class="keyword">sample</span> <span class="keyword">DEFAULT</span> <span class="built_in">CHARACTER</span> <span class="keyword">SET</span> utf8 <span class="keyword">COLLATE</span> utf8_general_ci</div><div class="line"></div><div class="line"><span class="keyword">GRANT</span> ALL <span class="keyword">PRIVILEGES</span> <span class="keyword">ON</span>  sample.*  <span class="keyword">TO</span> <span class="string">'app_user'</span>@<span class="string">'%'</span> <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="string">'admin_123'</span></div></pre></td></tr></table></figure>
+<p>准备测试数据： 在本地数据库的dba_test库中，初始化10张表（sbtest1~sbtest10），存储引擎是innodb，每张表50万数据。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">[root@localhost sysbench]# sysbench /usr/share/sysbench/oltp_read_write.lua --db-driver=mysql --mysql-host=10.10.14.10 --mysql-port=3306  --mysql-user=app_user --mysql-password=admin_123 --mysql-db=sample --tables=10 --table-size=500000 --time=120 --report-interval=10 --threads=100 prepare</div><div class="line">sysbench 1.0.7 (using bundled LuaJIT 2.1.0-beta2)</div><div class="line"></div><div class="line">Initializing worker threads...</div><div class="line"></div><div class="line">Creating table 'sbtest4'...</div><div class="line">Creating table 'sbtest6'...</div><div class="line">Creating table 'sbtest5'...</div><div class="line">Creating table 'sbtest8'...</div><div class="line">Creating table 'sbtest1'...</div><div class="line">Creating table 'sbtest2'...</div><div class="line">Creating table 'sbtest9'...</div><div class="line">Creating table 'sbtest3'...</div><div class="line">Creating table 'sbtest10'...</div><div class="line">Creating table 'sbtest7'...</div><div class="line">Inserting 500000 records into 'sbtest5'</div><div class="line">Inserting 500000 records into 'sbtest6'</div><div class="line">Inserting 500000 records into 'sbtest8'</div><div class="line">Inserting 500000 records into 'sbtest9'</div><div class="line">Inserting 500000 records into 'sbtest4'</div><div class="line">Inserting 500000 records into 'sbtest10'</div><div class="line">Inserting 500000 records into 'sbtest1'</div><div class="line">Inserting 500000 records into 'sbtest3'</div><div class="line">Inserting 500000 records into 'sbtest2'</div><div class="line">Inserting 500000 records into 'sbtest7'</div><div class="line">Creating a secondary index on 'sbtest9'...</div><div class="line">Creating a secondary index on 'sbtest2'...</div><div class="line">Creating a secondary index on 'sbtest3'...</div><div class="line">Creating a secondary index on 'sbtest6'...</div><div class="line">Creating a secondary index on 'sbtest10'...</div><div class="line">Creating a secondary index on 'sbtest5'...</div><div class="line">Creating a secondary index on 'sbtest8'...</div><div class="line">Creating a secondary index on 'sbtest4'...</div><div class="line">Creating a secondary index on 'sbtest1'...</div><div class="line">Creating a secondary index on 'sbtest7'...</div></pre></td></tr></table></figure>
+<p>压测数据库：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div></pre></td><td class="code"><pre><div class="line">[root@localhost sysbench]# sysbench /usr/share/sysbench/oltp_read_write.lua --db-driver=mysql --mysql-host=10.10.14.10 --mysql-port=3306  --mysql-user=app_user --mysql-password=admin_123 --mysql-db=sample --tables=10 --table-size=500000 --time=120 --report-interval=10 --threads=100 prepare</div><div class="line">sysbench 1.0.7 (using bundled LuaJIT 2.1.0-beta2)</div><div class="line"></div><div class="line">Initializing worker threads...</div><div class="line"></div><div class="line">Creating table 'sbtest4'...</div><div class="line">Creating table 'sbtest6'...</div><div class="line">Creating table 'sbtest5'...</div><div class="line">Creating table 'sbtest8'...</div><div class="line">Creating table 'sbtest1'...</div><div class="line">Creating table 'sbtest2'...</div><div class="line">Creating table 'sbtest9'...</div><div class="line">Creating table 'sbtest3'...</div><div class="line">Creating table 'sbtest10'...</div><div class="line">Creating table 'sbtest7'...</div><div class="line">Inserting 500000 records into 'sbtest5'</div><div class="line">Inserting 500000 records into 'sbtest6'</div><div class="line">Inserting 500000 records into 'sbtest8'</div><div class="line">Inserting 500000 records into 'sbtest9'</div><div class="line">Inserting 500000 records into 'sbtest4'</div><div class="line">Inserting 500000 records into 'sbtest10'</div><div class="line">Inserting 500000 records into 'sbtest1'</div><div class="line">Inserting 500000 records into 'sbtest3'</div><div class="line">Inserting 500000 records into 'sbtest2'</div><div class="line">Inserting 500000 records into 'sbtest7'</div><div class="line">Creating a secondary index on 'sbtest9'...</div><div class="line">Creating a secondary index on 'sbtest2'...</div><div class="line">Creating a secondary index on 'sbtest3'...</div><div class="line">Creating a secondary index on 'sbtest6'...</div><div class="line">Creating a secondary index on 'sbtest10'...</div><div class="line">Creating a secondary index on 'sbtest5'...</div><div class="line">Creating a secondary index on 'sbtest8'...</div><div class="line">Creating a secondary index on 'sbtest4'...</div><div class="line">Creating a secondary index on 'sbtest1'...</div><div class="line">Creating a secondary index on 'sbtest7'...</div><div class="line">[root@localhost sysbench]# sysbench /usr/share/sysbench/oltp_read_write.lua --db-driver=mysql --mysql-host=10.10.14.10 --mysql-port=3306  --mysql-user=app_user --mysql-password=admin_123 --mysql-db=sample --tables=10 --table-size=500000 --time=120 --report-interval=10 --threads=100 run</div><div class="line">sysbench 1.0.7 (using bundled LuaJIT 2.1.0-beta2)</div><div class="line"></div><div class="line">Running the test with following options:</div><div class="line">Number of threads: 100</div><div class="line">Report intermediate results every 10 second(s)</div><div class="line">Initializing random number generator from current time</div><div class="line"></div><div class="line"></div><div class="line">Initializing worker threads...</div><div class="line"></div><div class="line">Threads started!</div><div class="line"></div><div class="line">[ 10s ] thds: 100 tps: 1463.35 qps: 29420.80 (r/w/o: 20611.00/5872.80/2937.00) lat (ms,95%): 118.92 err/s: 0.40 reconn/s: 0.00</div><div class="line">[ 20s ] thds: 100 tps: 1606.45 qps: 32128.43 (r/w/o: 22493.22/6422.31/3212.90) lat (ms,95%): 102.97 err/s: 0.00 reconn/s: 0.00</div><div class="line">[ 30s ] thds: 100 tps: 1621.80 qps: 32395.26 (r/w/o: 22665.67/6486.49/3243.10) lat (ms,95%): 104.84 err/s: 0.20 reconn/s: 0.00</div><div class="line">[ 40s ] thds: 100 tps: 1587.60 qps: 31800.89 (r/w/o: 22270.26/6354.62/3176.01) lat (ms,95%): 106.75 err/s: 0.30 reconn/s: 0.00</div><div class="line">[ 50s ] thds: 100 tps: 1621.99 qps: 32449.93 (r/w/o: 22716.28/6489.07/3244.58) lat (ms,95%): 101.13 err/s: 0.40 reconn/s: 0.00</div><div class="line">[ 60s ] thds: 100 tps: 1668.01 qps: 33364.65 (r/w/o: 23354.81/6673.73/3336.12) lat (ms,95%): 97.55 err/s: 0.30 reconn/s: 0.00</div><div class="line">[ 70s ] thds: 100 tps: 1639.89 qps: 32784.79 (r/w/o: 22947.13/6557.88/3279.79) lat (ms,95%): 101.13 err/s: 0.10 reconn/s: 0.00</div><div class="line">[ 80s ] thds: 100 tps: 1658.80 qps: 33172.77 (r/w/o: 23223.95/6630.91/3317.91) lat (ms,95%): 99.33 err/s: 0.10 reconn/s: 0.00</div><div class="line">[ 90s ] thds: 100 tps: 1592.40 qps: 31900.02 (r/w/o: 22325.71/6388.90/3185.40) lat (ms,95%): 102.97 err/s: 0.40 reconn/s: 0.00</div><div class="line">[ 100s ] thds: 100 tps: 1621.90 qps: 32414.24 (r/w/o: 22690.53/6480.01/3243.70) lat (ms,95%): 101.13 err/s: 0.20 reconn/s: 0.00</div><div class="line">[ 110s ] thds: 100 tps: 1646.10 qps: 32945.10 (r/w/o: 23069.93/6582.08/3293.09) lat (ms,95%): 99.33 err/s: 0.60 reconn/s: 0.00</div><div class="line">[ 120s ] thds: 100 tps: 1594.00 qps: 31879.15 (r/w/o: 22311.53/6379.41/3188.20) lat (ms,95%): 104.84 err/s: 0.20 reconn/s: 0.00</div><div class="line">SQL statistics:</div><div class="line">    queries performed:</div><div class="line">        read:                            2707040</div><div class="line">        write:                           773344</div><div class="line">        other:                           386688</div><div class="line">        total:                           3867072</div><div class="line">    transactions:                        193328 (1610.51 per sec.)</div><div class="line">    queries:                             3867072 (32214.55 per sec.)</div><div class="line">    ignored errors:                      32     (0.27 per sec.)</div><div class="line">    reconnects:                          0      (0.00 per sec.)</div><div class="line"></div><div class="line">General statistics:</div><div class="line">    total time:                          120.0398s</div><div class="line">    total number of events:              193328</div><div class="line"></div><div class="line">Latency (ms):</div><div class="line">         min:                                 11.97</div><div class="line">         avg:                                 62.08</div><div class="line">         max:                                360.82</div><div class="line">         95th percentile:                    102.97</div><div class="line">         sum:                            12001678.41</div><div class="line"></div><div class="line">Threads fairness:</div><div class="line">    events (avg/stddev):           1933.2800/32.79</div><div class="line">    execution time (avg/stddev):   120.0168/0.01</div></pre></td></tr></table></figure>
+<p>删除测试数据：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sysbench <span class="string">/usr/share/sysbench/oltp_read_only.lua</span> <span class="params">--db-driver=mysql</span> <span class="params">--mysql-host=10</span>.10.14.10 <span class="params">--mysql-port=3306</span>  <span class="params">--mysql-user=app_user</span> <span class="params">--mysql-password=admin_123</span> <span class="params">--mysql-db=sample</span> <span class="params">--tables=10</span> <span class="params">--table-size=500000</span> <span class="params">--time=120</span> <span class="params">--report-interval=10</span> <span class="params">--threads=100</span> cleanup</div></pre></td></tr></table></figure>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="http://www.cnblogs.com/zhoujinyi/archive/2013/04/19/3029134.html" target="_blank" rel="external">sysbench 安装、使用和测试</a></p>
 
       
     </div>
@@ -619,7 +586,7 @@
     </li>
     <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://wangshengzhuang.com/2017/05/11/Linux/Supervisor/Supervisor简介/" title="Supervisor简介、安装、配置">http://wangshengzhuang.com/2017/05/11/Linux/Supervisor/Supervisor简介/</a>
+      <a href="http://wangshengzhuang.com/2017/05/23/MySQL/性能测试/Sysbench进行MySQL压力测试/" title="使用Sysbench进行MySQL压力测试">http://wangshengzhuang.com/2017/05/23/MySQL/性能测试/Sysbench进行MySQL压力测试/</a>
     </li>
     <li class="post-copyright-license">
       <strong>版权声明： </strong>
@@ -635,7 +602,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/supervisor/" rel="tag"> <i class="fa fa-tag"> </i> supervisor</a>
+            <a href="/tags/Sysbench/" rel="tag"> <i class="fa fa-tag"> </i> Sysbench</a>
+          
+            <a href="/tags/MySQL/" rel="tag"> <i class="fa fa-tag"> </i> MySQL</a>
           
         </div>
       
@@ -648,8 +617,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/05/10/Linux/每天一个Linux命令/cd命令/" rel="next" title="cd命令">
-                <i class="fa fa-chevron-left"></i> cd命令
+              <a href="/2017/05/22/MySQL/性能测试/Sysbench进行CPU 内存 IO 线程 mutex测试例子/" rel="next" title="使用Sysbench进行CPU、 内存、 IO 、线程、 mutex压力测试">
+                <i class="fa fa-chevron-left"></i> 使用Sysbench进行CPU、 内存、 IO 、线程、 mutex压力测试
               </a>
             
           </div>
@@ -658,8 +627,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/05/12/Linux/每天一个Linux命令/ls命令/" rel="prev" title="ls命令">
-                ls命令 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/05/24/Linux/每天一个Linux命令/cp命令/" rel="prev" title="cp命令">
+                cp命令 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -756,7 +725,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">31</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -767,7 +736,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -778,7 +747,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -849,7 +818,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-什么是supervisor"><span class="nav-number">1.</span> <span class="nav-text">1. 什么是supervisor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-为啥用supervisor"><span class="nav-number">2.</span> <span class="nav-text">2. 为啥用supervisor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-supervisor特点"><span class="nav-number">3.</span> <span class="nav-text">3. supervisor特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Supervisor-组成"><span class="nav-number">4.</span> <span class="nav-text">4. Supervisor 组成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-安装"><span class="nav-number">5.</span> <span class="nav-text">5 安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-yum-安装-推荐"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 yum 安装(推荐)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-使用Setuptools安装"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 使用Setuptools安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-3-安装方式3"><span class="nav-number">5.3.</span> <span class="nav-text">5.3 安装方式3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-4生成配置文件"><span class="nav-number">5.4.</span> <span class="nav-text">5.4生成配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-5启动"><span class="nav-number">5.5.</span> <span class="nav-text">5.5启动</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-配置文件-etc-supervisord-conf"><span class="nav-number">6.</span> <span class="nav-text">6. 配置文件/etc/supervisord.conf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-添加一个被管理的进程"><span class="nav-number">7.</span> <span class="nav-text">7. 添加一个被管理的进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-使用-supervisorctl"><span class="nav-number">8.</span> <span class="nav-text">8. 使用 supervisorctl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-supervisor-Web-UI"><span class="nav-number">9.</span> <span class="nav-text">9. supervisor Web UI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-将多个进程按组管理"><span class="nav-number">10.</span> <span class="nav-text">10.  将多个进程按组管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-Subprocesses进程状态变化"><span class="nav-number">11.</span> <span class="nav-text">11. Subprocesses进程状态变化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">12.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>

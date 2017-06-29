@@ -1,0 +1,1460 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*��������ɫ*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*��Ӱ��ɫ*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*�ϱ߿���ɫ*/
+        border-left-color: #1E92FB;    /*���߿���ɫ*/
+    }
+</style>
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="supervisor," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小强斋太-Study Notes" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="本文主要介绍了supervisor的安装、使用。">
+<meta name="keywords" content="supervisor">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Supervisor简介、安装、配置">
+<meta property="og:url" content="http://wangshengzhuang.com/2017/05/26/Linux/Supervisor/Supervisor简介/index.html">
+<meta property="og:site_name" content="小强斋太-Study Notes">
+<meta property="og:description" content="本文主要介绍了supervisor的安装、使用。">
+<meta property="og:image" content="http://image.wangshengzhuang.com/17-5-11/27833402-file_1494510301732_82f7.jpg">
+<meta property="og:image" content="http://image.wangshengzhuang.com/17-5-11/65946564-file_1494502213044_176b5.png">
+<meta property="og:image" content="http://supervisord.org/_images/subprocess-transitions.png">
+<meta property="og:updated_time" content="2017-06-29T15:25:40.583Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Supervisor简介、安装、配置">
+<meta name="twitter:description" content="本文主要介绍了supervisor的安装、使用。">
+<meta name="twitter:image" content="http://image.wangshengzhuang.com/17-5-11/27833402-file_1494510301732_82f7.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wangshengzhuang.com/2017/05/26/Linux/Supervisor/Supervisor简介/"/>
+
+
+
+
+
+  <title>Supervisor简介、安装、配置 | 小强斋太-Study Notes</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d5edeb6a5e3eb7303821bb702fa1df54";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/wangshengzhuang"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小强斋太-Study Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay hungry. Stay foolish</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-[object Object]"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/26/Linux/Supervisor/Supervisor简介/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小强斋太">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小强斋太-Study Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Supervisor简介、安装、配置
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-26T00:00:00+08:00">
+                2017-05-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/Supervisor/" itemprop="url" rel="index">
+                    <span itemprop="name">Supervisor</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/05/26/Linux/Supervisor/Supervisor简介/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/05/26/Linux/Supervisor/Supervisor简介/" class="leancloud_visitors" data-flag-title="Supervisor简介、安装、配置">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  3,106
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长预计</span>
+                
+                <span title="阅读时长预计">
+                  13
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文主要介绍了supervisor的安装、使用。</p>
+<p><img src="http://image.wangshengzhuang.com/17-5-11/27833402-file_1494510301732_82f7.jpg" alt=""></p>
+<a id="more"></a>
+<h3 id="1-什么是supervisor"><a href="#1-什么是supervisor" class="headerlink" title="1. 什么是supervisor"></a>1. <strong>什么是supervisor</strong></h3><p> Supervisor是一个Python开发的client/server系统，可以管理和监控类unix上面的进程。类似daemontools</p>
+<p>什么情况下我们需要进程管理呢？就是执行一些需要以守护进程方式执行的程序，比如一个后台任务，如经常会碰到要写一些守护进程，简单做法放入后台：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">shell&gt; nohup python xxx.py &amp;</div></pre></td></tr></table></figure>
+<p>除此之外，Supervisor 还能很友好的管理程序在命令行上输出的日志，可以将日志重定向到自定义的日志文件中，还能按文件大小对日志进行分割。</p>
+<h3 id="2-为啥用supervisor"><a href="#2-为啥用supervisor" class="headerlink" title="2. 为啥用supervisor"></a>2. 为啥用supervisor</h3><p><strong>方便</strong></p>
+<p>为啥简单呢？因为咱们通常管理linux进程的时候，一般来说都需要自己编写一个能够实现进程start/stop/restart/reload功能的脚本，然后丢到/etc/init.d/下面。这么做有很多不好的地方，第一我们要编写这个脚本，这就很耗时耗力了。第二，当这个进程挂掉的时候，linux不会自动重启它的，想要自动重启的话，我们还要自己写一个监控重启脚本。而supervisor则可以完美的解决这些问题。supervisor管理进程，是通过fork/exec的方式把这些被管理的进程，当作supervisor的子进程来启动。这样的话，我们只要在supervisor的配置文件中，把要管理的进程的可执行文件的路径写进去就OK了。这样就省下了我们如同linux管理进程的时自己写控制脚本的麻烦了。第二，被管理进程作为supervisor的子进程，当子进程挂掉的时候，父进程可以准确获取子进程挂掉的信息的，所以当然也就可以对挂掉的子进程进行自动重启了，当然重启还是不重启，也要看你的配置文件里面有木有设置autostart=true了。</p>
+<p><strong>精确</strong></p>
+<p> Supervisord将进程作为子进程启动，因此可以一直知晓子进程的状态，可以方便查询。而基于pid文件文件获取进程状态有时候不靠谱</p>
+<p><strong>权限代理</strong></p>
+<p>某些进程需要root或者sudo权限运行，而又不方便把机器的root权限和sudo权限开放给用户的时候，普通用户可以借助supervisor的命令和web UI进行进程的启动和关闭</p>
+<p><strong>进程组</strong></p>
+<p>linux系统没有批量启动关闭进程的功能，我们想要停止多个进程，只能一个一个的去停止，要么就自己写个脚本去批量停止。Supervisor 允许赋予进程优先级，可以使用supervisorctl 的“start all”, and “restart all”，按照优先级顺序启动。并且进程可以分组，相关的进程可以作为一个单元启动。</p>
+<h3 id="3-supervisor特点"><a href="#3-supervisor特点" class="headerlink" title="3. supervisor特点"></a>3. supervisor特点</h3><ul>
+<li><strong>简单</strong> :supervisor通过一个 INI-style的文件配置，简单易学。提供了许多诸如重启失败进程、自动日子归档的功能</li>
+<li><strong>中心化</strong>:    可以在在同一个地方启动 停止 监控子进程，进程可以单独控制，也可以分组控制，并提供命令行和web接口配置supervisor</li>
+<li><strong>高效</strong>:    通过 fork/exec启动子进程</li>
+<li><strong>可扩展</strong>:  提供了simple event notification protocol和XML-RPC interface，方便通过各种语言进行配置管理</li>
+<li><strong>兼容性强</strong>: 类Unix都支持，不支持windows，基于Python</li>
+<li><strong>作为一款已经被使用了十多年的软件，可用性已经被广泛证明</strong></li>
+</ul>
+<h3 id="4-Supervisor-组成"><a href="#4-Supervisor-组成" class="headerlink" title="4. Supervisor 组成"></a>4. Supervisor 组成</h3><ol>
+<li><strong>supervisord</strong>：supervisord是supervisor的服务端程序。负责启动子程序，应答客户端命令，重启crash进程，子程序日志记录，对进程变化发送事件通知等</li>
+<li><strong>supervisorctl：</strong>  客户端命令行工具，可以连接服务器端，进行进程的启动、关闭、重启、状态查看等。重要的一点是，supervisorctl不仅可以连接到本机上的supervisord，还可以连接到远程的supervisord，当然在本机上面是通过UNIX socket连接的，远程是通过TCP socket连接的。supervisorctl和supervisord之间的通信，是通过xml_rpc完成的。    相应的配置在[supervisorctl]块里面</li>
+<li><strong>Web Server</strong>   可以在界面上管理进程的WEB UI, 通过[inet_http_server] section配置，默认<a href="http://localhost:9001/`" target="_blank" rel="external">http://localhost:9001/`</a></li>
+<li><strong>XML-RPC Interface</strong> XML-RPC接口，提供XML-RPC服务来对子进程进行管理，监控，参照 <a href="http://supervisord.org/api.html#xml-rpc" target="_blank" rel="external"><em>XML-RPC API Documentation</em></a>.</li>
+</ol>
+<h3 id="5-安装"><a href="#5-安装" class="headerlink" title="5 安装"></a>5 安装</h3><h4 id="5-1-yum-安装-推荐"><a href="#5-1-yum-安装-推荐" class="headerlink" title="5.1 yum 安装(推荐)"></a>5.1 yum 安装(推荐)</h4><figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum <span class="keyword">install</span> supervisor</div></pre></td></tr></table></figure>
+<p>会自动安装成服务形式，可以使用systemctl进行管理</p>
+<h4 id="5-2-使用Setuptools安装"><a href="#5-2-使用Setuptools安装" class="headerlink" title="5.2 使用Setuptools安装"></a>5.2 使用Setuptools安装</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">wget -q http://peak.telecommunity.com/dist/ez_setup.py</div><div class="line">python ez_setup.py</div><div class="line">easy_install supervisor</div></pre></td></tr></table></figure>
+<p>或者</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">yum install python-setuptools</div><div class="line">easy_install supervisor</div></pre></td></tr></table></figure>
+<h4 id="5-3-安装方式3"><a href="#5-3-安装方式3" class="headerlink" title="5.3 安装方式3"></a>5.3 安装方式3</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">wget https://pypi.python.org/packages/80/37/964c0d53cbd328796b1aeb7abea4c0f7b0e8c7197ea9b0b9967b7d004def/supervisor-3.3.1.tar.gz</div><div class="line">tar -zxvf supervisor-3.3.1.tar.gz </div><div class="line"><span class="built_in">cd</span> supervisor-3.3.1</div><div class="line">python setup.py install</div></pre></td></tr></table></figure>
+<h4 id="5-4生成配置文件"><a href="#5-4生成配置文件" class="headerlink" title="5.4生成配置文件"></a>5.4生成配置文件</h4><p><code>yum 安装方式不需要此步骤，因为已经自动生产了supervisord.conf 和supervisord.d文件夹</code></p>
+<p>安装完 supervisor 之后，可以运行<code>echo_supervisord_conf</code> 命令输出默认的配置项，也可以重定向到一个配置文件里：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">echo_supervisord_conf &gt; /etc/supervisord.conf</div></pre></td></tr></table></figure>
+<h4 id="5-5启动"><a href="#5-5启动" class="headerlink" title="5.5启动"></a>5.5启动</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">supervisord -c /etc/supervisord.conf</div></pre></td></tr></table></figure>
+<h3 id="6-配置文件-etc-supervisord-conf"><a href="#6-配置文件-etc-supervisord-conf" class="headerlink" title="6. 配置文件/etc/supervisord.conf"></a>6. 配置文件/etc/supervisord.conf</h3><p>上面我们已经把 supervisrod 运行起来了，现在可以添加我们要管理的进程的配置文件。可以把所有配置项都写到 supervisord.conf 文件里，但并不推荐这样做，而是通过 include 的方式把不同的程序（组）写到不同的配置文件里。yum方式安装，会自动配置。</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="section">[include]</span></div><div class="line"><span class="attr">files</span> = supervisord.d/*.ini    ; 可以是 *.conf 或 *.ini</div></pre></td></tr></table></figure>
+<p>/etc/supervisord.conf 参数说明</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">[unix_http_server]</div><div class="line">file=/tmp/supervisor.sock   ; UNIX socket 文件，supervisorctl 会使用</div><div class="line">;chmod=0700                 ; socket 文件的 mode，默认是 0700</div><div class="line"><span class="section">;chown=nobody:nogroup       ; socket 文件的 owner，格式： uid:gid</span></div><div class="line"> </div><div class="line">;[inet_http_server]         ; HTTP 服务器，提供 web 管理界面</div><div class="line"><span class="section">;port=127.0.0.1:9001        ; Web 管理后台运行的 IP 和端口，如果开放到公网，需要注意安全性</span></div><div class="line">;username=user              ; 登录管理后台的用户名</div><div class="line">;password=123               ; 登录管理后台的密码</div><div class="line"> </div><div class="line">[supervisord]</div><div class="line">logfile=/tmp/supervisord.log ; 日志文件，默认是 $CWD/supervisord.log</div><div class="line">logfile_maxbytes=50MB        ; 日志文件大小，超出会 rotate，默认 50MB</div><div class="line">logfile_backups=10           ; 日志文件保留备份数量默认 10</div><div class="line">loglevel=info                ; 日志级别，默认 info，其它: debug,warn,trace</div><div class="line">pidfile=/tmp/supervisord.pid ; pid 文件</div><div class="line">nodaemon=false               ; 是否在前台启动，默认是 false，即以 daemon 的方式启动</div><div class="line">minfds=1024                  ; 可以打开的文件描述符的最小值，默认 1024</div><div class="line">minprocs=200                 ; 可以打开的进程数的最小值，默认 200</div><div class="line"> </div><div class="line">; the below section must remain in the config file for RPC</div><div class="line">; (supervisorctl/web interface) to work, additional interfaces may be</div><div class="line">; added by defining them in separate rpcinterface: sections</div><div class="line"><span class="section">[rpcinterface:supervisor]</span></div><div class="line">supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface</div><div class="line"> </div><div class="line">[supervisorctl]</div><div class="line">serverurl=unix:///tmp/supervisor.sock ; 通过 UNIX socket 连接 supervisord，路径与 unix_http_server 部分的 file 一致</div><div class="line"><span class="section">;serverurl=http://127.0.0.1:9001 ; 通过 HTTP 的方式连接 supervisord</span></div><div class="line"> </div><div class="line">; 包含其他的配置文件</div><div class="line">[<span class="keyword">include</span>]</div><div class="line">files = /etc/supervisord.d/*.ini    ; 可以是 *.conf 或 *.ini</div></pre></td></tr></table></figure>
+<h3 id="7-添加一个被管理的进程"><a href="#7-添加一个被管理的进程" class="headerlink" title="7. 添加一个被管理的进程"></a>7. 添加一个被管理的进程</h3><p>我们假如有一个hello.py</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">import web</div><div class="line">urls = (     <span class="string">'/(.*)'</span>,<span class="string">'hello'</span> )</div><div class="line">app = web.application(urls, globals())</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">hello</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">GET</span><span class="params">(<span class="keyword">self</span>, name)</span></span>:</div><div class="line">        <span class="keyword">return</span> <span class="string">'hello: '</span> + name</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name_<span class="number">_</span> == <span class="string">'__main__'</span>:</div><div class="line">    app.run()</div></pre></td></tr></table></figure>
+<p>所以直接在命令行启动的方式可能是这样的：(需要先安装web.py <code>easy_install web.py</code>)</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">python</span>  /<span class="keyword">opt</span>/hello.<span class="keyword">py</span></div></pre></td></tr></table></figure>
+<p>现在编写一份配置文件<code>/etc/supervisord.d/hello.ini</code>来管理这个进程</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="section">[program:hello]</span></div><div class="line"><span class="attr">directory</span> = /opt    ; 程序的启动目录</div><div class="line"><span class="attr">command</span> = python /opt/hello.py  ; 启动命令，可以看出与手动在命令行启动的命令是一样的</div><div class="line"><span class="attr">autostart</span> = <span class="literal">true</span>     ; 在 supervisord 启动的时候也自动启动</div><div class="line"><span class="attr">startsecs</span> = <span class="number">5</span>        ; 启动 <span class="number">5</span> 秒后没有异常退出，就当作已经正常启动了</div><div class="line"><span class="attr">autorestart</span> = <span class="literal">true</span>   ; 程序异常退出后自动重启</div><div class="line"><span class="attr">startretries</span> = <span class="number">3</span>     ; 启动失败自动重试次数，默认是 <span class="number">3</span></div><div class="line"><span class="attr">user</span> = xqzt          ; 用哪个用户启动</div><div class="line"><span class="attr">redirect_stderr</span> = <span class="literal">true</span>  ; 把 stderr 重定向到 stdout，默认 <span class="literal">false</span></div><div class="line"><span class="attr">stdout_logfile_maxbytes</span> = <span class="number">20</span>MB  ; stdout 日志文件大小，默认 <span class="number">50</span>MB</div><div class="line"><span class="attr">stdout_logfile_backups</span> = <span class="number">20</span>     ; stdout 日志文件备份数</div><div class="line"><span class="comment">; stdout 日志文件，需要注意当指定目录不存在时无法正常启动，所以需要手动创建目录（supervisord 会自动创建日志文件）</span></div><div class="line"><span class="attr">stdout_logfile</span> = /var/log/supervisor/hello.log</div></pre></td></tr></table></figure>
+<p>一份配置文件至少需要一个 <code>[program:x]</code> 部分的配置，来告诉 supervisord 需要管理那个进程。<code>[program:x]</code> 语法中的 <code>x</code> 表示 program name，会在客户端（supervisorctl 或 web 界面）显示，在 supervisorctl 中通过这个值来对程序进行 start、restart、stop 等操作。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">supervisor</span>&gt; <span class="selector-tag">status</span></div><div class="line"><span class="selector-tag">hello</span>                            <span class="selector-tag">RUNNING</span>   <span class="selector-tag">pid</span> 2809, <span class="selector-tag">uptime</span> 0<span class="selector-pseudo">:00</span><span class="selector-pseudo">:06</span></div></pre></td></tr></table></figure>
+<h3 id="8-使用-supervisorctl"><a href="#8-使用-supervisorctl" class="headerlink" title="8. 使用 supervisorctl"></a>8. 使用 supervisorctl</h3><p>Supervisorctl 是 supervisord 的一个命令行客户端工具，启动时需要指定与 supervisord 使用同一份配置文件，否则与 supervisord 一样按照顺序查找配置文件。supervisorctl 这个命令会进入 supervisorctl 的 shell 界面，然后可以执行不同的命令了，也可以直接在 bash 终端运行。</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"># supervisorctl --<span class="keyword">help</span></div><div class="line">supervisorctl -- control applications run by supervisord from the cmd <span class="built_in">line</span>.</div><div class="line"></div><div class="line">Usage: /usr/bin/supervisorctl [<span class="keyword">options</span>] [action [arguments]]</div><div class="line"></div><div class="line">Option<span class="variable">s:</span></div><div class="line">-<span class="keyword">c</span>/--configuration -- configuration <span class="keyword">file</span> path (default /etc/supervisord.<span class="keyword">conf</span>)</div><div class="line">-h/--<span class="keyword">help</span> -- <span class="keyword">print</span> usage message <span class="built_in">and</span> <span class="keyword">exit</span></div><div class="line">-i/--interactive -- start <span class="keyword">an</span> interactive <span class="keyword">shell</span> after executing commands</div><div class="line">-s/--serverurl URL -- URL <span class="keyword">on</span> which supervisord server <span class="keyword">is</span> listening</div><div class="line">     (default <span class="string">"http://localhost:9001"</span>).</div><div class="line">-<span class="keyword">u</span>/--username -- username <span class="keyword">to</span> use <span class="keyword">for</span> authentication with server</div><div class="line">-<span class="keyword">p</span>/--password -- password <span class="keyword">to</span> use <span class="keyword">for</span> authentication with server</div><div class="line">-r/--<span class="keyword">history</span>-<span class="keyword">file</span> -- keep <span class="keyword">a</span> readline <span class="keyword">history</span> (<span class="keyword">if</span> readline <span class="keyword">is</span> available)</div></pre></td></tr></table></figure>
+<p>输入help,可以查看支持的命令及用法</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">supervisor&gt; <span class="keyword">help</span></div><div class="line"></div><div class="line">default commands (<span class="built_in">type</span> <span class="keyword">help</span> <span class="symbol">&lt;topic&gt;</span>):</div><div class="line">=====================================</div><div class="line"><span class="built_in">add</span>    clear  fg        <span class="keyword">open</span>  <span class="keyword">quit</span>    <span class="built_in">remove</span>  restart   start   <span class="keyword">stop</span>  <span class="keyword">update</span> </div><div class="line">avail  <span class="keyword">exit</span>   maintail  pid   reload  reread  shutdown  status  tail  <span class="keyword">version</span></div><div class="line"></div><div class="line">supervisor&gt; <span class="keyword">help</span> start</div><div class="line">start <span class="symbol">&lt;name&gt;</span>		Start <span class="keyword">a</span> process</div><div class="line">start <span class="symbol">&lt;gname&gt;</span>:*		Start <span class="keyword">all</span> processes in <span class="keyword">a</span> group</div><div class="line">start <span class="symbol">&lt;name&gt;</span> <span class="symbol">&lt;name&gt;</span>	Start multiple processes <span class="built_in">or</span> groups</div><div class="line">start <span class="keyword">all</span>		Start <span class="keyword">all</span> processes</div></pre></td></tr></table></figure>
+<p>常用命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> 停止某一个进程，program_name 为 [program:x] 里的 x</span></div><div class="line">supervisorctl stop program_name</div><div class="line"><span class="meta">#</span><span class="bash"> 启动某个进程</span></div><div class="line">supervisorctl start program_name</div><div class="line"><span class="meta">#</span><span class="bash"> 重启某个进程</span></div><div class="line">supervisorctl restart program_name</div><div class="line"><span class="meta">#</span><span class="bash"> 结束所有属于名为 groupworker 这个分组的进程 (start，restart 同理)</span></div><div class="line">supervisorctl stop groupworker:</div><div class="line"><span class="meta">#</span><span class="bash"> 结束 groupworker:name1 这个进程 (start，restart 同理)</span></div><div class="line">supervisorctl stop groupworker:name1</div><div class="line"><span class="meta">#</span><span class="bash"> 停止全部进程，注：start、restart、stop 都不会载入最新的配置文件</span></div><div class="line">supervisorctl stop all</div><div class="line"><span class="meta">#</span><span class="bash"> 载入最新的配置文件，停止原有进程并按新的配置启动、管理所有进程</span></div><div class="line">supervisorctl reload</div><div class="line"><span class="meta">#</span><span class="bash"> 根据最新的配置文件，启动新配置或有改动的进程，配置没有改动的进程不会受影响而重启</span></div><div class="line">supervisorctl update</div></pre></td></tr></table></figure>
+<h3 id="9-supervisor-Web-UI"><a href="#9-supervisor-Web-UI" class="headerlink" title="9. supervisor Web UI"></a>9. supervisor Web UI</h3><p>除了 supervisorctl 之外，还可以配置 supervisrod 启动 web 管理界面，这个 web 后台使用 Basic Auth 的方式进行身份认证。将supervisord.conf中[inet_http_server]部分做相应配置，在supervisorctl中reload即可启动web管理界面</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="section">[inet_http_server]</span> <span class="comment">; HTTP 服务器，提供 web 管理界面</span></div><div class="line"><span class="attr">port</span>=<span class="number">172.17</span>.<span class="number">84.64</span>:<span class="number">9001</span> ; Web 管理后台运行的 IP 和端口，如果开放到公网，需要注意安全性</div><div class="line"><span class="attr">username</span>=user ; 登录管理后台的用户名</div><div class="line"><span class="attr">password</span>=<span class="number">123</span> ; 登录管理后台的密码</div></pre></td></tr></table></figure>
+<p>在浏览器中输入<a href="http://127.0.0.1:9001，可进入web管理界面" target="_blank" rel="external">http://127.0.0.1:9001，可进入web管理界面</a></p>
+<p><img src="http://image.wangshengzhuang.com/17-5-11/65946564-file_1494502213044_176b5.png" alt=""></p>
+<h3 id="10-将多个进程按组管理"><a href="#10-将多个进程按组管理" class="headerlink" title="10.  将多个进程按组管理"></a>10.  将多个进程按组管理</h3><p>Supervisor 同时还提供了另外一种进程组的管理方式，通过这种方式，可以使用 supervisorctl 命令来管理一组进程。跟 [program:x] 的进程组不同的是，这里的进程是一个个的 [program:x] 。</p>
+<figure class="highlight sqf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[<span class="built_in">group</span>:thegroupname]</div><div class="line">programs=progname1,progname2  ; each refers <span class="keyword">to</span> <span class="string">'x'</span> <span class="built_in">in</span> [program:x] definitions</div><div class="line"><span class="built_in">priority</span>=<span class="number">999</span>                  ; the relative start <span class="built_in">priority</span> (<span class="keyword">default</span> <span class="number">999</span>)</div></pre></td></tr></table></figure>
+<p>当添加了上述配置后，<code>progname1</code> 和 <code>progname2</code> 的进程名就会变成 <code>thegroupname:progname1</code> 和 <code>thegroupname:progname2</code> 以后就要用这个名字来管理进程了，而不是之前的 <code>progname1</code>。</p>
+<p>以后执行 <code>supervisorctl stop thegroupname:</code> 就能同时结束 <code>progname1</code> 和 <code>progname2</code>，执行 <code>supervisorctl stop thegroupname:progname1</code> 就能结束 <code>progname1</code>。如下所示</p>
+<p><code>/etc/supervisord.d/hello.ini</code>文件</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[group:group1]</div><div class="line">programs=hello</div><div class="line"></div><div class="line">[program:hello]</div><div class="line">directory = /opt    ; 程序的启动目录</div><div class="line">command = python /opt/hello.py  ; 启动命令，可以看出与手动在命令行启动的命令是一样的</div><div class="line">autostart = true     ; 在 supervisord 启动的时候也自动启动</div><div class="line">startsecs = 5        ; 启动 5 秒后没有异常退出，就当作已经正常启动了</div><div class="line">autorestart = true   ; 程序异常退出后自动重启</div><div class="line">startretries = 3     ; 启动失败自动重试次数，默认是 3</div><div class="line">user = xqzt          ; 用哪个用户启动</div><div class="line">redirect_stderr = true  ; 把 stderr 重定向到 stdout，默认 false</div><div class="line">stdout_logfile_maxbytes = 20MB  ; stdout 日志文件大小，默认 50MB</div><div class="line">stdout_logfile_backups = 20     ; stdout 日志文件备份数</div><div class="line">; stdout 日志文件，需要注意当指定目录不存在时无法正常启动，所以需要手动创建目录（supervisord 会自动创建日志文件）</div><div class="line">; stdout_logfile = /var/log/supervisor/hello.log</div></pre></td></tr></table></figure>
+<p>进程状态</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="selector-attr">[root@centos7 etc]</span># <span class="selector-tag">supervisorctl</span> </div><div class="line"><span class="selector-tag">group1</span><span class="selector-pseudo">:hello</span>                     <span class="selector-tag">RUNNING</span>   <span class="selector-tag">pid</span> 2842, <span class="selector-tag">uptime</span> 0<span class="selector-pseudo">:02</span><span class="selector-pseudo">:53</span></div></pre></td></tr></table></figure>
+<h3 id="11-Subprocesses进程状态变化"><a href="#11-Subprocesses进程状态变化" class="headerlink" title="11. Subprocesses进程状态变化"></a>11. Subprocesses进程状态变化</h3><p><img src="http://supervisord.org/_images/subprocess-transitions.png" alt="http://supervisord.org/_images/subprocess-transitions.png"></p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="http://supervisord.org/#" target="_blank" rel="external">官方文档</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/wechatpay.jpg" alt="小强斋太 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/alipay.jpg" alt="小强斋太 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      小强斋太
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://wangshengzhuang.com/2017/05/26/Linux/Supervisor/Supervisor简介/" title="Supervisor简介、安装、配置">http://wangshengzhuang.com/2017/05/26/Linux/Supervisor/Supervisor简介/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本文版权归作者所有,转载请注明出处！'
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/supervisor/" rel="tag"> <i class="fa fa-tag"> </i> supervisor</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/25/Linux/每天一个Linux命令/nslookup命令/" rel="next" title="nslookup命令">
+                <i class="fa fa-chevron-left"></i> nslookup命令
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/27/Linux/Linux基础/LVM基础及在线扩容/" rel="prev" title="LVM基础及在线扩容">
+                LVM基础及在线扩容 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        ﻿<!--MOB SHARE BEGIN-->
+                            <div class="-mob-share-ui-button -mob-share-open">分享</div>
+                            <div class="-mob-share-ui" style="display: none">
+                                <ul class="-mob-share-list">
+				    <li class="-mob-share-weixin"><p>微信</p></li>
+                                    <li class="-mob-share-qq"><p>QQ好友</p></li>
+				    <li class="-mob-share-qzone"><p>QQ空间</p></li>
+				    <li class="-mob-share-youdao"><p>有道云笔记</p></li>
+				    <li class="-mob-share-weibo"><p>新浪微博</p></li>
+                                    <li class="-mob-share-tencentweibo"><p>腾讯微博</p></li>
+                                    <li class="-mob-share-douban"><p>豆瓣</p></li>
+                                    <li class="-mob-share-facebook"><p>Facebook</p></li>
+                                    <li class="-mob-share-twitter"><p>Twitter</p></li>
+                                    <li class="-mob-share-google"><p>Google+</p></li>
+                                    <li class="-mob-share-linkedin"><p>LinkedIn</p></li>
+                                </ul>
+                                <div class="-mob-share-close">取消</div>
+                            </div>
+<div class="-mob-share-ui-bg"></div>
+<script id="-mob-share" src="http://f1.webshare.mob.com/code/mob-share.js?appkey=b21b3b396423fbd4db32b55d570db922"></script>
+<!--MOB SHARE END-->
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.png"
+               alt="小强斋太" />
+          <p class="site-author-name" itemprop="name">小强斋太</p>
+           
+              <p class="site-description motion-element" itemprop="description">Stay hungry. Stay foolish</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wangshengzhuang" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wangshengzhuang.com" title="小强斋太-Study Notes" target="_blank">小强斋太-Study Notes</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        <br/>
+<div>
+<span> 总访问量(PV): <img src="http://cc.amazingcounters.com/counter.php?i=3214342&c=9643339" alt="UV" title="总访问量">
+独立访客(UV): <img src="http://cc.amazingcounters.com/counter.php?i=3214343&c=9643342" alt="PV" title="访问人数"> 
+</span>
+</div>
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-什么是supervisor"><span class="nav-text">1. 什么是supervisor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-为啥用supervisor"><span class="nav-text">2. 为啥用supervisor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-supervisor特点"><span class="nav-text">3. supervisor特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Supervisor-组成"><span class="nav-text">4. Supervisor 组成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-安装"><span class="nav-text">5 安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-yum-安装-推荐"><span class="nav-text">5.1 yum 安装(推荐)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-使用Setuptools安装"><span class="nav-text">5.2 使用Setuptools安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-3-安装方式3"><span class="nav-text">5.3 安装方式3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-4生成配置文件"><span class="nav-text">5.4生成配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-5启动"><span class="nav-text">5.5启动</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-配置文件-etc-supervisord-conf"><span class="nav-text">6. 配置文件/etc/supervisord.conf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-添加一个被管理的进程"><span class="nav-text">7. 添加一个被管理的进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-使用-supervisorctl"><span class="nav-text">8. 使用 supervisorctl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-supervisor-Web-UI"><span class="nav-text">9. supervisor Web UI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-将多个进程按组管理"><span class="nav-text">10.  将多个进程按组管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-Subprocesses进程状态变化"><span class="nav-text">11. Subprocesses进程状态变化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小强斋太</span>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "e97c4421445f4327b7168d5d1f51a36c",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      $('#local-search-input').focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("wtjyw6ICkB3kdGGpS6e750op-gzGzoHsz", "1VgU4A2cb7V5hk7UskuqbrWr");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

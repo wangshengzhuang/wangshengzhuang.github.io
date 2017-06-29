@@ -1,0 +1,1473 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*��������ɫ*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*��Ӱ��ɫ*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*�ϱ߿���ɫ*/
+        border-left-color: #1E92FB;    /*���߿���ɫ*/
+    }
+</style>
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="LVM,Linux," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小强斋太-Study Notes" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="本文主要介绍了LVM的基本概念及磁盘扩容操作。">
+<meta name="keywords" content="LVM,Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LVM基础及在线扩容">
+<meta property="og:url" content="http://wangshengzhuang.com/2017/05/27/Linux/Linux基础/LVM基础及在线扩容/index.html">
+<meta property="og:site_name" content="小强斋太-Study Notes">
+<meta property="og:description" content="本文主要介绍了LVM的基本概念及磁盘扩容操作。">
+<meta property="og:image" content="http://image.wangshengzhuang.com/17-6-23/4466666.jpg">
+<meta property="og:image" content="http://p.blog.csdn.net/images/p_blog_csdn_net/steelren/318037/o_061219150067671.jpg">
+<meta property="og:image" content="http://p.blog.csdn.net/images/p_blog_csdn_net/steelren/318037/o_061219150067672.jpg">
+<meta property="og:image" content="http://p.blog.csdn.net/images/p_blog_csdn_net/steelren/318037/o_061219150067673.jpg">
+<meta property="og:image" content="http://p.blog.csdn.net/images/p_blog_csdn_net/steelren/318037/o_061219150067674.jpg">
+<meta property="og:updated_time" content="2017-06-29T15:25:25.711Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LVM基础及在线扩容">
+<meta name="twitter:description" content="本文主要介绍了LVM的基本概念及磁盘扩容操作。">
+<meta name="twitter:image" content="http://image.wangshengzhuang.com/17-6-23/4466666.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wangshengzhuang.com/2017/05/27/Linux/Linux基础/LVM基础及在线扩容/"/>
+
+
+
+
+
+  <title>LVM基础及在线扩容 | 小强斋太-Study Notes</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d5edeb6a5e3eb7303821bb702fa1df54";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/wangshengzhuang"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小强斋太-Study Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay hungry. Stay foolish</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-[object Object]"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/27/Linux/Linux基础/LVM基础及在线扩容/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小强斋太">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小强斋太-Study Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                LVM基础及在线扩容
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-27T00:00:00+08:00">
+                2017-05-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/Linux基础/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/05/27/Linux/Linux基础/LVM基础及在线扩容/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/05/27/Linux/Linux基础/LVM基础及在线扩容/" class="leancloud_visitors" data-flag-title="LVM基础及在线扩容">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  2,731
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长预计</span>
+                
+                <span title="阅读时长预计">
+                  11
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文主要介绍了LVM的基本概念及磁盘扩容操作。</p>
+<p><img src="http://image.wangshengzhuang.com/17-6-23/4466666.jpg" alt=""></p>
+<a id="more"></a>
+<h3 id="一、-前言"><a href="#一、-前言" class="headerlink" title="一、 前言"></a>一、 前言</h3><p>​    每个Linux使用者在安装linux时都会遇到这样的困境：在为系统分区时，如何精确评估和分配各个硬盘分区的容量，因为系统管理员不但要考虑到当前某个分区需要的容量，还要预见该分区以后可能需要的容量的最大值。因为如果估计不准确，当遇到某个分区不够用时管理员可能甚至要备份整个系统、清除硬盘、重新对硬盘分区，然后恢复数据到新分区。</p>
+<p>​    虽然现在有很多动态调整磁盘的工具可以使用，例如Partation Magic等等，但是它并不能完全解决问题，因为某个分区可能会再次被耗尽；另外一个方面这需要重新引导系统才能实现，对于很多关键的服务器，停机是不可接受的，而且对于添加新硬盘，希望一个能跨越多个硬盘驱动器的文件系统时，分区调整程序就不能解决问题。</p>
+<p>​    因此完美的解决方法应该是在零停机前提下可以自如对文件系统的大小进行调整，可以方便实现文件系统跨越不同磁盘和分区。幸运的是Linux提供的逻辑盘卷管理（LVM，Logical Volume Manager）机制就是一个完美的解决方案。</p>
+<p>​    LVM是逻辑盘卷管理（Logical Volume Manager）的简称，它是Linux环境下对磁盘分区进行管理的一种机制，LVM是建立在硬盘和分区之上的一个逻辑层，来提高磁盘分区管理的灵活性。通过LVM系统管理员可以轻松管理磁盘分区，如：将若干个磁盘分区连接为一个整块的卷组（volume group），形成一个存储池。管理员可以在卷组上随意创建逻辑卷组（logical volumes），并进一步在逻辑卷组上创建文件系统。管理员通过LVM可以方便的调整存储卷组的大小，并且可以对磁盘存储按照组的方式进行命名、管理和分配，例如按照使用用途进行定义：“development”和“sales”，而不是使用物理磁盘名“sda”和“sdb”。而且当系统添加了新的磁盘，通过LVM管理员就不必将磁盘的文件移动到新的磁盘上以充分利用新的存储空间，而是直接扩展文件系统跨越磁盘即可。</p>
+<h3 id="二、使用LVM的好处"><a href="#二、使用LVM的好处" class="headerlink" title="二、使用LVM的好处"></a>二、使用LVM的好处</h3><p>传统的文件系统是基于分区的，一个文件系统对应一个分区。这种方式比较直观，但不易改动：</p>
+<p>1.不同的分区相对独立，无相互联系，各分区空间非常易利用不平衡，空间不能充分利用；</p>
+<p>2.当一个文件系统／分区已满时，无法对其扩充，只能采用重新分区／建立文件系统，非常麻烦；或把分区中的数据移到另一个更大的分区中；或采用符号连接的方式使用其他分区的空间。</p>
+<p>3.如果要把硬盘上的多个分区合并在一起使用，只能采用再分区的方式，这个过程需要数据的备份和恢复。</p>
+<p>当采用LVM时，情况有所不同：</p>
+<p>1.硬盘的多个分区由LVM统一为卷组管理，能方便的加入或移走分区以扩大或减小卷组的可用容量，充分利用硬盘空间；</p>
+<p>2.文件系统建立在逻辑卷上，而逻辑卷可根据需要改动大小(在卷组容量范围内)以满足需求；</p>
+<p>3.当系统空间不足而加入新的硬盘时，不必把用户的数据从原硬盘迁移到新硬盘，而只须把新的分区加入卷组并扩充逻辑卷即可。</p>
+<h3 id="三、-LVM基本术语"><a href="#三、-LVM基本术语" class="headerlink" title="三、 LVM基本术语"></a>三、 LVM基本术语</h3><p>​    前面谈到，LVM是在磁盘分区和文件系统之间添加的一个逻辑层，来为文件系统屏蔽下层磁盘分区布局，提供一个抽象的盘卷，在盘卷上建立文件系统。首先我们讨论以下几个LVM术语：</p>
+<ul>
+<li><strong>物理存储介质（The physical media）</strong><br>这里指系统的存储设备：硬盘，如：/dev/hda1、/dev/sda等等，是存储系统最低层的存储单元。 </li>
+<li><strong>物理卷（physical volume）</strong><br>物理卷就是指硬盘分区或从逻辑上与磁盘分区具有同样功能的设备(如RAID)，是LVM的基本存储逻辑块，但和基本的物理存储介质（如分区、磁盘等）比较，却包含有与LVM相关的管理参数。 </li>
+<li><strong>卷组（Volume Group）</strong><br>LVM卷组类似于非LVM系统中的物理硬盘，其由物理卷组成。可以在卷组上创建一个或多个“LVM分区”（逻辑卷），LVM卷组由一个或多个物理卷组成。 </li>
+<li><strong>逻辑卷（logical volume）</strong><br>LVM的逻辑卷类似于非LVM系统中的硬盘分区，在逻辑卷之上可以建立文件系统(比如/home或者/usr等)。 </li>
+<li><strong>PE（physical extent）</strong><br>每一个物理卷被划分为称为PE(Physical Extents)的基本单元，具有唯一编号的PE是可以被LVM寻址的最小单元。PE的大小是可配置的，默认为4MB。 </li>
+<li><strong>LE（logical extent）</strong>逻辑卷也被划分为被称为LE(Logical Extents) 的可被寻址的基本单位。在同一个卷组中，LE的大小和PE是相同的，并且一一对应。</li>
+</ul>
+<p><img src="http://p.blog.csdn.net/images/p_blog_csdn_net/steelren/318037/o_061219150067671.jpg" alt="img"></p>
+<p>​    首先可以看到，物理卷（PV）被由大小等同的基本单元PE组成。</p>
+<p><img src="http://p.blog.csdn.net/images/p_blog_csdn_net/steelren/318037/o_061219150067672.jpg" alt="img"></p>
+<p>​    一个卷组由一个或多个物理卷组成，</p>
+<p><img src="http://p.blog.csdn.net/images/p_blog_csdn_net/steelren/318037/o_061219150067673.jpg" alt="img"></p>
+<p>​    从上图可以看到，PE和LE有着一一对应的关系。逻辑卷建立在卷组上。逻辑卷就相当于非LVM系统的磁盘分区，可以在其上创建文件系统。</p>
+<p>​    下图是磁盘分区、卷组、逻辑卷和文件系统之间的逻辑关系的示意图：</p>
+<p><img src="http://p.blog.csdn.net/images/p_blog_csdn_net/steelren/318037/o_061219150067674.jpg" alt="img"></p>
+<p>​    和非LVM系统将包含分区信息的元数据保存在位于分区的起始位置的分区表中一样，逻辑卷以及卷组相关的元数据也是保存在位于物理卷起始处的VGDA(卷组描述符区域)中。VGDA包括以下内容： PV描述符、VG描述符、LV描述符、和一些PE描述符 。</p>
+<p>​    系统启动LVM时激活VG，并将VGDA加载至内存，来识别LV的实际物理存储位置。当系统进行I/O操作时，就会根据VGDA建立的映射机制来访问实际的物理位置。</p>
+<h3 id="四、-安装LVM"><a href="#四、-安装LVM" class="headerlink" title="四、 安装LVM"></a>四、 安装LVM</h3><p>​    首先确定系统中是否安装了lvm工具：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#  rpm –qa|grep lvm</span></div><div class="line">RPM version 4.11.3</div></pre></td></tr></table></figure>
+<p>如果命令结果输入类似于上例，那么说明系统已经安装了LVM管理工具；如果命令没有输出则说明没有安装LVM管理工具，则需要从网络下载或者从光盘装LVM rpm工具包。安装了LVM的RPM软件包以后，要使用LVM还需要配置内核支持LVM。RedHat默认内核是支持LVM的</p>
+<h3 id="五：-LVM基本操作"><a href="#五：-LVM基本操作" class="headerlink" title="五： LVM基本操作"></a>五： LVM基本操作</h3><h4 id="新建一个逻辑卷并挂载"><a href="#新建一个逻辑卷并挂载" class="headerlink" title="新建一个逻辑卷并挂载"></a>新建一个逻辑卷并挂载</h4><p>1.为运行的虚拟机增加一块磁盘，在虚拟机中fdisk -l，可以看到新增加磁盘sdb</p>
+<p>2.创建物理卷PV</p>
+<p>   创建物理卷的命令为pvcreate，利用该命令将希望添加到卷组的分区或者整个磁盘创建为物理卷。</p>
+<p>将整个磁盘创建为物理卷的命令为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pvcreate /dev/sdb</div></pre></td></tr></table></figure>
+<p>查看创建好的PV</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">[root@mysql001 ~]<span class="comment"># pvdisplay </span></div><div class="line"></div><div class="line">  --- Physical volume ---</div><div class="line">  PV Name               /dev/sdb</div><div class="line">  VG Name               vg_name</div><div class="line">  PV Size               10.00 GiB / not usable 4.00 MiB</div><div class="line">  Allocatable           yes </div><div class="line">  PE Size               4.00 MiB</div><div class="line">  Total PE              2559</div><div class="line">  Free PE               2559</div><div class="line">  Allocated PE          0</div><div class="line">  PV UUID               NvZnOF-jtaG-KFcf-nlqg-0LJp-fzw8-qsO9EL</div></pre></td></tr></table></figure>
+<p>3.创建卷组VG</p>
+<p>（如果已近存在逻辑卷组，可以直接省去此步，直接到4，当然也可以继续创建）</p>
+<p>   vgcreate命令第一个参数是指定该卷组的逻辑名：vg_name。后面参数是指定希望添加到该卷组的物理卷PV。vgcreate在创建卷组 vg_name以外，还设置使用大小为4 MB的PE（默认为4MB），这表示卷组上创建的所有逻辑卷都以 4 MB 为增量单位来进行扩充或缩减。由于内核原因，PE大小决定了逻辑卷的最大大小，4 MB 的PE决定了单个逻辑卷最大容量为 256 GB，若希望使用大于256G的逻辑卷则创建卷组时指定更大的PE。PE大小范围为8 KB 到 512 MB，并且必须总是 2 的倍数（使用-s指定，具体请参考man vgcreate）。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vgcreate vg_name /dev/sdb</div></pre></td></tr></table></figure>
+<p>通过<code>vgdisplay</code>查看，可以看到包含2559个PE,大小  10.00 GiB，未分配的PE数</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">[root@mysql001 ~]<span class="comment"># vgdisplay </span></div><div class="line">   </div><div class="line">  --- Volume group ---</div><div class="line">  VG Name               vg_name</div><div class="line">  System ID             </div><div class="line">  Format                lvm2</div><div class="line">  Metadata Areas        1</div><div class="line">  Metadata Sequence No  1</div><div class="line">  VG Access             <span class="built_in">read</span>/write</div><div class="line">  VG Status             resizable</div><div class="line">  MAX LV                0</div><div class="line">  Cur LV                0</div><div class="line">  Open LV               0</div><div class="line">  Max PV                0</div><div class="line">  Cur PV                1</div><div class="line">  Act PV                1</div><div class="line">  VG Size               10.00 GiB</div><div class="line">  PE Size               4.00 MiB</div><div class="line">  Total PE              2559</div><div class="line">  Alloc PE / Size       0 / 0   </div><div class="line">  Free  PE / Size       2559 / 10.00 GiB</div><div class="line">  VG UUID               0XdJE4-OJJy-R6R3-IsmZ-DnOT-9P2L-E80rSS</div></pre></td></tr></table></figure>
+<p>4.创建逻辑卷</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">lvcreate -L 10G -n lvm_name vg_name</div></pre></td></tr></table></figure>
+<p>-L指定最终大小大小，或者-l指定PE的个数均可</p>
+<p>5.创建文件系统</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mkfs.xfs /dev/vg_name/lvm_name</div></pre></td></tr></table></figure>
+<p>6.挂载在系统直接使用(需要/etc/fstab)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mount /dev/vg_name/lvm_name /mnt</div><div class="line">[root@mysql001 ~]<span class="comment"># df -h |grep mnt</span></div><div class="line">/dev/mapper/vg_name-lvm_name   10G   33M   10G   1% /mnt</div></pre></td></tr></table></figure>
+<h4 id="扩展逻辑卷大小"><a href="#扩展逻辑卷大小" class="headerlink" title="扩展逻辑卷大小"></a>扩展逻辑卷大小</h4><p>1.新增磁盘vdc</p>
+<p>2.创建物理卷</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pvcreate /dev/sdc</div></pre></td></tr></table></figure>
+<p>3.扩展物理卷至卷组vg_name</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">vgextend vg_name /dev/sdc</div></pre></td></tr></table></figure>
+<p>查看新的VG</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">[root@mysql001 ~]<span class="comment"># vgdisplay </span></div><div class="line">   </div><div class="line">  --- Volume group ---</div><div class="line">  VG Name               vg_name</div><div class="line">  System ID             </div><div class="line">  Format                lvm2</div><div class="line">  Metadata Areas        2</div><div class="line">  Metadata Sequence No  3</div><div class="line">  VG Access             <span class="built_in">read</span>/write</div><div class="line">  VG Status             resizable</div><div class="line">  MAX LV                0</div><div class="line">  Cur LV                1</div><div class="line">  Open LV               1</div><div class="line">  Max PV                0</div><div class="line">  Cur PV                2</div><div class="line">  Act PV                2</div><div class="line">  VG Size               19.99 GiB</div><div class="line">  PE Size               4.00 MiB</div><div class="line">  Total PE              5118</div><div class="line">  Alloc PE / Size       2559 / 10.00 GiB</div><div class="line">  Free  PE / Size       2559 / 10.00 GiB</div><div class="line">  VG UUID               0XdJE4-OJJy-R6R3-IsmZ-DnOT-9P2L-E80rSS</div></pre></td></tr></table></figure>
+<p>5.增加逻辑卷</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">lvextend -L 19.5G /dev/vg_name/lvm_name</div></pre></td></tr></table></figure>
+<p>-L指定要扩展到的目标大小，或者-l指定PE的个数均可，也可以使用+号，表示增加的大小</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">lvextend -L +9.5G /dev/vg_name/lvm_name</div></pre></td></tr></table></figure>
+<p>6.调整文件系统大小</p>
+<p>ext4 文件系统</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">resize2fs /dev/vg_name/lvm_name</div></pre></td></tr></table></figure>
+<p>如果是xfs格式的文件系统 需要使用  xfs_growfs</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">xfs_growfs /dev/vg_name/lvm_name</div></pre></td></tr></table></figure>
+<h4 id="减小逻辑卷大小"><a href="#减小逻辑卷大小" class="headerlink" title="减小逻辑卷大小"></a>减小逻辑卷大小</h4><p>增加是先增容量，再resize，减小是先resize，再reduce</p>
+<p>使用lvreduce即可缩小逻辑卷的容量，同样需要首先将文件系统卸载：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">umount /mnt</div><div class="line">resize2fs <span class="_">-s</span> -10G /dev/vg_name/lvm_name</div><div class="line">lvreduce -L -10G /dev/vg_name/lvm_name</div></pre></td></tr></table></figure>
+<h4 id="删除逻辑卷"><a href="#删除逻辑卷" class="headerlink" title="删除逻辑卷"></a>删除逻辑卷</h4><p>删除逻辑卷以前首先需要将其卸载</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">umount /mnt</div><div class="line">lvremove /dev/vg_name/lvm_namebash</div></pre></td></tr></table></figure>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="http://blog.csdn.net/steelren/article/details/1931363" target="_blank" rel="external">Linux逻辑盘卷管理LVM详解</a></p>
+<p><a href="http://wiki.tldp.org/LVM-HOWTO" target="_blank" rel="external">http://wiki.tldp.org/LVM-HOWTO</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/wechatpay.jpg" alt="小强斋太 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/alipay.jpg" alt="小强斋太 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      小强斋太
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://wangshengzhuang.com/2017/05/27/Linux/Linux基础/LVM基础及在线扩容/" title="LVM基础及在线扩容">http://wangshengzhuang.com/2017/05/27/Linux/Linux基础/LVM基础及在线扩容/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本文版权归作者所有,转载请注明出处！'
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/LVM/" rel="tag"> <i class="fa fa-tag"> </i> LVM</a>
+          
+            <a href="/tags/Linux/" rel="tag"> <i class="fa fa-tag"> </i> Linux</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/26/Linux/Supervisor/Supervisor简介/" rel="next" title="Supervisor简介、安装、配置">
+                <i class="fa fa-chevron-left"></i> Supervisor简介、安装、配置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/28/Linux/每天一个Linux命令/rm命令/" rel="prev" title="rm命令">
+                rm命令 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        ﻿<!--MOB SHARE BEGIN-->
+                            <div class="-mob-share-ui-button -mob-share-open">分享</div>
+                            <div class="-mob-share-ui" style="display: none">
+                                <ul class="-mob-share-list">
+				    <li class="-mob-share-weixin"><p>微信</p></li>
+                                    <li class="-mob-share-qq"><p>QQ好友</p></li>
+				    <li class="-mob-share-qzone"><p>QQ空间</p></li>
+				    <li class="-mob-share-youdao"><p>有道云笔记</p></li>
+				    <li class="-mob-share-weibo"><p>新浪微博</p></li>
+                                    <li class="-mob-share-tencentweibo"><p>腾讯微博</p></li>
+                                    <li class="-mob-share-douban"><p>豆瓣</p></li>
+                                    <li class="-mob-share-facebook"><p>Facebook</p></li>
+                                    <li class="-mob-share-twitter"><p>Twitter</p></li>
+                                    <li class="-mob-share-google"><p>Google+</p></li>
+                                    <li class="-mob-share-linkedin"><p>LinkedIn</p></li>
+                                </ul>
+                                <div class="-mob-share-close">取消</div>
+                            </div>
+<div class="-mob-share-ui-bg"></div>
+<script id="-mob-share" src="http://f1.webshare.mob.com/code/mob-share.js?appkey=b21b3b396423fbd4db32b55d570db922"></script>
+<!--MOB SHARE END-->
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.png"
+               alt="小强斋太" />
+          <p class="site-author-name" itemprop="name">小强斋太</p>
+           
+              <p class="site-description motion-element" itemprop="description">Stay hungry. Stay foolish</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wangshengzhuang" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wangshengzhuang.com" title="小强斋太-Study Notes" target="_blank">小强斋太-Study Notes</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        <br/>
+<div>
+<span> 总访问量(PV): <img src="http://cc.amazingcounters.com/counter.php?i=3214342&c=9643339" alt="UV" title="总访问量">
+独立访客(UV): <img src="http://cc.amazingcounters.com/counter.php?i=3214343&c=9643342" alt="PV" title="访问人数"> 
+</span>
+</div>
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、-前言"><span class="nav-text">一、 前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、使用LVM的好处"><span class="nav-text">二、使用LVM的好处</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、-LVM基本术语"><span class="nav-text">三、 LVM基本术语</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、-安装LVM"><span class="nav-text">四、 安装LVM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#五：-LVM基本操作"><span class="nav-text">五： LVM基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#新建一个逻辑卷并挂载"><span class="nav-text">新建一个逻辑卷并挂载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#扩展逻辑卷大小"><span class="nav-text">扩展逻辑卷大小</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#减小逻辑卷大小"><span class="nav-text">减小逻辑卷大小</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#删除逻辑卷"><span class="nav-text">删除逻辑卷</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小强斋太</span>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "e97c4421445f4327b7168d5d1f51a36c",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      $('#local-search-input').focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("wtjyw6ICkB3kdGGpS6e750op-gzGzoHsz", "1VgU4A2cb7V5hk7UskuqbrWr");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

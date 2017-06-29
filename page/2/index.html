@@ -10,7 +10,21 @@
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*��������ɫ*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*��Ӱ��ɫ*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*�ϱ߿���ɫ*/
+        border-left-color: #1E92FB;    /*���߿���ɫ*/
+    }
+</style>
 
 
 
@@ -173,6 +187,7 @@
    page-home 
  ">
     <div class="headband"></div>
+	<a href="https://github.com/wangshengzhuang"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
@@ -339,7 +354,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/13/运维相关/Ansible/Ansible安装/">
+    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/28/Linux/每天一个Linux命令/rm命令/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="小强斋太">
@@ -361,8 +376,8 @@
             
               
                 
-                <a class="post-title-link" href="/2017/05/13/运维相关/Ansible/Ansible安装/" itemprop="url">
-                  Ansible安装
+                <a class="post-title-link" href="/2017/05/28/Linux/每天一个Linux命令/rm命令/" itemprop="url">
+                  rm命令
                 </a>
               
             
@@ -378,408 +393,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-13T23:26:47+08:00">
-                2017-05-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/运维相关/" itemprop="url" rel="index">
-                    <span itemprop="name">运维相关</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/运维相关/Ansible/" itemprop="url" rel="index">
-                    <span itemprop="name">Ansible</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2017/05/13/运维相关/Ansible/Ansible安装/" class="leancloud_visitors" data-flag-title="Ansible安装">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数 </span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计</span>
-                
-                <span title="字数统计">
-                  823
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长预计</span>
-                
-                <span title="阅读时长预计">
-                  3
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>本文主要记录了ansible的安装方法。</p>
-<p><img src="http://image.wangshengzhuang.com/17-5-19/88214161-file_1495207716369_76e1.jpg" alt=""></p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/05/13/运维相关/Ansible/Ansible安装/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/12/运维相关/Ansible/初识Ansible/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="小强斋太">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小强斋太-Study Notes">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/05/12/运维相关/Ansible/初识Ansible/" itemprop="url">
-                  初识Ansible
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-12T23:26:47+08:00">
-                2017-05-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/运维相关/" itemprop="url" rel="index">
-                    <span itemprop="name">运维相关</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/运维相关/Ansible/" itemprop="url" rel="index">
-                    <span itemprop="name">Ansible</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2017/05/12/运维相关/Ansible/初识Ansible/" class="leancloud_visitors" data-flag-title="初识Ansible">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数 </span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计</span>
-                
-                <span title="字数统计">
-                  567
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长预计</span>
-                
-                <span title="阅读时长预计">
-                  2
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>初识ansible。</p>
-<p><img src="http://image.wangshengzhuang.com/17-5-19/88214161-file_1495207716369_76e1.jpg" alt=""></p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/05/12/运维相关/Ansible/初识Ansible/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/10/Linux/每天一个Linux命令/cd命令/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="小强斋太">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小强斋太-Study Notes">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/05/10/Linux/每天一个Linux命令/cd命令/" itemprop="url">
-                  cd命令
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-10T22:12:49+08:00">
-                2017-05-10
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-28T22:55:56+08:00">
+                2017-05-28
               </time>
             
 
@@ -829,7 +444,7 @@
 
           
           
-             <span id="/2017/05/10/Linux/每天一个Linux命令/cd命令/" class="leancloud_visitors" data-flag-title="cd命令">
+             <span id="/2017/05/28/Linux/每天一个Linux命令/rm命令/" class="leancloud_visitors" data-flag-title="rm命令">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -854,206 +469,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  463
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长预计</span>
-                
-                <span title="阅读时长预计">
-                  2
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>本文主要记录cd命令的用法</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/05/10/Linux/每天一个Linux命令/cd命令/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/09/Linux/每天一个Linux命令/pwd命令/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="小强斋太">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/avatar.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小强斋太-Study Notes">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/05/09/Linux/每天一个Linux命令/pwd命令/" itemprop="url">
-                  pwd命令
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-09T22:12:49+08:00">
-                2017-05-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/每天一个Linux命令/" itemprop="url" rel="index">
-                    <span itemprop="name">每天一个Linux命令</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2017/05/09/Linux/每天一个Linux命令/pwd命令/" class="leancloud_visitors" data-flag-title="pwd命令">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数 </span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计</span>
-                
-                <span title="字数统计">
-                  180
+                  286
                 </span>
               
 
@@ -1088,10 +504,10 @@
 
       
         
-          <p>本文主要记录pwd命令的用法</p>
+          <p>摘要: rm（Remove file 删除目录或文件）删除文件，对于链接文件，只是删除整个链接文件，而原有文件保持不变。</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/05/09/Linux/每天一个Linux命令/pwd命令/#more" rel="contents">
+            <a class="btn" href="/2017/05/28/Linux/每天一个Linux命令/rm命令/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1137,7 +553,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/08/MySQL/MySQL HA/InnoDB Cluster/从已有的组复制搭建InnoDB Cluster环境/">
+    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/25/Linux/每天一个Linux命令/nslookup命令/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="小强斋太">
@@ -1159,8 +575,8 @@
             
               
                 
-                <a class="post-title-link" href="/2017/05/08/MySQL/MySQL HA/InnoDB Cluster/从已有的组复制搭建InnoDB Cluster环境/" itemprop="url">
-                  从已有的组复制搭建InnoDB Cluster环境
+                <a class="post-title-link" href="/2017/05/25/Linux/每天一个Linux命令/nslookup命令/" itemprop="url">
+                  nslookup命令
                 </a>
               
             
@@ -1176,8 +592,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-08T00:00:00+08:00">
-                2017-05-08
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-25T22:55:56+08:00">
+                2017-05-25
               </time>
             
 
@@ -1199,8 +615,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MySQL/" itemprop="url" rel="index">
-                    <span itemprop="name">MySQL</span>
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
                   </a>
                 </span>
 
@@ -1210,19 +626,8 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MySQL/MySQL-HA/" itemprop="url" rel="index">
-                    <span itemprop="name">MySQL HA</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MySQL/MySQL-HA/InnoDB-Cluster/" itemprop="url" rel="index">
-                    <span itemprop="name">InnoDB Cluster</span>
+                  <a href="/categories/Linux/每天一个Linux命令/" itemprop="url" rel="index">
+                    <span itemprop="name">每天一个Linux命令</span>
                   </a>
                 </span>
 
@@ -1238,7 +643,7 @@
 
           
           
-             <span id="/2017/05/08/MySQL/MySQL HA/InnoDB Cluster/从已有的组复制搭建InnoDB Cluster环境/" class="leancloud_visitors" data-flag-title="从已有的组复制搭建InnoDB Cluster环境">
+             <span id="/2017/05/25/Linux/每天一个Linux命令/nslookup命令/" class="leancloud_visitors" data-flag-title="nslookup命令">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -1263,7 +668,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  832
+                  729
                 </span>
               
 
@@ -1279,7 +684,7 @@
                   <span class="post-meta-item-text">阅读时长预计</span>
                 
                 <span title="阅读时长预计">
-                  5
+                  3
                 </span>
               
             </div>
@@ -1298,10 +703,10 @@
 
       
         
-          <p>本文描述了如何基于已有的MySQL Group Replication，创建一个 Innodb cluster。</p>
+          <p>摘要: nslookup命令简介</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/05/08/MySQL/MySQL HA/InnoDB Cluster/从已有的组复制搭建InnoDB Cluster环境/#more" rel="contents">
+            <a class="btn" href="/2017/05/25/Linux/每天一个Linux命令/nslookup命令/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1347,7 +752,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/07/MySQL/Group Replication/MySQL Group Replication 部署中遇到的错误/">
+    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/24/Linux/每天一个Linux命令/cp命令/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="小强斋太">
@@ -1369,8 +774,8 @@
             
               
                 
-                <a class="post-title-link" href="/2017/05/07/MySQL/Group Replication/MySQL Group Replication 部署中遇到的错误/" itemprop="url">
-                  MySQL Group Replication 部署中遇到的错误
+                <a class="post-title-link" href="/2017/05/24/Linux/每天一个Linux命令/cp命令/" itemprop="url">
+                  cp命令
                 </a>
               
             
@@ -1386,8 +791,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-07T00:20:05+08:00">
-                2017-05-07
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-24T22:55:56+08:00">
+                2017-05-24
               </time>
             
 
@@ -1409,8 +814,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MySQL/" itemprop="url" rel="index">
-                    <span itemprop="name">MySQL</span>
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
                   </a>
                 </span>
 
@@ -1420,8 +825,8 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MySQL/Group-Replication/" itemprop="url" rel="index">
-                    <span itemprop="name">Group Replication</span>
+                  <a href="/categories/Linux/每天一个Linux命令/" itemprop="url" rel="index">
+                    <span itemprop="name">每天一个Linux命令</span>
                   </a>
                 </span>
 
@@ -1437,7 +842,7 @@
 
           
           
-             <span id="/2017/05/07/MySQL/Group Replication/MySQL Group Replication 部署中遇到的错误/" class="leancloud_visitors" data-flag-title="MySQL Group Replication 部署中遇到的错误">
+             <span id="/2017/05/24/Linux/每天一个Linux命令/cp命令/" class="leancloud_visitors" data-flag-title="cp命令">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -1462,7 +867,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  1,564
+                  1,594
                 </span>
               
 
@@ -1478,7 +883,7 @@
                   <span class="post-meta-item-text">阅读时长预计</span>
                 
                 <span title="阅读时长预计">
-                  9
+                  7
                 </span>
               
             </div>
@@ -1497,10 +902,10 @@
 
       
         
-          <p>本文主要描述了MySQL Group Replication 部署中遇到的错误</p>
+          <p>摘要: cp（Copy file）：将源文件复制至目标文件，或将多个源文件复制至目标目录。</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/05/07/MySQL/Group Replication/MySQL Group Replication 部署中遇到的错误/#more" rel="contents">
+            <a class="btn" href="/2017/05/24/Linux/每天一个Linux命令/cp命令/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1546,7 +951,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/06/MySQL/Group Replication/Deploying Group Replication in Single-Primary Mode/">
+    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/20/Linux/每天一个Linux命令/rmdir命令/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="小强斋太">
@@ -1568,8 +973,8 @@
             
               
                 
-                <a class="post-title-link" href="/2017/05/06/MySQL/Group Replication/Deploying Group Replication in Single-Primary Mode/" itemprop="url">
-                  Deploying Group Replication in Single-Primary Mode
+                <a class="post-title-link" href="/2017/05/20/Linux/每天一个Linux命令/rmdir命令/" itemprop="url">
+                  rmdir命令
                 </a>
               
             
@@ -1585,8 +990,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-06T23:41:22+08:00">
-                2017-05-06
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-20T22:55:56+08:00">
+                2017-05-20
               </time>
             
 
@@ -1608,8 +1013,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MySQL/" itemprop="url" rel="index">
-                    <span itemprop="name">MySQL</span>
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
                   </a>
                 </span>
 
@@ -1619,8 +1024,8 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MySQL/Group-Replication/" itemprop="url" rel="index">
-                    <span itemprop="name">Group Replication</span>
+                  <a href="/categories/Linux/每天一个Linux命令/" itemprop="url" rel="index">
+                    <span itemprop="name">每天一个Linux命令</span>
                   </a>
                 </span>
 
@@ -1636,7 +1041,7 @@
 
           
           
-             <span id="/2017/05/06/MySQL/Group Replication/Deploying Group Replication in Single-Primary Mode/" class="leancloud_visitors" data-flag-title="Deploying Group Replication in Single-Primary Mode">
+             <span id="/2017/05/20/Linux/每天一个Linux命令/rmdir命令/" class="leancloud_visitors" data-flag-title="rmdir命令">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -1661,7 +1066,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  1,195
+                  266
                 </span>
               
 
@@ -1677,7 +1082,7 @@
                   <span class="post-meta-item-text">阅读时长预计</span>
                 
                 <span title="阅读时长预计">
-                  6
+                  1
                 </span>
               
             </div>
@@ -1696,11 +1101,10 @@
 
       
         
-          <p>本文描述了3实例MySQL Group Replication的搭建过程</p>
-<p><img src="http://image.wangshengzhuang.com/c0fb0918de7c170b6d6749896862f7bd.png" alt="MGR"></p>
+          <p>摘要: rmdir (Remove Directory删除目录): 用来删除空目录</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/05/06/MySQL/Group Replication/Deploying Group Replication in Single-Primary Mode/#more" rel="contents">
+            <a class="btn" href="/2017/05/20/Linux/每天一个Linux命令/rmdir命令/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1746,7 +1150,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/05/MySQL/MySQL HA/InnoDB Cluster/InnoDB Cluster 多机3实例节点搭建过程/">
+    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/19/Linux/每天一个Linux命令/mkdir命令/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="小强斋太">
@@ -1768,8 +1172,8 @@
             
               
                 
-                <a class="post-title-link" href="/2017/05/05/MySQL/MySQL HA/InnoDB Cluster/InnoDB Cluster 多机3实例节点搭建过程/" itemprop="url">
-                  多节点3实例搭建InnoDB Cluster环境
+                <a class="post-title-link" href="/2017/05/19/Linux/每天一个Linux命令/mkdir命令/" itemprop="url">
+                  mkdir命令
                 </a>
               
             
@@ -1785,8 +1189,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-05T21:00:00+08:00">
-                2017-05-05
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-19T22:43:25+08:00">
+                2017-05-19
               </time>
             
 
@@ -1808,8 +1212,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MySQL/" itemprop="url" rel="index">
-                    <span itemprop="name">MySQL</span>
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
                   </a>
                 </span>
 
@@ -1819,19 +1223,8 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MySQL/MySQL-HA/" itemprop="url" rel="index">
-                    <span itemprop="name">MySQL HA</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MySQL/MySQL-HA/InnoDB-Cluster/" itemprop="url" rel="index">
-                    <span itemprop="name">InnoDB Cluster</span>
+                  <a href="/categories/Linux/每天一个Linux命令/" itemprop="url" rel="index">
+                    <span itemprop="name">每天一个Linux命令</span>
                   </a>
                 </span>
 
@@ -1847,7 +1240,7 @@
 
           
           
-             <span id="/2017/05/05/MySQL/MySQL HA/InnoDB Cluster/InnoDB Cluster 多机3实例节点搭建过程/" class="leancloud_visitors" data-flag-title="多节点3实例搭建InnoDB Cluster环境">
+             <span id="/2017/05/19/Linux/每天一个Linux命令/mkdir命令/" class="leancloud_visitors" data-flag-title="mkdir命令">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -1872,7 +1265,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  1,517
+                  440
                 </span>
               
 
@@ -1888,7 +1281,7 @@
                   <span class="post-meta-item-text">阅读时长预计</span>
                 
                 <span title="阅读时长预计">
-                  9
+                  2
                 </span>
               
             </div>
@@ -1907,41 +1300,10 @@
 
       
         
-          <p>本文描述了如何通过单机三个msyql实例，创建一个Single-Primary Innodb cluster，并通过mysql Router对connections实现路由，实现高可用性。</p>
-<table>
-<thead>
-<tr>
-<th>ip地址</th>
-<th>主机名</th>
-<th>server_id</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>192.168.0.101</td>
-<td>mysql001</td>
-<td>1</td>
-</tr>
-<tr>
-<td>192.168.0.102</td>
-<td>mysql002</td>
-<td>2</td>
-</tr>
-<tr>
-<td>192.168.0.103</td>
-<td>mysql003</td>
-<td>3</td>
-</tr>
-<tr>
-<td>192.168.0.104</td>
-<td>mysql-router</td>
-</tr>
-</tbody>
-</table>
-<p><img src="http://image.wangshengzhuang.com/17-5-5/42193296-file_1493993554567_5bbb.png" alt=""></p>
+          <p>摘要: mkdir(Make Directory 创建目录): 若指定目录不存在则创建目录。</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/05/05/MySQL/MySQL HA/InnoDB Cluster/InnoDB Cluster 多机3实例节点搭建过程/#more" rel="contents">
+            <a class="btn" href="/2017/05/19/Linux/每天一个Linux命令/mkdir命令/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1987,7 +1349,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/04/MySQL/MySQL HA/InnoDB Cluster/单机3实例搭建InnoDB Cluster环境/">
+    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/18/运维相关/Ansible/Playbook 角色(Roles) 和 Include 语句/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="小强斋太">
@@ -2009,8 +1371,8 @@
             
               
                 
-                <a class="post-title-link" href="/2017/05/04/MySQL/MySQL HA/InnoDB Cluster/单机3实例搭建InnoDB Cluster环境/" itemprop="url">
-                  单机3实例搭建InnoDB Cluster环境
+                <a class="post-title-link" href="/2017/05/18/运维相关/Ansible/Playbook 角色(Roles) 和 Include 语句/" itemprop="url">
+                  Playbook 角色(Roles) 和 Include 语句
                 </a>
               
             
@@ -2026,8 +1388,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-04T21:00:00+08:00">
-                2017-05-04
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-18T23:26:47+08:00">
+                2017-05-18
               </time>
             
 
@@ -2049,8 +1411,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MySQL/" itemprop="url" rel="index">
-                    <span itemprop="name">MySQL</span>
+                  <a href="/categories/运维相关/" itemprop="url" rel="index">
+                    <span itemprop="name">运维相关</span>
                   </a>
                 </span>
 
@@ -2060,19 +1422,8 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MySQL/MySQL-HA/" itemprop="url" rel="index">
-                    <span itemprop="name">MySQL HA</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MySQL/MySQL-HA/InnoDB-Cluster/" itemprop="url" rel="index">
-                    <span itemprop="name">InnoDB Cluster</span>
+                  <a href="/categories/运维相关/Ansible/" itemprop="url" rel="index">
+                    <span itemprop="name">Ansible</span>
                   </a>
                 </span>
 
@@ -2088,7 +1439,7 @@
 
           
           
-             <span id="/2017/05/04/MySQL/MySQL HA/InnoDB Cluster/单机3实例搭建InnoDB Cluster环境/" class="leancloud_visitors" data-flag-title="单机3实例搭建InnoDB Cluster环境">
+             <span id="/2017/05/18/运维相关/Ansible/Playbook 角色(Roles) 和 Include 语句/" class="leancloud_visitors" data-flag-title="Playbook 角色(Roles) 和 Include 语句">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -2113,7 +1464,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  1,512
+                  700
                 </span>
               
 
@@ -2129,7 +1480,7 @@
                   <span class="post-meta-item-text">阅读时长预计</span>
                 
                 <span title="阅读时长预计">
-                  9
+                  3
                 </span>
               
             </div>
@@ -2148,11 +1499,10 @@
 
       
         
-          <p>本文描述了如何通过单机三个msyql实例，创建一个Single-Primary Innodb cluster，并通过mysql Router对connections实现路由，实现高可用性。</p>
-<p><img src="http://image.wangshengzhuang.com/17-5-4/61574976-file_1493910145576_cdbc.png" alt=""></p>
+          <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a><a href="http://www.ansible.com.cn/docs/playbooks_roles.html#id6" target="_blank" rel="external">简介</a></h3><p>当我们刚开始学习运用 playbook 时，可能会把 playbook 写成一个很大的文件，到后来可能你会希望这些文件是可以方便去重用的，所以需要重新去组织这些文件。</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/05/04/MySQL/MySQL HA/InnoDB Cluster/单机3实例搭建InnoDB Cluster环境/#more" rel="contents">
+            <a class="btn" href="/2017/05/18/运维相关/Ansible/Playbook 角色(Roles) 和 Include 语句/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -2198,7 +1548,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/03/MySQL/MySQL HA/InnoDB Cluster/3沙盒实例搭建InnoDB Cluster环境/">
+    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/17/运维相关/Ansible/Ansilbe Playbook/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="小强斋太">
@@ -2220,8 +1570,8 @@
             
               
                 
-                <a class="post-title-link" href="/2017/05/03/MySQL/MySQL HA/InnoDB Cluster/3沙盒实例搭建InnoDB Cluster环境/" itemprop="url">
-                  沙盒实例搭建InnoDB Cluster环境
+                <a class="post-title-link" href="/2017/05/17/运维相关/Ansible/Ansilbe Playbook/" itemprop="url">
+                  Ansible Playbook
                 </a>
               
             
@@ -2237,8 +1587,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-03T00:00:00+08:00">
-                2017-05-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-17T23:26:47+08:00">
+                2017-05-17
               </time>
             
 
@@ -2260,8 +1610,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MySQL/" itemprop="url" rel="index">
-                    <span itemprop="name">MySQL</span>
+                  <a href="/categories/运维相关/" itemprop="url" rel="index">
+                    <span itemprop="name">运维相关</span>
                   </a>
                 </span>
 
@@ -2271,19 +1621,8 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MySQL/MySQL-HA/" itemprop="url" rel="index">
-                    <span itemprop="name">MySQL HA</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MySQL/MySQL-HA/InnoDB-Cluster/" itemprop="url" rel="index">
-                    <span itemprop="name">InnoDB Cluster</span>
+                  <a href="/categories/运维相关/Ansible/" itemprop="url" rel="index">
+                    <span itemprop="name">Ansible</span>
                   </a>
                 </span>
 
@@ -2299,7 +1638,7 @@
 
           
           
-             <span id="/2017/05/03/MySQL/MySQL HA/InnoDB Cluster/3沙盒实例搭建InnoDB Cluster环境/" class="leancloud_visitors" data-flag-title="沙盒实例搭建InnoDB Cluster环境">
+             <span id="/2017/05/17/运维相关/Ansible/Ansilbe Playbook/" class="leancloud_visitors" data-flag-title="Ansible Playbook">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -2324,7 +1663,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  943
+                  1,619
                 </span>
               
 
@@ -2359,11 +1698,608 @@
 
       
         
-          <p>本文描述了如何通过三个沙盒msyql实例，创建一个Single-Primary Innodb cluster，并通过mysql Router对connections实现路由，实现高可用性。</p>
-<p><img src="http://image.wangshengzhuang.com/17-5-4/93088466-file_1493910959566_e506.png" alt=""></p>
+          <p>Playbooks 是 Ansible的配置,部署,编排语言.他们可以被描述为一个需要希望远程主机执行命令的方案,或者一组IT程序运行的命令集合.</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/05/03/MySQL/MySQL HA/InnoDB Cluster/3沙盒实例搭建InnoDB Cluster环境/#more" rel="contents">
+            <a class="btn" href="/2017/05/17/运维相关/Ansible/Ansilbe Playbook/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/16/运维相关/Ansible/Ad-hoc与命令执行模块/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小强斋太">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小强斋太-Study Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/05/16/运维相关/Ansible/Ad-hoc与命令执行模块/" itemprop="url">
+                  ad-hoc命令
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-16T23:26:47+08:00">
+                2017-05-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/运维相关/" itemprop="url" rel="index">
+                    <span itemprop="name">运维相关</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/运维相关/Ansible/" itemprop="url" rel="index">
+                    <span itemprop="name">Ansible</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/05/16/运维相关/Ansible/Ad-hoc与命令执行模块/" class="leancloud_visitors" data-flag-title="ad-hoc命令">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  1,300
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长预计</span>
+                
+                <span title="阅读时长预计">
+                  6
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>本文主要介绍了ansible的Ad-hoc命令。</p>
+<p><img src="http://image.wangshengzhuang.com/17-5-19/88214161-file_1495207716369_76e1.jpg" alt=""></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/05/16/运维相关/Ansible/Ad-hoc与命令执行模块/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/15/运维相关/Ansible/Ansible参数配置文件ansible.cfg/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小强斋太">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小强斋太-Study Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/05/15/运维相关/Ansible/Ansible参数配置文件ansible.cfg/" itemprop="url">
+                  Ansible参数配置文件ansible.cfg
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-15T23:26:47+08:00">
+                2017-05-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/运维相关/" itemprop="url" rel="index">
+                    <span itemprop="name">运维相关</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/运维相关/Ansible/" itemprop="url" rel="index">
+                    <span itemprop="name">Ansible</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/05/15/运维相关/Ansible/Ansible参数配置文件ansible.cfg/" class="leancloud_visitors" data-flag-title="Ansible参数配置文件ansible.cfg">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  1,729
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长预计</span>
+                
+                <span title="阅读时长预计">
+                  6
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>Ansible默认安装好后有一个配置文件/etc/ansible/ansible.cfg，该配置文件中定义了ansible的主机的默认配置部分，如默认是否需要输入密码、是否开启sudo认证、action_plugins插件的位置、hosts主机组的位置、是否开启log功能、默认端口、key文件位置等等。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/05/15/运维相关/Ansible/Ansible参数配置文件ansible.cfg/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/14/运维相关/Ansible/Ansible主机清单Inventory文件hosts/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小强斋太">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小强斋太-Study Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/05/14/运维相关/Ansible/Ansible主机清单Inventory文件hosts/" itemprop="url">
+                  Ansible主机清单Inventory文件hosts
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-14T23:26:47+08:00">
+                2017-05-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/运维相关/" itemprop="url" rel="index">
+                    <span itemprop="name">运维相关</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/运维相关/Ansible/" itemprop="url" rel="index">
+                    <span itemprop="name">Ansible</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/05/14/运维相关/Ansible/Ansible主机清单Inventory文件hosts/" class="leancloud_visitors" data-flag-title="Ansible主机清单Inventory文件hosts">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  1,442
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长预计</span>
+                
+                <span title="阅读时长预计">
+                  6
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>Ansible 通过读取默认的主机清单配置,可以同时连接到多个远程主机上执行任务组和主机之间的关系通过 inventory 文件配置. 默认的文件路径为 /etc/ansible/hosts。默认路径可以通过修改 ansible.cfg 的 hostfile 参数指定路径。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/05/14/运维相关/Ansible/Ansible主机清单Inventory文件hosts/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -2404,7 +2340,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2449,7 +2385,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">31</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2460,7 +2396,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -2471,7 +2407,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

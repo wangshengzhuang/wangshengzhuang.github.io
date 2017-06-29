@@ -10,7 +10,21 @@
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*��������ɫ*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*��Ӱ��ɫ*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*�ϱ߿���ɫ*/
+        border-left-color: #1E92FB;    /*���߿���ɫ*/
+    }
+</style>
 
 
 
@@ -74,7 +88,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="每天一个linux命令,cd," />
+  <meta name="keywords" content="每天一个Linux命令,cd," />
 
 
 
@@ -92,17 +106,17 @@
 
 
 
-<meta name="description" content="本文主要记录cd命令的用法">
-<meta name="keywords" content="每天一个linux命令,cd">
+<meta name="description" content="摘要: cd（Change Directory 改变目录）命令用来切换工作目录至dirname。">
+<meta name="keywords" content="每天一个Linux命令,cd">
 <meta property="og:type" content="article">
 <meta property="og:title" content="cd命令">
 <meta property="og:url" content="http://wangshengzhuang.com/2017/05/10/Linux/每天一个Linux命令/cd命令/index.html">
 <meta property="og:site_name" content="小强斋太-Study Notes">
-<meta property="og:description" content="本文主要记录cd命令的用法">
-<meta property="og:updated_time" content="2017-05-11T14:43:40.740Z">
+<meta property="og:description" content="摘要: cd（Change Directory 改变目录）命令用来切换工作目录至dirname。">
+<meta property="og:updated_time" content="2017-06-29T15:51:24.540Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="cd命令">
-<meta name="twitter:description" content="本文主要记录cd命令的用法">
+<meta name="twitter:description" content="摘要: cd（Change Directory 改变目录）命令用来切换工作目录至dirname。">
 
 
 
@@ -173,6 +187,7 @@
 
   <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
+	<a href="https://github.com/wangshengzhuang"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
@@ -461,7 +476,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  463
+                  476
                 </span>
               
 
@@ -495,18 +510,20 @@
       
 
       
-        <p>本文主要记录cd命令的用法</p>
+        <p>摘要: cd（Change Directory 改变目录）命令用来切换工作目录至dirname。</p>
 <a id="more"></a>
 <h3 id="1、作用"><a href="#1、作用" class="headerlink" title="1、作用"></a><strong>1、作用</strong></h3><p><strong>cd</strong>（Change Directory 改变目录）命令用来切换工作目录至dirname。 其中dirName表示法可为绝对路径或相对路径。若目录名称省略，则变换至使用者的home directory(也就是刚login时所在的目录)。另外，~也表示为home directory的意思，.则是表示目前所在的目录，..则表示目前目录位置的上一层目录。</p>
-<h3 id="2、用法"><a href="#2、用法" class="headerlink" title="2、用法"></a><strong>2、用法</strong></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cd    (选项)   (参数)</div></pre></td></tr></table></figure>
-<h3 id="3、选项"><a href="#3、选项" class="headerlink" title="3、选项"></a>3、选项</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">-p  如果要切换到的目标目录是一个符号连接，直接切换到符号连接指向的目标目录</div><div class="line">-L  如果要切换的目标目录是一个符号的连接，直接切换到字符连接名代表的目录，而非符号连接所指向的目标目录。</div><div class="line"> -   当仅实用&quot;-&quot;一个选项时，当前工作目录将被切换到环境变量&quot;OLDPWD&quot;所表示的目录。每当你更改目录时，shell都会将上一个目录位置记录在环境变量OLDPWD中</div></pre></td></tr></table></figure>
-<h4 id="4、实例"><a href="#4、实例" class="headerlink" title="4、实例"></a>4、实例</h4><h4 id="1、cd-进入用户主目录；"><a href="#1、cd-进入用户主目录；" class="headerlink" title="1、cd 进入用户主目录；"></a>1、cd 进入用户主目录；</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@cent6 init.d]# cd</div><div class="line">[root@cent6 ~]# pwd</div><div class="line">/root</div></pre></td></tr></table></figure>
-<h4 id="2、cd-进入用户主目录；"><a href="#2、cd-进入用户主目录；" class="headerlink" title="2、cd ~ 进入用户主目录；"></a>2、cd ~ 进入用户主目录；</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@cent6 ~]# cd ~</div><div class="line">[root@cent6 ~]# pwd</div><div class="line">/root</div><div class="line">[root@cent6 ~]#</div></pre></td></tr></table></figure>
-<h4 id="3、cd-返回进入此目录之前所在的目录"><a href="#3、cd-返回进入此目录之前所在的目录" class="headerlink" title="3、cd - 返回进入此目录之前所在的目录"></a>3、cd - 返回进入此目录之前所在的目录</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[root@cent6 ~]# pwd</div><div class="line">/root</div><div class="line">[root@cent6 ~]# cd /home</div><div class="line">[root@cent6 home]# cd -</div><div class="line">/root</div><div class="line">[root@cent6 ~]# pwd</div><div class="line">/root</div></pre></td></tr></table></figure>
+<h3 id="2、用法"><a href="#2、用法" class="headerlink" title="2、用法"></a><strong>2、用法</strong></h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span>    (选项)   (参数)</div></pre></td></tr></table></figure>
+<h3 id="3、选项"><a href="#3、选项" class="headerlink" title="3、选项"></a>3、选项</h3><figure class="highlight haml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">-<span class="ruby">p  如果要切换到的目标目录是一个符号连接，直接切换到符号连接指向的目标目录</span></div><div class="line">-<span class="ruby">L  如果要切换的目标目录是一个符号的连接，直接切换到字符连接名代表的目录，而非符号连接所指向的目标目录。</span></div><div class="line"> -<span class="ruby">   当仅实用<span class="string">"-"</span>一个选项时，当前工作目录将被切换到环境变量<span class="string">"OLDPWD"</span>所表示的目录。每当你更改目录时，shell都会将上一个目录位置记录在环境变量OLDPWD中</span></div></pre></td></tr></table></figure>
+<h4 id="4、实例"><a href="#4、实例" class="headerlink" title="4、实例"></a>4、实例</h4><h4 id="1、cd-进入用户主目录；"><a href="#1、cd-进入用户主目录；" class="headerlink" title="1、cd 进入用户主目录；"></a>1、cd 进入用户主目录；</h4><figure class="highlight zsh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@cent6 init.d]<span class="comment"># cd</span></div><div class="line">[root@cent6 ~]<span class="comment"># pwd</span></div><div class="line">/root</div></pre></td></tr></table></figure>
+<h4 id="2、cd-进入用户主目录；"><a href="#2、cd-进入用户主目录；" class="headerlink" title="2、cd ~ 进入用户主目录；"></a>2、cd ~ 进入用户主目录；</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@cent6 ~]<span class="comment"># cd ~</span></div><div class="line">[root@cent6 ~]<span class="comment"># pwd</span></div><div class="line">/root</div><div class="line">[root@cent6 ~]<span class="comment">#</span></div></pre></td></tr></table></figure>
+<h4 id="3、cd-返回进入此目录之前所在的目录"><a href="#3、cd-返回进入此目录之前所在的目录" class="headerlink" title="3、cd - 返回进入此目录之前所在的目录"></a>3、cd - 返回进入此目录之前所在的目录</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[root@cent6 ~]<span class="comment"># pwd</span></div><div class="line">/root</div><div class="line">[root@cent6 ~]<span class="comment"># cd /home</span></div><div class="line">[root@cent6 home]<span class="comment"># cd -</span></div><div class="line">/root</div><div class="line">[root@cent6 ~]<span class="comment"># pwd</span></div><div class="line">/root</div></pre></td></tr></table></figure>
 <h4 id="4、cd-返回上级目录"><a href="#4、cd-返回上级目录" class="headerlink" title="4、cd .. 返回上级目录"></a>4、cd .. 返回上级目录</h4><p>（若当前目录为“/“，则执行完后还在“/“；”..”为上级目录的意思）；</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@cent6 init.d]# pwd</div><div class="line">/etc/init.d</div><div class="line">[root@cent6 init.d]# cd ..</div><div class="line">[root@cent6 etc]# pwd</div><div class="line">/etc</div></pre></td></tr></table></figure>
-<h4 id="5、cd-返回上两级目录；"><a href="#5、cd-返回上两级目录；" class="headerlink" title="5、cd ../.. 返回上两级目录；"></a>5、cd ../.. 返回上两级目录；</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@cent6 init.d]# pwd</div><div class="line">/etc/init.d</div><div class="line">[root@cent6 init.d]# cd ../..</div><div class="line">[root@cent6 /]# pwd</div><div class="line">/</div></pre></td></tr></table></figure>
-<h4 id="6、cd-把上个命令的参数作为cd参数使用"><a href="#6、cd-把上个命令的参数作为cd参数使用" class="headerlink" title="6、cd !$ 把上个命令的参数作为cd参数使用"></a>6、cd !$ 把上个命令的参数作为cd参数使用</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@cent6 /]# ls -ld /media/</div><div class="line">drwxr-xr-x. 2 root root 4096 Sep 23  2011 /media/</div><div class="line">[root@cent6 /]# cd !$</div><div class="line">cd /media/</div><div class="line">[root@cent6 media]# pwd</div><div class="line">/media</div></pre></td></tr></table></figure>
+<h4 id="5、cd-返回上两级目录；"><a href="#5、cd-返回上两级目录；" class="headerlink" title="5、cd ../.. 返回上两级目录；"></a>5、cd ../.. 返回上两级目录；</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@cent6 init.d]<span class="comment"># pwd</span></div><div class="line">/etc/init.d</div><div class="line">[root@cent6 init.d]<span class="comment"># cd ../..</span></div><div class="line">[root@cent6 /]<span class="comment"># pwd</span></div><div class="line">/</div></pre></td></tr></table></figure>
+<h4 id="6、cd-把上个命令的参数作为cd参数使用"><a href="#6、cd-把上个命令的参数作为cd参数使用" class="headerlink" title="6、cd !$ 把上个命令的参数作为cd参数使用"></a>6、cd !$ 把上个命令的参数作为cd参数使用</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@cent6 /]<span class="comment"># ls -ld /media/</span></div><div class="line">drwxr-xr-x. 2 root root 4096 Sep 23  2011 /media/</div><div class="line">[root@cent6 /]<span class="comment"># cd !$</span></div><div class="line"><span class="built_in">cd</span> /media/</div><div class="line">[root@cent6 media]<span class="comment"># pwd</span></div><div class="line">/media</div></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">table</span></div></pre></td></tr></table></figure>
+
       
     </div>
 
@@ -571,7 +588,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/每天一个linux命令/" rel="tag"> <i class="fa fa-tag"> </i> 每天一个linux命令</a>
+            <a href="/tags/每天一个Linux命令/" rel="tag"> <i class="fa fa-tag"> </i> 每天一个Linux命令</a>
           
             <a href="/tags/cd/" rel="tag"> <i class="fa fa-tag"> </i> cd</a>
           
@@ -596,8 +613,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/05/11/Linux/Supervisor/Supervisor简介/" rel="prev" title="Supervisor简介、安装、配置">
-                Supervisor简介、安装、配置 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/05/11/Linux/每天一个Linux命令/ls命令/" rel="prev" title="ls命令">
+                ls命令 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -694,7 +711,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">31</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -705,7 +722,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -716,7 +733,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -787,7 +804,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、作用"><span class="nav-number">1.</span> <span class="nav-text">1、作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、用法"><span class="nav-number">2.</span> <span class="nav-text">2、用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、选项"><span class="nav-number">3.</span> <span class="nav-text">3、选项</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4、实例"><span class="nav-number">3.1.</span> <span class="nav-text">4、实例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1、cd-进入用户主目录；"><span class="nav-number">3.2.</span> <span class="nav-text">1、cd 进入用户主目录；</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、cd-进入用户主目录；"><span class="nav-number">3.3.</span> <span class="nav-text">2、cd ~ 进入用户主目录；</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、cd-返回进入此目录之前所在的目录"><span class="nav-number">3.4.</span> <span class="nav-text">3、cd - 返回进入此目录之前所在的目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、cd-返回上级目录"><span class="nav-number">3.5.</span> <span class="nav-text">4、cd .. 返回上级目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5、cd-返回上两级目录；"><span class="nav-number">3.6.</span> <span class="nav-text">5、cd ../.. 返回上两级目录；</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6、cd-把上个命令的参数作为cd参数使用"><span class="nav-number">3.7.</span> <span class="nav-text">6、cd !$ 把上个命令的参数作为cd参数使用</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、作用"><span class="nav-text">1、作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、用法"><span class="nav-text">2、用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、选项"><span class="nav-text">3、选项</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4、实例"><span class="nav-text">4、实例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1、cd-进入用户主目录；"><span class="nav-text">1、cd 进入用户主目录；</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、cd-进入用户主目录；"><span class="nav-text">2、cd ~ 进入用户主目录；</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、cd-返回进入此目录之前所在的目录"><span class="nav-text">3、cd - 返回进入此目录之前所在的目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、cd-返回上级目录"><span class="nav-text">4、cd .. 返回上级目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5、cd-返回上两级目录；"><span class="nav-text">5、cd ../.. 返回上两级目录；</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6、cd-把上个命令的参数作为cd参数使用"><span class="nav-text">6、cd !$ 把上个命令的参数作为cd参数使用</span></a></li></ol></li></ol></div>
             
 
           </div>

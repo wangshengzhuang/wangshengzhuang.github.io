@@ -10,7 +10,21 @@
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*��������ɫ*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*��Ӱ��ɫ*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*�ϱ߿���ɫ*/
+        border-left-color: #1E92FB;    /*���߿���ɫ*/
+    }
+</style>
 
 
 
@@ -175,6 +189,7 @@
 
   <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
+	<a href="https://github.com/wangshengzhuang"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
@@ -501,9 +516,9 @@
 <a id="more"></a>  
 <h3 id="Include-语句"><a href="#Include-语句" class="headerlink" title="Include 语句"></a><a href="http://www.ansible.com.cn/docs/playbooks_roles.html#id5" target="_blank" rel="external">Include 语句</a></h3><p>基本上，使用 include 语句引用 task 文件的方法，可允许你将一个配置策略分解到更小的文件中。使用 include 语句引用 tasks 是将 tasks 从其他文件拉取过来。因为 handlers 也是 tasks，所以你也可以使用 include 语句去引用 handlers 文件。</p>
 <p>Playbook 同样可以使用 include 引用其他 playbook 文件中的 play。这时被引用的 play 会被插入到当前的 playbook 中，当前的 playbook 中就有了一个更长的的 play 列表。Include 指令看起来像下面这样，在一个 playbook 中，Include 指令可以跟普通的 task 混合在一起使用:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">tasks:</div><div class="line"></div><div class="line">  - include: tasks/foo.yml</div></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="string">tasks:</span></div><div class="line"></div><div class="line">  - <span class="string">include:</span> tasks/foo.yml</div></pre></td></tr></table></figure>
 <p>你也可以给 include 传递变量。我们称之为 ‘参数化的 include’。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">tasks:</div><div class="line">  - include: wordpress.yml wp_user=timmy</div></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="string">tasks:</span></div><div class="line">  - <span class="string">include:</span> wordpress.yml wp_user=timmy</div></pre></td></tr></table></figure>
 <h3 id="Playbook-角色-Roles"><a href="#Playbook-角色-Roles" class="headerlink" title="Playbook 角色(Roles)"></a><a href="http://www.ansible.com.cn/docs/playbooks_roles.html#id5" target="_blank" rel="external">Playbook 角色(Roles)</a></h3><p>那怎样组织 playbook 才是最好的方式呢？简单的回答就是：使用 roles ! Roles 的概念来自于这样的想法：通过 include 包含文件并将它们组合在一起，组织成一个简洁、可重用的抽象对象。这种方式可使你将注意力更多地放在大局上，只有在需要时才去深入了解细节。Roles 基于一个已知的文件结构，去自动的加载某些 vars_files，tasks 以及 handlers。基于 roles 对内容进行分组，使得我们可以容易地与其他用户分享 roles 。</p>
 <!-- more -->
 <p><img src="http://image.wangshengzhuang.com/17-05-23/1495543493176.jpg" alt="img"></p>
@@ -705,7 +720,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">31</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -716,7 +731,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -727,7 +742,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -798,7 +813,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Include-语句"><span class="nav-number">2.</span> <span class="nav-text">Include 语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Playbook-角色-Roles"><span class="nav-number">3.</span> <span class="nav-text">Playbook 角色(Roles)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#角色依赖-Role-Dependencies"><span class="nav-number">4.</span> <span class="nav-text">角色依赖(Role Dependencies)</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#简介"><span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Include-语句"><span class="nav-text">Include 语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Playbook-角色-Roles"><span class="nav-text">Playbook 角色(Roles)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#角色依赖-Role-Dependencies"><span class="nav-text">角色依赖(Role Dependencies)</span></a></li></ol></div>
             
 
           </div>

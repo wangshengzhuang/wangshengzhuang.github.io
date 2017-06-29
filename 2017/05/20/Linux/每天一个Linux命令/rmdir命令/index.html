@@ -10,7 +10,21 @@
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*��������ɫ*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*��Ӱ��ɫ*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*�ϱ߿���ɫ*/
+        border-left-color: #1E92FB;    /*���߿���ɫ*/
+    }
+</style>
 
 
 
@@ -74,7 +88,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="每天一个linux命令,rmdir," />
+  <meta name="keywords" content="每天一个Linux命令,rmdir," />
 
 
 
@@ -92,17 +106,17 @@
 
 
 
-<meta name="description" content="1、命令简介rmdir (Remove Directory删除目录): 用来删除空目录，删除某目录时也必须具有对父目录的写权限。 2、用法1用法：rmdir [选项]... 目录... 3、选项123--ignore-fail-on-non-empty  忽略仅由目录非空产生的所有错误-p, –parents              删除指定目录及其上级文件夹，例如&amp;quot;rmdir -p">
-<meta name="keywords" content="每天一个linux命令,rmdir">
+<meta name="description" content="摘要: rmdir (Remove Directory删除目录): 用来删除空目录">
+<meta name="keywords" content="每天一个Linux命令,rmdir">
 <meta property="og:type" content="article">
 <meta property="og:title" content="rmdir命令">
 <meta property="og:url" content="http://wangshengzhuang.com/2017/05/20/Linux/每天一个Linux命令/rmdir命令/index.html">
 <meta property="og:site_name" content="小强斋太-Study Notes">
-<meta property="og:description" content="1、命令简介rmdir (Remove Directory删除目录): 用来删除空目录，删除某目录时也必须具有对父目录的写权限。 2、用法1用法：rmdir [选项]... 目录... 3、选项123--ignore-fail-on-non-empty  忽略仅由目录非空产生的所有错误-p, –parents              删除指定目录及其上级文件夹，例如&amp;quot;rmdir -p">
-<meta property="og:updated_time" content="2017-06-07T15:00:06.669Z">
+<meta property="og:description" content="摘要: rmdir (Remove Directory删除目录): 用来删除空目录">
+<meta property="og:updated_time" content="2017-06-29T15:49:46.685Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="rmdir命令">
-<meta name="twitter:description" content="1、命令简介rmdir (Remove Directory删除目录): 用来删除空目录，删除某目录时也必须具有对父目录的写权限。 2、用法1用法：rmdir [选项]... 目录... 3、选项123--ignore-fail-on-non-empty  忽略仅由目录非空产生的所有错误-p, –parents              删除指定目录及其上级文件夹，例如&amp;quot;rmdir -p">
+<meta name="twitter:description" content="摘要: rmdir (Remove Directory删除目录): 用来删除空目录">
 
 
 
@@ -173,6 +187,7 @@
 
   <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
+	<a href="https://github.com/wangshengzhuang"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
@@ -461,7 +476,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  250
+                  266
                 </span>
               
 
@@ -495,10 +510,11 @@
       
 
       
-        <a id="more"></a>
+        <p>摘要: rmdir (Remove Directory删除目录): 用来删除空目录</p>
+<a id="more"></a>
 <h3 id="1、命令简介"><a href="#1、命令简介" class="headerlink" title="1、命令简介"></a>1、命令简介</h3><p><strong>rmdir</strong> (Remove Directory删除目录): 用来删除空目录，删除某目录时也必须具有对父目录的写权限。</p>
-<h3 id="2、用法"><a href="#2、用法" class="headerlink" title="2、用法"></a>2、用法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">用法：rmdir [选项]... 目录...</div></pre></td></tr></table></figure>
-<h3 id="3、选项"><a href="#3、选项" class="headerlink" title="3、选项"></a>3、选项</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">--ignore-fail-on-non-empty  忽略仅由目录非空产生的所有错误</div><div class="line">-p, –parents              删除指定目录及其上级文件夹，例如&quot;rmdir -p a/b/c&apos;&quot;  与&quot;rmdir a/b/c a/b a&apos;&quot; 基本相同</div><div class="line">-v, –verbose              输出处理的目录详情</div></pre></td></tr></table></figure>
+<h3 id="2、用法"><a href="#2、用法" class="headerlink" title="2、用法"></a>2、用法</h3><figure class="highlight clean"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">用法：rmdir [选项]... 目录...</div></pre></td></tr></table></figure>
+<h3 id="3、选项"><a href="#3、选项" class="headerlink" title="3、选项"></a>3、选项</h3><figure class="highlight haml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">-<span class="ruby">-ignore-fail-on-non-empty  忽略仅由目录非空产生的所有错误</span></div><div class="line">-<span class="ruby">p, –parents              删除指定目录及其上级文件夹，例如<span class="string">"rmdir -p a/b/c'"</span>  与<span class="string">"rmdir a/b/c a/b a'"</span> 基本相同</span></div><div class="line">-<span class="ruby">v, –verbose              输出处理的目录详情</span></div></pre></td></tr></table></figure>
 <h3 id="4、实例"><a href="#4、实例" class="headerlink" title="4、实例"></a>4、实例</h3><h4 id="实例1：删除一个空目录"><a href="#实例1：删除一个空目录" class="headerlink" title="实例1：删除一个空目录"></a>实例1：删除一个空目录</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[root@oracledb study]# rmdir dir1</div></pre></td></tr></table></figure>
 <h4 id="实例2：删除空目录显示信息"><a href="#实例2：删除空目录显示信息" class="headerlink" title="实例2：删除空目录显示信息"></a>实例2：删除空目录显示信息</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@oracledb study]# rmdir -v dir3</div><div class="line">rmdir: 正在删除目录 "dir3"</div></pre></td></tr></table></figure>
 <h4 id="实例3：删除一个非空目录"><a href="#实例3：删除一个非空目录" class="headerlink" title="实例3：删除一个非空目录"></a>实例3：删除一个非空目录</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@oracledb study]# rmdir -v dir2</div><div class="line">rmdir: 正在删除目录 "dir2"</div><div class="line">rmdir: 删除 "dir2" 失败: 目录非空</div></pre></td></tr></table></figure>
@@ -567,7 +583,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/每天一个linux命令/" rel="tag"> <i class="fa fa-tag"> </i> 每天一个linux命令</a>
+            <a href="/tags/每天一个Linux命令/" rel="tag"> <i class="fa fa-tag"> </i> 每天一个Linux命令</a>
           
             <a href="/tags/rmdir/" rel="tag"> <i class="fa fa-tag"> </i> rmdir</a>
           
@@ -591,6 +607,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/21/MySQL/性能测试/sysbench 简介、安装、使用说明/" rel="prev" title="sysbench压力测试工具的安装和使用">
+                sysbench压力测试工具的安装和使用 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -686,7 +706,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">31</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -697,7 +717,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -708,7 +728,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -779,7 +799,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、命令简介"><span class="nav-number">1.</span> <span class="nav-text">1、命令简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、用法"><span class="nav-number">2.</span> <span class="nav-text">2、用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、选项"><span class="nav-number">3.</span> <span class="nav-text">3、选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、实例"><span class="nav-number">4.</span> <span class="nav-text">4、实例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#实例1：删除一个空目录"><span class="nav-number">4.1.</span> <span class="nav-text">实例1：删除一个空目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实例2：删除空目录显示信息"><span class="nav-number">4.2.</span> <span class="nav-text">实例2：删除空目录显示信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实例3：删除一个非空目录"><span class="nav-number">4.3.</span> <span class="nav-text">实例3：删除一个非空目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实例4：若父目录为空，则递归删除父目录"><span class="nav-number">4.4.</span> <span class="nav-text">实例4：若父目录为空，则递归删除父目录</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、命令简介"><span class="nav-text">1、命令简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、用法"><span class="nav-text">2、用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、选项"><span class="nav-text">3、选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、实例"><span class="nav-text">4、实例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#实例1：删除一个空目录"><span class="nav-text">实例1：删除一个空目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实例2：删除空目录显示信息"><span class="nav-text">实例2：删除空目录显示信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实例3：删除一个非空目录"><span class="nav-text">实例3：删除一个非空目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实例4：若父目录为空，则递归删除父目录"><span class="nav-text">实例4：若父目录为空，则递归删除父目录</span></a></li></ol></li></ol></div>
             
 
           </div>

@@ -10,7 +10,21 @@
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*��������ɫ*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*��Ӱ��ɫ*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*�ϱ߿���ɫ*/
+        border-left-color: #1E92FB;    /*���߿���ɫ*/
+    }
+</style>
 
 
 
@@ -172,6 +186,7 @@
 
   <div class="container sidebar-position-left  ">
     <div class="headband"></div>
+	<a href="https://github.com/wangshengzhuang"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
@@ -341,10 +356,10 @@
     
       <div class="tag-cloud">
         <div class="tag-cloud-title">
-            目前共计 12 个标签
+            目前共计 20 个标签
         </div>
         <div class="tag-cloud-tags">
-          <a href="/tags/Ansible/" style="font-size: 30px; color: #111">Ansible</a> <a href="/tags/Group-Replication/" style="font-size: 12px; color: #ccc">Group Replication</a> <a href="/tags/InnoDB-Cluster/" style="font-size: 24px; color: #4f4f4f">InnoDB Cluster</a> <a href="/tags/MySQL/" style="font-size: 24px; color: #4f4f4f">MySQL</a> <a href="/tags/cd/" style="font-size: 12px; color: #ccc">cd</a> <a href="/tags/ls/" style="font-size: 12px; color: #ccc">ls</a> <a href="/tags/mkdir/" style="font-size: 12px; color: #ccc">mkdir</a> <a href="/tags/pwd/" style="font-size: 12px; color: #ccc">pwd</a> <a href="/tags/rmdir/" style="font-size: 12px; color: #ccc">rmdir</a> <a href="/tags/supervisor/" style="font-size: 12px; color: #ccc">supervisor</a> <a href="/tags/每天一个Linux命令/" style="font-size: 12px; color: #ccc">每天一个Linux命令</a> <a href="/tags/每天一个linux命令/" style="font-size: 18px; color: #8e8e8e">每天一个linux命令</a>
+          <a href="/tags/Ansible/" style="font-size: 22.8px; color: #5c5c5c">Ansible</a> <a href="/tags/Group-Replication/" style="font-size: 12px; color: #ccc">Group Replication</a> <a href="/tags/InnoDB-Cluster/" style="font-size: 19.2px; color: #818181">InnoDB Cluster</a> <a href="/tags/LVM/" style="font-size: 12px; color: #ccc">LVM</a> <a href="/tags/Linux/" style="font-size: 12px; color: #ccc">Linux</a> <a href="/tags/MySQL/" style="font-size: 26.4px; color: #363636">MySQL</a> <a href="/tags/Sysbench/" style="font-size: 15.6px; color: #a7a7a7">Sysbench</a> <a href="/tags/cd/" style="font-size: 12px; color: #ccc">cd</a> <a href="/tags/cp/" style="font-size: 12px; color: #ccc">cp</a> <a href="/tags/ls/" style="font-size: 12px; color: #ccc">ls</a> <a href="/tags/mkdir/" style="font-size: 12px; color: #ccc">mkdir</a> <a href="/tags/mv/" style="font-size: 12px; color: #ccc">mv</a> <a href="/tags/nslookup/" style="font-size: 12px; color: #ccc">nslookup</a> <a href="/tags/pwd/" style="font-size: 12px; color: #ccc">pwd</a> <a href="/tags/rm/" style="font-size: 12px; color: #ccc">rm</a> <a href="/tags/rmdir/" style="font-size: 12px; color: #ccc">rmdir</a> <a href="/tags/supervisor/" style="font-size: 12px; color: #ccc">supervisor</a> <a href="/tags/sysbench/" style="font-size: 12px; color: #ccc">sysbench</a> <a href="/tags/touch/" style="font-size: 15.6px; color: #a7a7a7">touch</a> <a href="/tags/每天一个Linux命令/" style="font-size: 30px; color: #111">每天一个Linux命令</a>
         </div>
       </div>
     
@@ -391,7 +406,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">31</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -402,7 +417,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -413,7 +428,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

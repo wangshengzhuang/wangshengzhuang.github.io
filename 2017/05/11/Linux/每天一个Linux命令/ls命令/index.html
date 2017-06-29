@@ -1,0 +1,1465 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*��������ɫ*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*��Ӱ��ɫ*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*�ϱ߿���ɫ*/
+        border-left-color: #1E92FB;    /*���߿���ɫ*/
+    }
+</style>
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="每天一个Linux命令,ls," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小强斋太-Study Notes" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="摘要: ls （list 列出目录内容），用来列出显示指定目录里的文件及文件夹清单，缺省下ls用来打印出当前目录的清单.">
+<meta name="keywords" content="每天一个Linux命令,ls">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ls命令">
+<meta property="og:url" content="http://wangshengzhuang.com/2017/05/11/Linux/每天一个Linux命令/ls命令/index.html">
+<meta property="og:site_name" content="小强斋太-Study Notes">
+<meta property="og:description" content="摘要: ls （list 列出目录内容），用来列出显示指定目录里的文件及文件夹清单，缺省下ls用来打印出当前目录的清单.">
+<meta property="og:updated_time" content="2017-06-29T15:47:49.395Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ls命令">
+<meta name="twitter:description" content="摘要: ls （list 列出目录内容），用来列出显示指定目录里的文件及文件夹清单，缺省下ls用来打印出当前目录的清单.">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wangshengzhuang.com/2017/05/11/Linux/每天一个Linux命令/ls命令/"/>
+
+
+
+
+
+  <title>ls命令 | 小强斋太-Study Notes</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d5edeb6a5e3eb7303821bb702fa1df54";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/wangshengzhuang"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小强斋太-Study Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay hungry. Stay foolish</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-[object Object]"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/11/Linux/每天一个Linux命令/ls命令/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小强斋太">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小强斋太-Study Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                ls命令
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-11T22:29:25+08:00">
+                2017-05-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/每天一个Linux命令/" itemprop="url" rel="index">
+                    <span itemprop="name">每天一个Linux命令</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/05/11/Linux/每天一个Linux命令/ls命令/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/05/11/Linux/每天一个Linux命令/ls命令/" class="leancloud_visitors" data-flag-title="ls命令">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  3,295
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长预计</span>
+                
+                <span title="阅读时长预计">
+                  15
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>摘要: ls （list 列出目录内容），用来列出显示指定目录里的文件及文件夹清单，缺省下ls用来打印出当前目录的清单.</p>
+<a id="more"></a>
+<h2 id="1、命令简介"><a href="#1、命令简介" class="headerlink" title="1、命令简介"></a>1、命令简介</h2><p><strong>ls</strong>（list 列出目录内容）命令用来列出显示指定目录里的文件及文件夹清单，缺省下ls用来打印出当前目录的清单。通过ls 命令不仅可以查看linux文件夹包含的文件，而且可以查看文件权限、大小、更改时间等等</p>
+<h2 id="2、用法"><a href="#2、用法" class="headerlink" title="2、用法"></a>2、用法</h2><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">ls</span> [OPTION]<span class="string">...</span> [FILE]<span class="string">...</span></div></pre></td></tr></table></figure>
+<h2 id="3、选项"><a href="#3、选项" class="headerlink" title="3、选项"></a>3、选项</h2><figure class="highlight haml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">-<span class="ruby">a 列出目录下的所有文件，包括以 . 开头的隐含文件。</span></div><div class="line">-<span class="ruby">A 显示除“.”和“..”外的所有文件。  </span></div><div class="line">-<span class="ruby">b 把文件名中不可输出的字符用反斜杠加字符编号(就象在C语言里一样)的形式列出。 </span></div><div class="line">-<span class="ruby">B 不输出以“~”结尾的备份文件。</span></div><div class="line">-<span class="ruby">c 与“-lt”选项连用时，按照文件状态时间排序输出目录内容，排序的依据是文件的索引节点中的ctime字段。与“-l”选项连用时，则显示状态改变时间，并以名称排序；其他根据ctime排揎</span></div><div class="line">-<span class="ruby">C 多列显示输出结果，纵向排序，这是默认选项。</span></div><div class="line">-<span class="ruby">-color显示彩色文件名 [always<span class="params">|never|</span>auto] </span></div><div class="line">-<span class="ruby">d 将目录像文件一样显示，而不是显示其下的文件。 </span></div><div class="line">-<span class="ruby">e 输出时间的全部信息，而不是输出简略信息。 </span></div><div class="line">-<span class="ruby">f 此参数的效果和同时指定“aU”参数相同，并关闭“lst”参数的效果；</span></div><div class="line">-<span class="ruby">F 在文件名后附上一个字符以说明该文件的类型，“*”表示可执行的普通 文件；“/”表示目录；“@”表示符号链接；“<span class="params">|”表示FIFOs；“=”表示套接字---g 类似于-l 但是不列出owner。 </span></span></div><div class="line">-<span class="ruby"><span class="params">G 输出文件的组的信息。</span></span></div><div class="line">-<span class="ruby"><span class="params">h  和-l一起，以human-readable的格式输出大小信息</span></span></div><div class="line">-<span class="ruby"><span class="params">i  --inode输出文件节点的索引信息。 </span></span></div><div class="line">-<span class="ruby"><span class="params">k 以 k 字节的形式表示文件的大小。 </span></span></div><div class="line">-<span class="ruby"><span class="params">l 列出文件的详细信息。 </span></span></div><div class="line">-<span class="ruby"><span class="params">L 列出链接文件名而不是链接到的文件。 </span></span></div><div class="line">-<span class="ruby"><span class="params">m 横向输出文件名，并以“，”作分格符。 </span></span></div><div class="line">-<span class="ruby"><span class="params">n 用数字的 UID,GID 代替名称。 </span></span></div><div class="line">-<span class="ruby"><span class="params">N 不限制文件长度。</span></span></div><div class="line">-<span class="ruby"><span class="params">o 显示文件的除组信息外的详细信息。 </span></span></div><div class="line">-<span class="ruby"><span class="params">p 文件夹后添加/</span></span></div><div class="line">-<span class="ruby"><span class="params">q 用?代替不可输出的字符。</span></span></div><div class="line">-<span class="ruby"><span class="params">Q 把输出的文件名用双引号括起来。  </span></span></div><div class="line">-<span class="ruby"><span class="params">r 对目录反向排序。 </span></span></div><div class="line">-<span class="ruby"><span class="params">R 列出所有子目录下的文件。</span></span></div><div class="line">-<span class="ruby"><span class="params">s 在每个文件名后输出该文件的大小,单位为block。</span></span></div><div class="line">-<span class="ruby"><span class="params">S 以文件大小排序。  </span></span></div><div class="line">-<span class="ruby"><span class="params">t 以时间排序。 </span></span></div><div class="line">-<span class="ruby"><span class="params">u 与“-lt”选项连用时，按照访问时间排序输出目录内容。与“-l”选项连用时，则显示访问时间，并以名称排序；其他根据访问时间排序</span></span></div><div class="line">-<span class="ruby"><span class="params">U 对输出的文件不排序。</span></span></div><div class="line">-<span class="ruby"><span class="params">x 按列输出，横向排序。 </span></span></div><div class="line">-<span class="ruby"><span class="params">X 以文件的扩展名(最后一个 . 后的字符)排序。 </span></span></div><div class="line">-<span class="ruby"><span class="params">1 一行只输出一个文件。 </span></span></div><div class="line">-<span class="ruby"><span class="params">-help 在标准输出上显示帮助信息。 </span></span></div><div class="line">-<span class="ruby"><span class="params">-version 在标准输出上输出版本信息并退出。</span></span></div></pre></td></tr></table></figure>
+<h2 id="4、实例"><a href="#4、实例" class="headerlink" title="4、实例"></a>4、实例</h2><p><strong>1. 不带任何选项列出文件</strong></p>
+<p>不带选项的ls命令来光秃秃地列出文件和目录，我们是不能看到像文件类型、大小、修改日期和时间、权限以及链接这样具体的信息的。</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root<span class="symbol">@cent6</span> tmp]<span class="meta"># ls</span></div><div class="line">hsperfdata_root  nginx_log_stat  pulse-IhiwHnejlPBk  tomcat-redis-session-manager</div></pre></td></tr></table></figure>
+<p><strong>2. 带–l 选项列出文件列表</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@cent6 tmp]# ls -l</div><div class="line">total 16</div><div class="line">drwxr-xr-x  2 root  root  4096 Apr  9 09:01 hsperfdata_root</div><div class="line">-rw-r--r--. 1 root  root     4 Mar 22 17:58 nginx_log_stat</div><div class="line">drwx------. 2 cloud cloud 4096 Feb 16  2015 pulse-IhiwHnejlPBk</div><div class="line">drwxr-xr-x. 3 root  root  4096 Feb 24 21:32 tomcat-redis-session-manager</div></pre></td></tr></table></figure>
+<p>可以看到，用ls -l命令查看某一个目录会得到一个7个字段的列表。</p>
+<p><strong>第1行:总计(total) </strong>Total后面的数字是指当前目录下所有文件所占用的空间总和,单位kb。可以使用ls –lh查看，</p>
+<p><strong>第1字段: 文件属性字段</strong></p>
+<p>文件属性字段总共有10个字母组成；第一个字符代表文件的类型。</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">“-”表示该文件是一个普通文件</div><div class="line"></div><div class="line">“d”表示该文件是一个目录，字母<span class="string">"d"</span>，是dirtectory<span class="params">(目录)</span>的缩写</div><div class="line"></div><div class="line">“l”表示该文件是一个链接文件。字母<span class="string">"l"</span>是link<span class="params">(链接)</span>的缩写，类似于windows下的快捷方式</div><div class="line"></div><div class="line">“b”的表示块设备文件<span class="params">(block)</span>，一般置于<span class="string">/dev</span>目录下，设备文件是普通文件和程序访问硬件设备的入口，是很特殊的文件。，如硬盘、光盘等。最小数据传输单位为一个数据块<span class="params">(通常一个数据块的大小为512字节)</span></div></pre></td></tr></table></figure>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">“c”表示该文件是一个字符设备文件(character)，一般置于/dev目录下，一次传输一个字节的设备被称为字符设备，如键盘、字符终端等，传输数据的最小单位为一个字节。</div><div class="line"></div><div class="line">“p”表示该文件为命令管道文件。与<span class="keyword">shell</span><span class="bash">编程有关的文件。</span></div><div class="line"></div><div class="line">“s”表示该文件为sock文件。与<span class="keyword">shell</span><span class="bash">编程有关的文件。</span></div></pre></td></tr></table></figure>
+<p><strong>第2字段</strong>：如果是一个文件，此时这一字段表示这个文件所具有的硬链接数；如果是一个目录，则第2字段表示该目录所含子目录的个数。新建一个空目录，这个目录的第二字段就是2，表示该目录下有两个子目录。为什么新建的目录下面会有两个子目录呢?因为每一个目录都有一个指向它本身的子目录”。” 和指向它上级目录的子目录”。。”，</p>
+<p><strong>第3字段：</strong>文件（目录）拥有者</p>
+<p><strong>第4字段</strong>：文件（目录）拥有者所在的组</p>
+<p><strong>第5字段:</strong> 文件所占用的空间(以字节为单位)</p>
+<p><strong>第6字段：</strong>文件（目录）最近访问（修改）时间</p>
+<p><strong>第7字段：</strong>文件名</p>
+<p><strong>3. 计算当前目录下的文件数和目录数</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@zabbix zabbix]# ls -l  |grep "^d"|wc -l  </div><div class="line">3</div><div class="line">[root@zabbix zabbix]# ls -l  |grep "^-"|wc -l</div><div class="line">6</div></pre></td></tr></table></figure>
+<p><strong>4. 用 -lh 选项来以易读方式列出文件</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@cent6 ~]# ls -lh</div><div class="line">total 16K</div><div class="line">-rwxr-xr-x. 1 root root 1.3K Feb 16  2015 anaconda-ks.cfg</div><div class="line">-rwxr-xr-x. 1 root root 9.0K Feb 16  2015 install.log.syslog</div></pre></td></tr></table></figure>
+<p><strong>5. 浏览隐藏文件</strong></p>
+<p>列出所有文件包括以‘.’开头的隐藏文件。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@cent6 ~]# ls -a</div><div class="line">.   anaconda-ks.cfg  .bash_logout   .bashrc  .cshrc  .gconfd  install.log.syslog</div></pre></td></tr></table></figure>
+<p><strong>6. 列出目录信息</strong></p>
+<p>用ls -l命令列出/tmp目录下的文件，其中-ld参数可以只显示/tmp目录的信息。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@cent6 ~]# ls -ld /tmp</div><div class="line">drwxrwxrwt. 7 root root 4096 Apr 12 20:34 /tmp</div></pre></td></tr></table></figure>
+<p><strong>7. 以尾部以‘/’字符结尾的方式列出文件和目录</strong></p>
+<p>使用 ls 命令的 -F 选项，会在每个目录的末尾添加“/”字符显示。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@cent6 ~]# ls -F</div><div class="line">anaconda-ks.cfg*  directory/  install.log.syslog*</div></pre></td></tr></table></figure>
+<p><strong>8. 只列出文件下的子目录</strong></p>
+<p>利用使用-F选项时，目录以/结尾</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@zabbix zabbix]# ls -F |grep /$</div><div class="line">alertscripts/</div><div class="line">web/</div><div class="line">zabbix_agentd.d/</div></pre></td></tr></table></figure>
+<p>利用使用-l选项时，目录以d开头</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@zabbix zabbix]# ls -l |grep "^d"</div><div class="line">drwxrwxrwx 2 root   root      97 Jan 28 09:23 alertscripts</div><div class="line">drwxr-x--- 2 apache apache    54 Feb 17 21:10 web</div><div class="line">drwxr-xr-x 2 root   root      45 Feb 17 21:10 zabbix_agentd.d</div></pre></td></tr></table></figure>
+<p><strong>9. 按文件大小排序</strong></p>
+<p>带-lS组合选项能按文件从大到小的次序显示。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@cent6 ~]# ls -lS</div><div class="line">total 20</div><div class="line">-rwxr-xr-x. 1 root root 9154 Feb 16  2015 install.log.syslog</div><div class="line">drwxr-xr-x  2 root root 4096 Apr 12 21:25 directory</div><div class="line">-rwxr-xr-x. 1 root root 1264 Feb 16  2015 anaconda-ks.cfg</div></pre></td></tr></table></figure>
+<p><strong>10.列出当前目录中所有以“zabbix”开头的目录和文件的详细内容</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@zabbix zabbix]# ls zabbix*</div><div class="line">zabbix_agentd.conf  zabbix_java_gateway.conf  zabbix_java_gateway_logback.xml  zabbix_server.conf  zabbix_server.conf_bak  zabbix_server.conf.rpmnew_bak</div><div class="line"></div><div class="line">zabbix_agentd.d:</div><div class="line">userparameter_mysql.conf</div></pre></td></tr></table></figure>
+<p><strong>11. 倒序列出文件</strong></p>
+<p>ls -r 选项能以倒序方式显示文件和目录。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@cent6 ~]# ls -r</div><div class="line">install.log.syslog  directory  anaconda-ks.cfg</div></pre></td></tr></table></figure>
+<p><strong>12. 以修改时间列出，最近修改的在上面</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@cent6 ~]# ls -lt</div><div class="line">total 20</div><div class="line">drwxr-xr-x  2 root root 4096 Apr 12 21:25 directory</div><div class="line">-rwxr-xr-x. 1 root root 1264 Feb 16  2015 anaconda-ks.cfg</div><div class="line">-rwxr-xr-x. 1 root root 9154 Feb 16  2015 install.log.syslog</div></pre></td></tr></table></figure>
+<p><strong>13. 以修改时间倒序列出</strong></p>
+<p>带-ltr组合选项能以文件或目录的最新修改时间的次序来显示它们。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@cent6 ~]# ls -ltr</div><div class="line">total 20</div><div class="line">-rwxr-xr-x. 1 root root 9154 Feb 16  2015 install.log.syslog</div><div class="line">-rwxr-xr-x. 1 root root 1264 Feb 16  2015 anaconda-ks.cfg</div><div class="line">drwxr-xr-x  2 root root 4096 Apr 12 21:25 directory</div></pre></td></tr></table></figure>
+<p><strong>14.指定文件时间输出格式</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[root@zabbix zabbix]# ls -lt --time-style=long-iso</div><div class="line">total 68</div><div class="line">-rw-r--r-- 1 root   root   14938 2016-04-14 11:48 zabbix_server.conf</div><div class="line">drwxr-xr-x 2 root   root      45 2016-02-17 21:10 zabbix_agentd.d</div><div class="line">drwxr-x--- 2 apache apache    54 2016-02-17 21:10 web</div><div class="line">-rw-r--r-- 1 root   root   10341 2016-02-16 00:16 zabbix_agentd.conf</div><div class="line">-rw-r--r-- 1 root   root     813 2016-02-16 00:16 zabbix_java_gateway.conf</div><div class="line">-rw-r--r-- 1 root   root     770 2016-02-16 00:16 zabbix_java_gateway_logback.xml</div><div class="line">-rw-r----- 1 root   zabbix 14912 2016-02-16 00:16 zabbix_server.conf.rpmnew_bak</div><div class="line">-rw-r----- 1 root   zabbix 13657 2016-02-04 10:19 zabbix_server.conf_bak</div><div class="line">drwxrwxrwx 2 root   root      97 2016-01-28 09:23 alertscripts</div></pre></td></tr></table></figure>
+<p><strong>更详细的时间</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[root@zabbix zabbix]# ls -tl --time-style=full-iso</div><div class="line">total 68</div><div class="line">-rw-r--r-- 1 root   root   14938 2016-04-14 11:48:26.231666438 +0800 zabbix_server.conf</div><div class="line">drwxr-xr-x 2 root   root      45 2016-02-17 21:10:03.471004045 +0800 zabbix_agentd.d</div><div class="line">drwxr-x--- 2 apache apache    54 2016-02-17 21:10:00.024943223 +0800 web</div><div class="line">-rw-r--r-- 1 root   root   10341 2016-02-16 00:16:47.000000000 +0800 zabbix_agentd.conf</div><div class="line">-rw-r--r-- 1 root   root     813 2016-02-16 00:16:47.000000000 +0800 zabbix_java_gateway.conf</div><div class="line">-rw-r--r-- 1 root   root     770 2016-02-16 00:16:47.000000000 +0800 zabbix_java_gateway_logback.xml</div><div class="line">-rw-r----- 1 root   zabbix 14912 2016-02-16 00:16:47.000000000 +0800 zabbix_server.conf.rpmnew_bak</div><div class="line">-rw-r----- 1 root   zabbix 13657 2016-02-04 10:19:44.837012771 +0800 zabbix_server.conf_bak</div><div class="line">drwxrwxrwx 2 root   root      97 2016-01-28 09:23:44.034478732 +0800 alertscripts</div></pre></td></tr></table></figure>
+<p><strong>15. **</strong>递归列出子目录**</p>
+<p>ls -R 选项能递归列出子目录</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">[root@cent6 ~]# ls -lR</div><div class="line">.:</div><div class="line">total 20</div><div class="line">-rwxr-xr-x. 1 root root 1264 Feb 16  2015 anaconda-ks.cfg</div><div class="line">drwxr-xr-x  2 root root 4096 Apr 12 21:25 directory</div><div class="line">-rwxr-xr-x. 1 root root 9154 Feb 16  2015 install.log.syslog</div><div class="line"></div><div class="line">./directory:</div><div class="line">total 0</div><div class="line">-rw-r--r-- 1 root root 0 Apr 12 21:25 subtext.txt</div></pre></td></tr></table></figure>
+<p><strong>16.列出当前目录下的所有文件（包括隐藏文件）的绝对路径， 对目录不做递归</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[root@zabbix zabbix]# find $PWD -maxdepth 1 | xargs ls -ld</div><div class="line">drwxr-xr-x 5 root   root    4096 Apr 14 11:48 /etc/zabbix</div><div class="line">drwxrwxrwx 2 root   root      97 Jan 28 09:23 /etc/zabbix/alertscripts</div><div class="line">drwxr-x--- 2 apache apache    54 Feb 17 21:10 /etc/zabbix/web</div><div class="line">-rw-r--r-- 1 root   root   10341 Feb 16 00:16 /etc/zabbix/zabbix_agentd.conf</div><div class="line">drwxr-xr-x 2 root   root      45 Feb 17 21:10 /etc/zabbix/zabbix_agentd.d</div><div class="line">-rw-r--r-- 1 root   root     813 Feb 16 00:16 /etc/zabbix/zabbix_java_gateway.conf</div><div class="line">-rw-r--r-- 1 root   root     770 Feb 16 00:16 /etc/zabbix/zabbix_java_gateway_logback.xml</div><div class="line">-rw-r--r-- 1 root   root   14938 Apr 14 11:48 /etc/zabbix/zabbix_server.conf</div><div class="line">-rw-r----- 1 root   zabbix 13657 Feb  4 10:19 /etc/zabbix/zabbix_server.conf_bak</div><div class="line">-rw-r----- 1 root   zabbix 14912 Feb 16 00:16 /etc/zabbix/zabbix_server.conf.rpmnew_bak</div></pre></td></tr></table></figure>
+<p><strong>17.递归列出当前目录下的所有文件（包括隐藏文件）的绝对路径</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">[root@zabbix zabbix]# find $PWD | xargs ls -ld </div><div class="line">drwxr-xr-x 5 root   root    4096 Apr 14 11:48 /etc/zabbix</div><div class="line">drwxrwxrwx 2 root   root      97 Jan 28 09:23 /etc/zabbix/alertscripts</div><div class="line">-rwxrwxrwx 1 root   root    2924 Jan 28 09:23 /etc/zabbix/alertscripts/sendim.py</div><div class="line">-rwxrwxrwx 1 root   root     835 Jan 27 06:51 /etc/zabbix/alertscripts/sendmail.py</div><div class="line">-rwxrwxrwx 1 root   root     611 Jan 27 06:51 /etc/zabbix/alertscripts/sendsms.sh</div><div class="line">-rwxrwxrwx 1 root   root    2930 Jan 27 06:51 /etc/zabbix/alertscripts/sendwechat.py</div><div class="line">drwxr-x--- 2 apache apache    54 Feb 17 21:10 /etc/zabbix/web</div><div class="line">-rw-r--r-- 1 root   root    1036 Feb 15 20:25 /etc/zabbix/web/maintenance.inc.php</div><div class="line">-rw-r--r-- 1 apache apache   431 Jan 27 06:27 /etc/zabbix/web/zabbix.conf.php</div><div class="line">-rw-r--r-- 1 root   root   10341 Feb 16 00:16 /etc/zabbix/zabbix_agentd.conf</div><div class="line">drwxr-xr-x 2 root   root      45 Feb 17 21:10 /etc/zabbix/zabbix_agentd.d</div><div class="line">-rw-r--r-- 1 root   root    1517 Feb 16 00:16 /etc/zabbix/zabbix_agentd.d/userparameter_mysql.conf</div><div class="line">-rw-r--r-- 1 root   root     813 Feb 16 00:16 /etc/zabbix/zabbix_java_gateway.conf</div><div class="line">-rw-r--r-- 1 root   root     770 Feb 16 00:16 /etc/zabbix/zabbix_java_gateway_logback.xml</div><div class="line">-rw-r--r-- 1 root   root   14938 Apr 14 11:48 /etc/zabbix/zabbix_server.conf</div><div class="line">-rw-r----- 1 root   zabbix 13657 Feb  4 10:19 /etc/zabbix/zabbix_server.conf_bak</div><div class="line">-rw-r----- 1 root   zabbix 14912 Feb 16 00:16 /etc/zabbix/zabbix_server.conf.rpmnew_bak</div></pre></td></tr></table></figure>
+<p><strong>18. 显示文件或目录的索引节点号</strong></p>
+<p>带-i选项能列出文件或目录的索引节点号。索引节点（index inode简称为“inode”）是Linux中一个特殊的概念，具有相同的索引节点号的两个文本本质上是同一个文件（除文件名不同外）。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="selector-attr">[root@cent6 ~]</span># <span class="selector-tag">ls</span> <span class="selector-tag">-i</span></div><div class="line">1058854 <span class="selector-tag">anaconda-ks</span><span class="selector-class">.cfg</span>  1061385 <span class="selector-tag">directory</span>  1048579 <span class="selector-tag">install</span><span class="selector-class">.log</span><span class="selector-class">.syslog</span></div></pre></td></tr></table></figure>
+<p><strong>19. 显示文件的UID和GID</strong></p>
+<p>用ls -n命令来显示文件和目录的UID和GID（root的均为0）</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@cent6 ~]<span class="comment"># ls -n</span></div><div class="line">total 20</div><div class="line">-rwxr-xr-x.<span class="number"> 1 </span>0<span class="number"> 0 </span>1264 Feb<span class="number"> 16 </span><span class="number"> 2015 </span>anaconda-ks.cfg</div><div class="line">drwxr-xr-x <span class="number"> 2 </span>0<span class="number"> 0 </span>4096 Apr<span class="number"> 12 </span>21:25 directory</div><div class="line">-rwxr-xr-x.<span class="number"> 1 </span>0<span class="number"> 0 </span>9154 Feb<span class="number"> 16 </span><span class="number"> 2015 </span>install.log.syslog</div></pre></td></tr></table></figure>
+<p><strong>20. 水平输出文件列表，以逗号分隔</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@cent6 ~]# ls -m</div><div class="line">anaconda-ks.cfg, directory, install.log.syslog</div></pre></td></tr></table></figure>
+<p><strong>21. 列出文件并标记颜色分类</strong></p>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@cent6 ~]# <span class="keyword">ls</span> --<span class="keyword">color</span>=auto</div><div class="line">anaconda-ks.cfg  directory  install.<span class="keyword">log</span>.syslog</div></pre></td></tr></table></figure>
+<p><strong>22.在ls中列出文件的绝对路径</strong></p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">[root@zabbix zabbix]<span class="meta"># ls | sed <span class="string">"s:^:`pwd`/:"</span></span></div><div class="line"><span class="meta-keyword">/etc/</span>zabbix/alertscripts</div><div class="line"><span class="meta-keyword">/etc/</span>zabbix/web</div><div class="line"><span class="meta-keyword">/etc/</span>zabbix/zabbix_agentd.conf</div><div class="line"><span class="meta-keyword">/etc/</span>zabbix/zabbix_agentd.d</div><div class="line"><span class="meta-keyword">/etc/</span>zabbix/zabbix_java_gateway.conf</div><div class="line"><span class="meta-keyword">/etc/</span>zabbix/zabbix_java_gateway_logback.xml</div><div class="line"><span class="meta-keyword">/etc/</span>zabbix/zabbix_server.conf</div><div class="line"><span class="meta-keyword">/etc/</span>zabbix/zabbix_server.conf_bak</div><div class="line"><span class="meta-keyword">/etc/</span>zabbix/zabbix_server.conf.rpmnew_bak</div></pre></td></tr></table></figure>
+<p><strong>23. ls命令和它的别名</strong></p>
+<p>我们给ls命令设置如下别名之后，当我们执行ls命令的时候它会默认执行-l选项并且像上文提到的那样显示长列表。</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">alias</span> <span class="keyword">ls</span>=<span class="string">"ls -l --color"</span>  </div><div class="line"><span class="keyword">unalias</span> <span class="keyword">ls</span></div></pre></td></tr></table></figure>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/wechatpay.jpg" alt="小强斋太 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/alipay.jpg" alt="小强斋太 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      小强斋太
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://wangshengzhuang.com/2017/05/11/Linux/每天一个Linux命令/ls命令/" title="ls命令">http://wangshengzhuang.com/2017/05/11/Linux/每天一个Linux命令/ls命令/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本文版权归作者所有,转载请注明出处！'
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/每天一个Linux命令/" rel="tag"> <i class="fa fa-tag"> </i> 每天一个Linux命令</a>
+          
+            <a href="/tags/ls/" rel="tag"> <i class="fa fa-tag"> </i> ls</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/10/Linux/每天一个Linux命令/cd命令/" rel="next" title="cd命令">
+                <i class="fa fa-chevron-left"></i> cd命令
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/12/运维相关/Ansible/初识Ansible/" rel="prev" title="初识Ansible">
+                初识Ansible <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        ﻿<!--MOB SHARE BEGIN-->
+                            <div class="-mob-share-ui-button -mob-share-open">分享</div>
+                            <div class="-mob-share-ui" style="display: none">
+                                <ul class="-mob-share-list">
+				    <li class="-mob-share-weixin"><p>微信</p></li>
+                                    <li class="-mob-share-qq"><p>QQ好友</p></li>
+				    <li class="-mob-share-qzone"><p>QQ空间</p></li>
+				    <li class="-mob-share-youdao"><p>有道云笔记</p></li>
+				    <li class="-mob-share-weibo"><p>新浪微博</p></li>
+                                    <li class="-mob-share-tencentweibo"><p>腾讯微博</p></li>
+                                    <li class="-mob-share-douban"><p>豆瓣</p></li>
+                                    <li class="-mob-share-facebook"><p>Facebook</p></li>
+                                    <li class="-mob-share-twitter"><p>Twitter</p></li>
+                                    <li class="-mob-share-google"><p>Google+</p></li>
+                                    <li class="-mob-share-linkedin"><p>LinkedIn</p></li>
+                                </ul>
+                                <div class="-mob-share-close">取消</div>
+                            </div>
+<div class="-mob-share-ui-bg"></div>
+<script id="-mob-share" src="http://f1.webshare.mob.com/code/mob-share.js?appkey=b21b3b396423fbd4db32b55d570db922"></script>
+<!--MOB SHARE END-->
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.png"
+               alt="小强斋太" />
+          <p class="site-author-name" itemprop="name">小强斋太</p>
+           
+              <p class="site-description motion-element" itemprop="description">Stay hungry. Stay foolish</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wangshengzhuang" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wangshengzhuang.com" title="小强斋太-Study Notes" target="_blank">小强斋太-Study Notes</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        <br/>
+<div>
+<span> 总访问量(PV): <img src="http://cc.amazingcounters.com/counter.php?i=3214342&c=9643339" alt="UV" title="总访问量">
+独立访客(UV): <img src="http://cc.amazingcounters.com/counter.php?i=3214343&c=9643342" alt="PV" title="访问人数"> 
+</span>
+</div>
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、命令简介"><span class="nav-text">1、命令简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、用法"><span class="nav-text">2、用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、选项"><span class="nav-text">3、选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、实例"><span class="nav-text">4、实例</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小强斋太</span>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "e97c4421445f4327b7168d5d1f51a36c",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      $('#local-search-input').focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("wtjyw6ICkB3kdGGpS6e750op-gzGzoHsz", "1VgU4A2cb7V5hk7UskuqbrWr");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

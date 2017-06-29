@@ -10,7 +10,21 @@
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*��������ɫ*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*��Ӱ��ɫ*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*�ϱ߿���ɫ*/
+        border-left-color: #1E92FB;    /*���߿���ɫ*/
+    }
+</style>
 
 
 
@@ -175,6 +189,7 @@
 
   <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
+	<a href="https://github.com/wangshengzhuang"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
@@ -509,17 +524,17 @@
 <p>另有一种选择是通过”pip”工具安装,”pip”是一个安装和管理Python包的工具.</p>
 <p>若你希望跟进开发版本,想使用和测试最新的功能特性,我们会分享如何从源码运行Ansible的方法.从源码运行程序不需要进行软件安装.</p>
 <h1 id="二、安装"><a href="#二、安装" class="headerlink" title="二、安装"></a><a href="http://www.ansible.com.cn/docs/intro_installation.html#id15" target="_blank" rel="external">二、安装</a></h1><h2 id="2-1-通过Yum安装最新发布版本"><a href="#2-1-通过Yum安装最新发布版本" class="headerlink" title="2.1 通过Yum安装最新发布版本"></a><a href="http://www.ansible.com.cn/docs/intro_installation.html#id17" target="_blank" rel="external">2.1 通过Yum安装最新发布版本</a></h2><p>RHEL或CentOS用户,需要 <a href="http://fedoraproject.org/wiki/EPEL" target="_blank" rel="external">配置 EPEL</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"># install the epel-release RPM if needed on CentOS, RHEL, or Scientific Linux</div><div class="line">$ sudo yum install epel-release</div><div class="line">$ sudo yum install ansible</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> install the epel-release RPM <span class="keyword">if</span> needed on CentOS, RHEL, or Scientific Linux</span></div><div class="line"><span class="meta">$</span><span class="bash"> sudo yum install epel-release</span></div><div class="line"><span class="meta">$</span><span class="bash"> sudo yum install ansible</span></div></pre></td></tr></table></figure>
 <h2 id="2-2-自己创建RPM软件包"><a href="#2-2-自己创建RPM软件包" class="headerlink" title="2.2 自己创建RPM软件包"></a>2.2 自己创建RPM软件包</h2><p>你也可以自己创建RPM软件包.在Ansible项目的checkout的根目录下,或是在一个tarball中,使用 <code>make rpm</code> 命令创建RPM软件包. 然后可分发这个软件包或是使用它来安装Ansible.在创建之前,先确定你已安装了 <code>rpm-build</code>, <code>make</code>, and <code>python2-devel</code> .</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ git clone git://github.com/ansible/ansible.git</div><div class="line">$ cd ./ansible</div><div class="line">$ make rpm</div><div class="line">$ sudo rpm -Uvh ~/rpmbuild/ansible-*.noarch.rpm</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> git://github.com/ansible/ansible.git</span></div><div class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> ./ansible</span></div><div class="line"><span class="meta">$</span><span class="bash"> make rpm</span></div><div class="line"><span class="meta">$</span><span class="bash"> sudo rpm -Uvh ~/rpmbuild/ansible-*.noarch.rpm</span></div></pre></td></tr></table></figure>
 <h2 id="2-3-通过Apt-Ubuntu-安装最新发布版本"><a href="#2-3-通过Apt-Ubuntu-安装最新发布版本" class="headerlink" title="2.3 通过Apt (Ubuntu)安装最新发布版本"></a><a href="http://www.ansible.com.cn/docs/intro_installation.html#id18" target="_blank" rel="external">2.3 通过Apt (Ubuntu)安装最新发布版本</a></h2><p>配置PPA及安装ansible,执行如下命令:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ sudo apt-get install software-properties-common</div><div class="line">$ sudo apt-add-repository ppa:ansible/ansible</div><div class="line">$ sudo apt-get update</div><div class="line">$ sudo apt-get install ansible</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">$</span><span class="bash"> sudo apt-get install software-properties-common</span></div><div class="line"><span class="meta">$</span><span class="bash"> sudo apt-add-repository ppa:ansible/ansible</span></div><div class="line"><span class="meta">$</span><span class="bash"> sudo apt-get update</span></div><div class="line"><span class="meta">$</span><span class="bash"> sudo apt-get install ansible</span></div></pre></td></tr></table></figure>
 <h2 id="2-4-通过-Pip-安装最新发布版本"><a href="#2-4-通过-Pip-安装最新发布版本" class="headerlink" title="2.4 通过 Pip 安装最新发布版本"></a><a href="http://www.ansible.com.cn/docs/intro_installation.html#id24" target="_blank" rel="external">2.4 通过 Pip 安装最新发布版本</a></h2><p>Ansible可通过 “pip” 安装(安装和管理Python包的工具),若你还没有安装 pip,可执行如下命令安装:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo easy_install pip</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">$</span><span class="bash"> sudo easy_install pip</span></div></pre></td></tr></table></figure>
 <p>然后安装Ansible:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo pip install ansible</div></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">$</span><span class="bash"> sudo pip install ansible</span></div></pre></td></tr></table></figure>
 <p>如果你是在 OS X Mavericks 上安装,编译器可能或告警或报错,可通过如下设置避免这种情况:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo CFLAGS=-Qunused-arguments CPPFLAGS=-Qunused-arguments pip install ansible</div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo CFLAGS=-Qunused-<span class="built_in">arguments</span> CPPFLAGS=-Qunused-<span class="built_in">arguments</span> pip install ansible</div></pre></td></tr></table></figure>
 <h2 id="2-5-发行版的Tarball"><a href="#2-5-发行版的Tarball" class="headerlink" title="2.5 发行版的Tarball"></a><a href="http://www.ansible.com.cn/docs/intro_installation.html#id25" target="_blank" rel="external">2.5 发行版的Tarball</a></h2><p>不想通过git checkout 创建Ansible的软件包？在这里可获取Tarball <a href="http://releases.ansible.com/ansible" target="_blank" rel="external">Ansible downloads</a></p>
 <h2 id="2-6-在Mac-OSX-上安装最新发布版本"><a href="#2-6-在Mac-OSX-上安装最新发布版本" class="headerlink" title="2.6 在Mac OSX 上安装最新发布版本"></a><a href="http://www.ansible.com.cn/docs/intro_installation.html#id21" target="_blank" rel="external">2.6 在Mac OSX 上安装最新发布版本</a></h2><p>在 Mac 上安装 ansible，最好是通过 pip 安装，参照 <a href="http://www.ansible.com.cn/docs/intro_installation.html#pip" target="_blank" rel="external">通过 Pip 安装最新发布版本</a> .</p>
 
@@ -708,7 +723,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">31</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -719,7 +734,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -730,7 +745,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -801,7 +816,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、安装前准备"><span class="nav-number">1.</span> <span class="nav-text">一、安装前准备</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#需要安装些什么"><span class="nav-number">1.1.</span> <span class="nav-text">需要安装些什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#版本及安装方式选择"><span class="nav-number">1.2.</span> <span class="nav-text">版本及安装方式选择?</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、安装"><span class="nav-number">2.</span> <span class="nav-text">二、安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-通过Yum安装最新发布版本"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 通过Yum安装最新发布版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-自己创建RPM软件包"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 自己创建RPM软件包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-通过Apt-Ubuntu-安装最新发布版本"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 通过Apt (Ubuntu)安装最新发布版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-通过-Pip-安装最新发布版本"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 通过 Pip 安装最新发布版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-发行版的Tarball"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 发行版的Tarball</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-6-在Mac-OSX-上安装最新发布版本"><span class="nav-number">2.6.</span> <span class="nav-text">2.6 在Mac OSX 上安装最新发布版本</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、安装前准备"><span class="nav-text">一、安装前准备</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#需要安装些什么"><span class="nav-text">需要安装些什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#版本及安装方式选择"><span class="nav-text">版本及安装方式选择?</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、安装"><span class="nav-text">二、安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-通过Yum安装最新发布版本"><span class="nav-text">2.1 通过Yum安装最新发布版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-自己创建RPM软件包"><span class="nav-text">2.2 自己创建RPM软件包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-通过Apt-Ubuntu-安装最新发布版本"><span class="nav-text">2.3 通过Apt (Ubuntu)安装最新发布版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-通过-Pip-安装最新发布版本"><span class="nav-text">2.4 通过 Pip 安装最新发布版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-发行版的Tarball"><span class="nav-text">2.5 发行版的Tarball</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-6-在Mac-OSX-上安装最新发布版本"><span class="nav-text">2.6 在Mac OSX 上安装最新发布版本</span></a></li></ol></li></ol></div>
             
 
           </div>

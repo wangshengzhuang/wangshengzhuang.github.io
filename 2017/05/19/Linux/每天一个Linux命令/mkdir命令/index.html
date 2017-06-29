@@ -10,7 +10,21 @@
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*��������ɫ*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*��Ӱ��ɫ*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*�ϱ߿���ɫ*/
+        border-left-color: #1E92FB;    /*���߿���ɫ*/
+    }
+</style>
 
 
 
@@ -92,17 +106,17 @@
 
 
 
-<meta name="description" content="1、命令简介mkdir (Make Directory 创建目录): 若指定目录不存在则创建目录。在创建目录时，要求创建目录的用户具有写权限，并应保证新建的目录没有重名。 2、用法1用法：mkdir [选项]... 目录... 3、选项1234-m, --mode=模式       设置权限模式(类似chmod)，而不是rwxrwxrwx 减umask-p, --parents        需">
+<meta name="description" content="摘要: mkdir(Make Directory 创建目录): 若指定目录不存在则创建目录。">
 <meta name="keywords" content="每天一个Linux命令,mkdir">
 <meta property="og:type" content="article">
 <meta property="og:title" content="mkdir命令">
 <meta property="og:url" content="http://wangshengzhuang.com/2017/05/19/Linux/每天一个Linux命令/mkdir命令/index.html">
 <meta property="og:site_name" content="小强斋太-Study Notes">
-<meta property="og:description" content="1、命令简介mkdir (Make Directory 创建目录): 若指定目录不存在则创建目录。在创建目录时，要求创建目录的用户具有写权限，并应保证新建的目录没有重名。 2、用法1用法：mkdir [选项]... 目录... 3、选项1234-m, --mode=模式       设置权限模式(类似chmod)，而不是rwxrwxrwx 减umask-p, --parents        需">
-<meta property="og:updated_time" content="2017-06-07T14:56:16.022Z">
+<meta property="og:description" content="摘要: mkdir(Make Directory 创建目录): 若指定目录不存在则创建目录。">
+<meta property="og:updated_time" content="2017-06-29T15:50:09.721Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mkdir命令">
-<meta name="twitter:description" content="1、命令简介mkdir (Make Directory 创建目录): 若指定目录不存在则创建目录。在创建目录时，要求创建目录的用户具有写权限，并应保证新建的目录没有重名。 2、用法1用法：mkdir [选项]... 目录... 3、选项1234-m, --mode=模式       设置权限模式(类似chmod)，而不是rwxrwxrwx 减umask-p, --parents        需">
+<meta name="twitter:description" content="摘要: mkdir(Make Directory 创建目录): 若指定目录不存在则创建目录。">
 
 
 
@@ -173,6 +187,7 @@
 
   <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
+	<a href="https://github.com/wangshengzhuang"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
@@ -461,7 +476,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  418
+                  440
                 </span>
               
 
@@ -495,16 +510,17 @@
       
 
       
-        <a id="more"></a>
+        <p>摘要: mkdir(Make Directory 创建目录): 若指定目录不存在则创建目录。</p>
+<a id="more"></a>
 <h3 id="1、命令简介"><a href="#1、命令简介" class="headerlink" title="1、命令简介"></a>1、命令简介</h3><p><strong>mkdir</strong> (Make Directory 创建目录): 若指定目录不存在则创建目录。在创建目录时，要求创建目录的用户具有写权限，并应保证新建的目录没有重名。</p>
 <h3 id="2、用法"><a href="#2、用法" class="headerlink" title="2、用法"></a>2、用法</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">用法：mkdir [选项]... 目录...</div></pre></td></tr></table></figure>
 <h3 id="3、选项"><a href="#3、选项" class="headerlink" title="3、选项"></a>3、选项</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">-m, --mode=模式       设置权限模式(类似chmod)，而不是rwxrwxrwx 减umask</div><div class="line">-p, --parents        需要时创建目标目录的上层目录，但即使这些目录已存在也不当作错误处理</div><div class="line">-v, --verbose        每次创建新目录都显示信息</div><div class="line">-Z, --context=CTX      将每个创建的目录的SELinux 安全环境设置为CTX</div></pre></td></tr></table></figure>
-<h3 id="4、实例"><a href="#4、实例" class="headerlink" title="4、实例"></a>4、实例</h3><h4 id="实例1：创建一个空目录"><a href="#实例1：创建一个空目录" class="headerlink" title="实例1：创建一个空目录"></a>实例1：创建一个空目录</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@oracledb study]# mkdir dir1</div><div class="line">[root@oracledb study]# ls</div><div class="line">dir1</div></pre></td></tr></table></figure>
-<h4 id="实例2：一次创建多个目录"><a href="#实例2：一次创建多个目录" class="headerlink" title="实例2：一次创建多个目录"></a>实例2：一次创建多个目录</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@oracledb study]# mkdir dir1 dir2 dir3</div><div class="line">[root@oracledb study]# ls</div><div class="line">dir1  dir2  dir3</div></pre></td></tr></table></figure>
-<h4 id="实例3：递归创建多个目录"><a href="#实例3：递归创建多个目录" class="headerlink" title="实例3：递归创建多个目录"></a>实例3：递归创建多个目录</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@oracledb study]# mkdir -p dir1/sub1/sub2</div><div class="line">[root@oracledb study]# tree</div><div class="line">.</div><div class="line">└── dir1</div><div class="line">    └── sub1</div><div class="line">        └── sub2</div><div class="line"></div><div class="line">3 directories, 0 files</div></pre></td></tr></table></figure>
-<h4 id="实例4：创建权限为755的目录"><a href="#实例4：创建权限为755的目录" class="headerlink" title="实例4：创建权限为755的目录"></a>实例4：创建权限为755的目录</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@oracledb study]# mkdir -m 755 dir1</div><div class="line">[root@oracledb study]# ls</div><div class="line">drwxr-xr-x 2 root root 4096 4月  16 15:03 dir1</div></pre></td></tr></table></figure>
-<h4 id="实例5：创建新目录都显示信息"><a href="#实例5：创建新目录都显示信息" class="headerlink" title="实例5：创建新目录都显示信息"></a>实例5：创建新目录都显示信息</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@oracledb study]# mkdir -v dir3</div><div class="line">mkdir: 已创建目录 "dir3"</div></pre></td></tr></table></figure>
-<h4 id="实例6：一个命令创建项目的目录结构"><a href="#实例6：一个命令创建项目的目录结构" class="headerlink" title="实例6：一个命令创建项目的目录结构"></a>实例6：一个命令创建项目的目录结构</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">[root@oracledb study]# mkdir -vp tomcat/&#123;bin,lib,conf,logs,webapps/&#123;examples,docs&#125;,work&#125;</div><div class="line">mkdir: 已创建目录 "tomcat"</div><div class="line">mkdir: 已创建目录 "tomcat/bin"</div><div class="line">mkdir: 已创建目录 "tomcat/lib"</div><div class="line">mkdir: 已创建目录 "tomcat/conf"</div><div class="line">mkdir: 已创建目录 "tomcat/logs"</div><div class="line">mkdir: 已创建目录 "tomcat/webapps"</div><div class="line">mkdir: 已创建目录 "tomcat/webapps/examples"</div><div class="line">mkdir: 已创建目录 "tomcat/webapps/docs"</div><div class="line">mkdir: 已创建目录 "tomcat/work"</div><div class="line">[root@oracledb study]# tree</div><div class="line">.</div><div class="line">└── tomcat</div><div class="line">    ├── bin</div><div class="line">    ├── conf</div><div class="line">    ├── lib</div><div class="line">    ├── logs</div><div class="line">    ├── webapps</div><div class="line">    │   ├── docs</div><div class="line">    │   └── examples</div><div class="line">    └── work</div></pre></td></tr></table></figure>
+<h3 id="4、实例"><a href="#4、实例" class="headerlink" title="4、实例"></a>4、实例</h3><h4 id="实例1：创建一个空目录"><a href="#实例1：创建一个空目录" class="headerlink" title="实例1：创建一个空目录"></a>实例1：创建一个空目录</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@oracledb study]<span class="comment"># mkdir dir1</span></div><div class="line">[root@oracledb study]<span class="comment"># ls</span></div><div class="line">dir1</div></pre></td></tr></table></figure>
+<h4 id="实例2：一次创建多个目录"><a href="#实例2：一次创建多个目录" class="headerlink" title="实例2：一次创建多个目录"></a>实例2：一次创建多个目录</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@oracledb study]<span class="comment"># mkdir dir1 dir2 dir3</span></div><div class="line">[root@oracledb study]<span class="comment"># ls</span></div><div class="line">dir1  dir2  dir3</div></pre></td></tr></table></figure>
+<h4 id="实例3：递归创建多个目录"><a href="#实例3：递归创建多个目录" class="headerlink" title="实例3：递归创建多个目录"></a>实例3：递归创建多个目录</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@oracledb study]<span class="comment"># mkdir -p dir1/sub1/sub2</span></div><div class="line">[root@oracledb study]<span class="comment"># tree</span></div><div class="line">.</div><div class="line">└── dir1</div><div class="line">    └── sub1</div><div class="line">        └── sub2</div><div class="line"></div><div class="line">3 directories, 0 files</div></pre></td></tr></table></figure>
+<h4 id="实例4：创建权限为755的目录"><a href="#实例4：创建权限为755的目录" class="headerlink" title="实例4：创建权限为755的目录"></a>实例4：创建权限为755的目录</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@oracledb study]<span class="comment"># mkdir -m 755 dir1</span></div><div class="line">[root@oracledb study]<span class="comment"># ls</span></div><div class="line">drwxr-xr-x 2 root root 4096 4月  16 15:03 dir1</div></pre></td></tr></table></figure>
+<h4 id="实例5：创建新目录都显示信息"><a href="#实例5：创建新目录都显示信息" class="headerlink" title="实例5：创建新目录都显示信息"></a>实例5：创建新目录都显示信息</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@oracledb study]<span class="comment"># mkdir -v dir3</span></div><div class="line">mkdir: 已创建目录 <span class="string">"dir3"</span></div></pre></td></tr></table></figure>
+<h4 id="实例6：一个命令创建项目的目录结构"><a href="#实例6：一个命令创建项目的目录结构" class="headerlink" title="实例6：一个命令创建项目的目录结构"></a>实例6：一个命令创建项目的目录结构</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">[root@oracledb study]<span class="comment"># mkdir -vp tomcat/&#123;bin,lib,conf,logs,webapps/&#123;examples,docs&#125;,work&#125;</span></div><div class="line">mkdir: 已创建目录 <span class="string">"tomcat"</span></div><div class="line">mkdir: 已创建目录 <span class="string">"tomcat/bin"</span></div><div class="line">mkdir: 已创建目录 <span class="string">"tomcat/lib"</span></div><div class="line">mkdir: 已创建目录 <span class="string">"tomcat/conf"</span></div><div class="line">mkdir: 已创建目录 <span class="string">"tomcat/logs"</span></div><div class="line">mkdir: 已创建目录 <span class="string">"tomcat/webapps"</span></div><div class="line">mkdir: 已创建目录 <span class="string">"tomcat/webapps/examples"</span></div><div class="line">mkdir: 已创建目录 <span class="string">"tomcat/webapps/docs"</span></div><div class="line">mkdir: 已创建目录 <span class="string">"tomcat/work"</span></div><div class="line">[root@oracledb study]<span class="comment"># tree</span></div><div class="line">.</div><div class="line">└── tomcat</div><div class="line">    ├── bin</div><div class="line">    ├── conf</div><div class="line">    ├── lib</div><div class="line">    ├── logs</div><div class="line">    ├── webapps</div><div class="line">    │   ├── docs</div><div class="line">    │   └── examples</div><div class="line">    └── work</div></pre></td></tr></table></figure>
       
     </div>
 
@@ -692,7 +708,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">31</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -703,7 +719,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -714,7 +730,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">20</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -785,7 +801,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、命令简介"><span class="nav-number">1.</span> <span class="nav-text">1、命令简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、用法"><span class="nav-number">2.</span> <span class="nav-text">2、用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、选项"><span class="nav-number">3.</span> <span class="nav-text">3、选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、实例"><span class="nav-number">4.</span> <span class="nav-text">4、实例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#实例1：创建一个空目录"><span class="nav-number">4.1.</span> <span class="nav-text">实例1：创建一个空目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实例2：一次创建多个目录"><span class="nav-number">4.2.</span> <span class="nav-text">实例2：一次创建多个目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实例3：递归创建多个目录"><span class="nav-number">4.3.</span> <span class="nav-text">实例3：递归创建多个目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实例4：创建权限为755的目录"><span class="nav-number">4.4.</span> <span class="nav-text">实例4：创建权限为755的目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实例5：创建新目录都显示信息"><span class="nav-number">4.5.</span> <span class="nav-text">实例5：创建新目录都显示信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实例6：一个命令创建项目的目录结构"><span class="nav-number">4.6.</span> <span class="nav-text">实例6：一个命令创建项目的目录结构</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、命令简介"><span class="nav-text">1、命令简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、用法"><span class="nav-text">2、用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、选项"><span class="nav-text">3、选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、实例"><span class="nav-text">4、实例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#实例1：创建一个空目录"><span class="nav-text">实例1：创建一个空目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实例2：一次创建多个目录"><span class="nav-text">实例2：一次创建多个目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实例3：递归创建多个目录"><span class="nav-text">实例3：递归创建多个目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实例4：创建权限为755的目录"><span class="nav-text">实例4：创建权限为755的目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实例5：创建新目录都显示信息"><span class="nav-text">实例5：创建新目录都显示信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实例6：一个命令创建项目的目录结构"><span class="nav-text">实例6：一个命令创建项目的目录结构</span></a></li></ol></li></ol></div>
             
 
           </div>
