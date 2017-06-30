@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[cut命令]]></title>
+    <url>%2F2017%2F06%2F02%2FLinux%2F%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4%2Fcut%2F</url>
+    <content type="text"><![CDATA[1. 命令简介cut根据指定的定界符，切分文件，并将选中的列输出到标准输出。 2. 用法cut [选项]… [文件]… 打印输入行的选中的parts 到标准输出 3. 选项 4. 示例以密码/etc/passwd为例123456[root@xqzt ~]# tail -n 5 /etc/passwdnfsnobody:x:65534:65534:Anonymous NFS User:/var/lib/nfs:/sbin/nologingnome-initial-setup:x:992:990::/run/gnome-initial-setup/:/sbin/nologintcpdump:x:72:72::/:/sbin/nologinvboxadd:x:991:1::/var/run/vboxadd:/bin/falsewangshengzhuang:x:1000:1000:wangshengzhuang:/home/wangshengzhuang:/bin/bash 示例1：-f 指定字段打印用户名123456[root@xqzt ~]# tail -n 5 /etc/passwd |cut -d ":" -f 1,6,7nfsnobodygnome-initial-setuptcpdumpvboxaddwangshengzhuang 示例2：-f 指定多个字段打印用户名、home目录、shell123456[root@xqzt ~]# tail -n 5 /etc/passwd |cut -d ":" -f 1,6,7nfsnobody:/var/lib/nfs:/sbin/nologingnome-initial-setup:/run/gnome-initial-setup/:/sbin/nologintcpdump:/:/sbin/nologinvboxadd:/var/run/vboxadd:/bin/falsewangshengzhuang:/home/wangshengzhuang:/bin/bash 示例3: -f n-m打印第n-m个字段打印用户ID和组ID123456789101112[root@xqzt ~]# tail -n 5 /etc/passwd |cut -d ":" -f 3-465534:65534992:99072:72991:11000:1000[root@xqzt ~]# tail -n 5 /etc/passwd |cut -d ":" -f 3,465534:65534992:99072:72991:11000:1000 示例4： –output-delimiter指定输出使用新的分界符123456[root@xqzt ~]# tail -n 5 /etc/passwd |cut -d ":" -f 3,4 --output-delimiter=" | "65534 | 65534992 | 99072 | 72991 | 11000 | 1000 示例5：–complement 补全选中的部分打印除了密码、用户id 和组id 之外的所有列123456[root@xqzt ~]# tail -n 5 /etc/passwd |cut -d ":" -f 2-4 --complementnfsnobody:Anonymous NFS User:/var/lib/nfs:/sbin/nologingnome-initial-setup::/run/gnome-initial-setup/:/sbin/nologintcpdump::/:/sbin/nologinvboxadd::/var/run/vboxadd:/bin/falsewangshengzhuang:wangshengzhuang:/home/wangshengzhuang:/bin/bash 参考 cut命令]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>每天一个Linux命令</category>
+      </categories>
+      <tags>
+        <tag>每天一个Linux命令</tag>
+        <tag>cut</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[dig命令]]></title>
+    <url>%2F2017%2F06%2F01%2FLinux%2F%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4%2Fdig%E5%91%BD%E4%BB%A4%2F</url>
+    <content type="text"><![CDATA[dig - DNS lookup utility 1. 命令简介dig命令是常用的域名查询工具，可以用来测试域名系统工作是否正常。 2. 安装1yum install bind-utils 3. 选项123456789@&lt;服务器地址&gt;：指定进行域名解析的域名服务器； -b：当主机具有多个IP地址，指定使用本机的哪个IP地址向域名服务器发送域名查询请求； -f&lt;文件名称&gt;：指定dig以批处理的方式运行，指定的文件中保存着需要批处理查询的DNS任务信息； -P：指定域名服务器所使用端口号；-t&lt;类型&gt;：指定要查询的DNS数据类型； -x：执行逆向域名查询； -4：使用IPv4； -6：使用IPv6； -h：显示指令帮助信息。 4. 例子例子1. 查询域名 123456789101112131415161718[root@mysql001 ~]# dig www.baidu.com; &lt;&lt;&gt;&gt; DiG 9.9.4-RedHat-9.9.4-38.el7_3.3 &lt;&lt;&gt;&gt; www.baidu.com;; global options: +cmd;; Got answer:;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 43094;; flags: qr aa rd ra ad; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0;; QUESTION SECTION:;www.baidu.com. IN A;; ANSWER SECTION:www.baidu.com. 0 IN A 183.232.231.173;; Query time: 2 msec;; SERVER: 192.168.0.1#53(192.168.0.1);; WHEN: Tue Jun 27 09:09:09 CST 2017;; MSG SIZE rcvd: 47 例子2. 指定域名服务器 123456789101112131415161718192021[root@mysql001 ~]# dig @223.5.5.5 www.baidu.com; &lt;&lt;&gt;&gt; DiG 9.9.4-RedHat-9.9.4-38.el7_3.3 &lt;&lt;&gt;&gt; @223.5.5.5 www.baidu.com; (1 server found);; global options: +cmd;; Got answer:;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 60317;; flags: qr aa rd cd; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 0;; WARNING: recursion requested but not available;; QUESTION SECTION:;www.baidu.com. IN A;; ANSWER SECTION:www.baidu.com. 300 IN A 111.13.100.91www.baidu.com. 300 IN A 111.13.100.92;; Query time: 6 msec;; SERVER: 223.5.5.5#53(223.5.5.5);; WHEN: Tue Jun 27 09:09:21 CST 2017;; MSG SIZE rcvd: 63]]></content>
+      <categories>
+        <category>Linux</category>
+        <category>每天一个Linux命令</category>
+      </categories>
+      <tags>
+        <tag>每天一个Linux命令</tag>
+        <tag>dig</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[cat命令]]></title>
     <url>%2F2017%2F05%2F31%2FLinux%2F%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4%2Fcat%E5%91%BD%E4%BB%A4%2F</url>
     <content type="text"><![CDATA[摘要: cat (concatenate，连接)命令将[文件]或标准输入组合输出到标准输出，如果没有指定文件，或者文件为”-“，则从标准输入读取。 1、命令简介cat (concatenate，连接)命令将[文件]或标准输入组合输出到标准输出，如果没有指定文件，或者文件为”-“，则从标准输入读取。 2、用法1cat [选项]... [文件]... 3、选项123456789101112-A, --show-all 等于-vET-b, --number-nonblank 对非空输出行编号-e 等于-vE-E, --show-ends 在每行结束处显示"$"-n, --number 对所有行编号，包括空行-s, --squeeze-blank 压缩多行空行为一空行-t 与-vT 等价-T, --show-tabs 将跳格(TAB)字符显示为^I-u (被忽略)-v, --show-nonprinting 使用^ 和M- 引用，除了LFD和 TAB 之外--help 显示此帮助信息并退出--version 显示版本信息并退出 4、示例示例1：显示文件内容1234[root@oracledb ~]# cat test1.log 201120122013 示例2：显示文件内容及行号123456789101112131415161718192021222324252627282930[root@oracledb ~]# cat -b test1.log 1 2011 2 2012 3 2013 4 2014 5 2015[root@oracledb ~]# cat -n test1.log 1 2011 2 2012 3 2013 4 5 6 2014 7 2015[root@oracledb ~]# cat -s test1.log 20112012201320142015[root@oracledb ~]# cat -ns test1.log 1 2011 2 2012 3 2013 4 5 2014 6 2015 示例3：-T选项12345678910[root@oracledb ~]# cat -T test1.log 201120122013^I行前面为tab20142015 示例4：顺序连接两个文件log1，log2 ，并将结果输出到log31[root@oracledb ~]# cat test1.log test2.log &gt;test3.log 示例5：将标准输入的内容定向输出到文件1[root@oracledb ~]# cat &gt;test4.log 按ctrl+D结束输入or EOF（End Of File） 12345678910111213[root@oracledb ~]# cat &gt;log.txt &lt;&lt;EOF&gt; Hello&gt; World&gt; Linux&gt; PWD=$(pwd)&gt; EOF[root@localhost test]# ls -l log.txt -rw-r--r-- 1 root root 37 10-28 17:07 log.txt[root@localhost test]# cat log.txt HelloWorldLinuxPWD=/opt/soft/test 示例6：tac (反向列示)12345678[root@oracledb ~]# cat test2.log 201620172018[root@oracledb ~]# tac test2.log 201820172016]]></content>
@@ -302,8 +328,8 @@
       </categories>
       <tags>
         <tag>MySQL</tag>
-        <tag>Group Replication</tag>
         <tag>InnoDB Cluster</tag>
+        <tag>Group Replication</tag>
       </tags>
   </entry>
   <entry>

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wangshengzhuang.com/"/>
-  <updated>2017-06-29T15:46:52.027Z</updated>
+  <updated>2017-06-30T15:38:18.237Z</updated>
   <id>http://wangshengzhuang.com/</id>
   
   <author>
@@ -14,6 +14,81 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>cut命令</title>
+    <link href="http://wangshengzhuang.com/2017/06/02/Linux/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4/cut/"/>
+    <id>http://wangshengzhuang.com/2017/06/02/Linux/每天一个Linux命令/cut/</id>
+    <published>2017-06-02T14:12:49.000Z</published>
+    <updated>2017-06-30T15:38:18.237Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="1-命令简介"><a href="#1-命令简介" class="headerlink" title="1. 命令简介"></a>1. 命令简介</h3><p>cut根据指定的定界符，切分文件，并将选中的列输出到标准输出。</p>
+<a id="more"></a>
+<h3 id="2-用法"><a href="#2-用法" class="headerlink" title="2. 用法"></a>2. 用法</h3><p>cut [选项]… [文件]…</p>
+<p>打印输入行的选中的parts 到标准输出</p>
+<h3 id="3-选项"><a href="#3-选项" class="headerlink" title="3. 选项"></a>3. 选项</h3><p><img src="http://image.wangshengzhuang.com/16-9-9/15216345.jpg" alt=""></p>
+<h3 id="4-示例"><a href="#4-示例" class="headerlink" title="4. 示例"></a>4. 示例</h3><p>以密码/etc/passwd为例<br><figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root<span class="variable">@xqzt</span> ~]<span class="comment"># tail -n 5 /etc/passwd</span></div><div class="line"><span class="symbol">nfsnobody:</span><span class="symbol">x:</span><span class="number">65534</span><span class="symbol">:</span><span class="number">65534</span><span class="symbol">:Anonymous</span> NFS <span class="symbol">User:</span>/var/lib/<span class="symbol">nfs:</span>/sbin/nologin</div><div class="line">gnome-initial-<span class="symbol">setup:</span><span class="symbol">x:</span><span class="number">992</span><span class="symbol">:</span><span class="number">990</span><span class="symbol">:</span><span class="symbol">:/run/gnome-initial-setup/</span><span class="symbol">:/sbin/nologin</span></div><div class="line"><span class="symbol">tcpdump:</span><span class="symbol">x:</span><span class="number">72</span><span class="symbol">:</span><span class="number">72</span><span class="symbol">:</span><span class="symbol">:/</span><span class="symbol">:/sbin/nologin</span></div><div class="line"><span class="symbol">vboxadd:</span><span class="symbol">x:</span><span class="number">991</span><span class="symbol">:</span><span class="number">1</span><span class="symbol">:</span><span class="symbol">:/var/run/vboxadd</span><span class="symbol">:/bin/false</span></div><div class="line"><span class="symbol">wangshengzhuang:</span><span class="symbol">x:</span><span class="number">1000</span><span class="symbol">:</span><span class="number">1000</span><span class="symbol">:wangshengzhuang</span><span class="symbol">:/home/wangshengzhuang</span><span class="symbol">:/bin/bash</span></div></pre></td></tr></table></figure></p>
+<h4 id="示例1：-f-指定字段"><a href="#示例1：-f-指定字段" class="headerlink" title="示例1：-f 指定字段"></a><strong>示例1：-f 指定字段</strong></h4><p>打印用户名<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@xqzt ~]<span class="comment"># tail -n 5 /etc/passwd |cut -d ":" -f 1,6,7</span></div><div class="line">nfsnobody</div><div class="line">gnome-initial-setup</div><div class="line">tcpdump</div><div class="line">vboxadd</div><div class="line">wangshengzhuang</div></pre></td></tr></table></figure></p>
+<h4 id="示例2：-f-指定多个字段"><a href="#示例2：-f-指定多个字段" class="headerlink" title="示例2：-f 指定多个字段"></a><strong>示例2：-f 指定多个字段</strong></h4><p>打印用户名、home目录、shell<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@xqzt ~]<span class="comment"># tail -n 5 /etc/passwd |cut -d ":" -f 1,6,7</span></div><div class="line">nfsnobody:/var/lib/nfs:/sbin/nologin</div><div class="line">gnome-initial-setup:/run/gnome-initial-setup/:/sbin/nologin</div><div class="line">tcpdump:/:/sbin/nologin</div><div class="line">vboxadd:/var/run/vboxadd:/bin/<span class="literal">false</span></div><div class="line">wangshengzhuang:/home/wangshengzhuang:/bin/bash</div></pre></td></tr></table></figure></p>
+<h4 id="示例3-f-n-m打印第n-m个字段"><a href="#示例3-f-n-m打印第n-m个字段" class="headerlink" title="示例3: -f n-m打印第n-m个字段"></a><strong>示例3: -f n-m打印第n-m个字段</strong></h4><p>打印用户ID和组ID<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">[root@xqzt ~]<span class="comment"># tail -n 5 /etc/passwd |cut -d ":" -f 3-4</span></div><div class="line">65534:65534</div><div class="line">992:990</div><div class="line">72:72</div><div class="line">991:1</div><div class="line">1000:1000</div><div class="line">[root@xqzt ~]<span class="comment"># tail -n 5 /etc/passwd |cut -d ":" -f 3,4</span></div><div class="line">65534:65534</div><div class="line">992:990</div><div class="line">72:72</div><div class="line">991:1</div><div class="line">1000:1000</div></pre></td></tr></table></figure></p>
+<h4 id="示例4：-–output-delimiter指定输出使用新的分界符"><a href="#示例4：-–output-delimiter指定输出使用新的分界符" class="headerlink" title="示例4： –output-delimiter指定输出使用新的分界符"></a><strong>示例4： –output-delimiter指定输出使用新的分界符</strong></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@xqzt ~]<span class="comment"># tail -n 5 /etc/passwd |cut -d ":" -f 3,4 --output-delimiter=" | "</span></div><div class="line">65534 | 65534</div><div class="line">992 | 990</div><div class="line">72 | 72</div><div class="line">991 | 1</div><div class="line">1000 | 1000</div></pre></td></tr></table></figure>
+<h4 id="示例5：–complement-补全选中的部分"><a href="#示例5：–complement-补全选中的部分" class="headerlink" title="示例5：–complement  补全选中的部分"></a><strong>示例5：–complement  补全选中的部分</strong></h4><p>打印除了密码、用户id 和组id 之外的所有列<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@xqzt ~]<span class="comment"># tail -n 5 /etc/passwd |cut -d ":" -f 2-4 --complement</span></div><div class="line">nfsnobody:Anonymous NFS User:/var/lib/nfs:/sbin/nologin</div><div class="line">gnome-initial-setup::/run/gnome-initial-setup/:/sbin/nologin</div><div class="line">tcpdump::/:/sbin/nologin</div><div class="line">vboxadd::/var/run/vboxadd:/bin/<span class="literal">false</span></div><div class="line">wangshengzhuang:wangshengzhuang:/home/wangshengzhuang:/bin/bash</div></pre></td></tr></table></figure></p>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><ul>
+<li><a href="http://man.linuxde.net/cut" target="_blank" rel="external">cut命令</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;1-命令简介&quot;&gt;&lt;a href=&quot;#1-命令简介&quot; class=&quot;headerlink&quot; title=&quot;1. 命令简介&quot;&gt;&lt;/a&gt;1. 命令简介&lt;/h3&gt;&lt;p&gt;cut根据指定的定界符，切分文件，并将选中的列输出到标准输出。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Linux" scheme="http://wangshengzhuang.com/categories/Linux/"/>
+    
+      <category term="每天一个Linux命令" scheme="http://wangshengzhuang.com/categories/Linux/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4/"/>
+    
+    
+      <category term="每天一个Linux命令" scheme="http://wangshengzhuang.com/tags/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4/"/>
+    
+      <category term="cut" scheme="http://wangshengzhuang.com/tags/cut/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>dig命令</title>
+    <link href="http://wangshengzhuang.com/2017/06/01/Linux/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4/dig%E5%91%BD%E4%BB%A4/"/>
+    <id>http://wangshengzhuang.com/2017/06/01/Linux/每天一个Linux命令/dig命令/</id>
+    <published>2017-06-01T14:55:56.000Z</published>
+    <updated>2017-06-30T15:29:55.928Z</updated>
+    
+    <content type="html"><![CDATA[<p>dig - DNS lookup utility</p>
+<a id="more"></a>
+<h3 id="1-命令简介"><a href="#1-命令简介" class="headerlink" title="1. 命令简介"></a>1. 命令简介</h3><p>dig命令是常用的域名查询工具，可以用来测试域名系统工作是否正常。</p>
+<h3 id="2-安装"><a href="#2-安装" class="headerlink" title="2. 安装"></a>2. 安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install <span class="built_in">bind</span>-utils</div></pre></td></tr></table></figure>
+<h3 id="3-选项"><a href="#3-选项" class="headerlink" title="3. 选项"></a>3. 选项</h3><figure class="highlight haml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">@&lt;服务器地址&gt;：指定进行域名解析的域名服务器； </div><div class="line">-<span class="ruby">b：当主机具有多个IP地址，指定使用本机的哪个IP地址向域名服务器发送域名查询请求； </span></div><div class="line">-<span class="ruby">f&lt;文件名称&gt;：指定dig以批处理的方式运行，指定的文件中保存着需要批处理查询的DNS任务信息； </span></div><div class="line">-<span class="ruby">P：指定域名服务器所使用端口号；</span></div><div class="line">-<span class="ruby">t&lt;类型&gt;：指定要查询的DNS数据类型； </span></div><div class="line">-<span class="ruby">x：执行逆向域名查询； </span></div><div class="line">-<span class="ruby"><span class="number">4</span>：使用IPv4； </span></div><div class="line">-<span class="ruby"><span class="number">6</span>：使用IPv6； </span></div><div class="line">-<span class="ruby">h：显示指令帮助信息。</span></div></pre></td></tr></table></figure>
+<h4 id="4-例子"><a href="#4-例子" class="headerlink" title="4. 例子"></a>4. 例子</h4><p>例子1. 查询域名</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">[root@mysql001 ~]<span class="comment"># dig   www.baidu.com</span></div><div class="line"></div><div class="line">; &lt;&lt;&gt;&gt; DiG 9.9.4-RedHat-9.9.4-38.el7_3.3 &lt;&lt;&gt;&gt; www.baidu.com</div><div class="line">;; global options: +cmd</div><div class="line">;; Got answer:</div><div class="line">;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 43094</div><div class="line">;; flags: qr aa rd ra ad; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0</div><div class="line"></div><div class="line">;; QUESTION SECTION:</div><div class="line">;www.baidu.com.			IN	A</div><div class="line"></div><div class="line">;; ANSWER SECTION:</div><div class="line">www.baidu.com.		0	IN	A	183.232.231.173</div><div class="line"></div><div class="line">;; Query time: 2 msec</div><div class="line">;; SERVER: 192.168.0.1<span class="comment">#53(192.168.0.1)</span></div><div class="line">;; WHEN: Tue Jun 27 09:09:09 CST 2017</div><div class="line">;; MSG SIZE  rcvd: 47</div></pre></td></tr></table></figure>
+<p>例子2. 指定域名服务器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">[root@mysql001 ~]<span class="comment"># dig @223.5.5.5  www.baidu.com</span></div><div class="line"></div><div class="line">; &lt;&lt;&gt;&gt; DiG 9.9.4-RedHat-9.9.4-38.el7_3.3 &lt;&lt;&gt;&gt; @223.5.5.5 www.baidu.com</div><div class="line">; (1 server found)</div><div class="line">;; global options: +cmd</div><div class="line">;; Got answer:</div><div class="line">;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 60317</div><div class="line">;; flags: qr aa rd <span class="built_in">cd</span>; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 0</div><div class="line">;; WARNING: recursion requested but not available</div><div class="line"></div><div class="line">;; QUESTION SECTION:</div><div class="line">;www.baidu.com.			IN	A</div><div class="line"></div><div class="line">;; ANSWER SECTION:</div><div class="line">www.baidu.com.		300	IN	A	111.13.100.91</div><div class="line">www.baidu.com.		300	IN	A	111.13.100.92</div><div class="line"></div><div class="line">;; Query time: 6 msec</div><div class="line">;; SERVER: 223.5.5.5<span class="comment">#53(223.5.5.5)</span></div><div class="line">;; WHEN: Tue Jun 27 09:09:21 CST 2017</div><div class="line">;; MSG SIZE  rcvd: 63</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;dig - DNS lookup utility&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Linux" scheme="http://wangshengzhuang.com/categories/Linux/"/>
+    
+      <category term="每天一个Linux命令" scheme="http://wangshengzhuang.com/categories/Linux/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4/"/>
+    
+    
+      <category term="每天一个Linux命令" scheme="http://wangshengzhuang.com/tags/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4/"/>
+    
+      <category term="dig" scheme="http://wangshengzhuang.com/tags/dig/"/>
+    
+  </entry>
   
   <entry>
     <title>cat命令</title>
@@ -1139,108 +1214,6 @@
     <summary type="html">
     
       &lt;p&gt;Ansible 通过读取默认的主机清单配置,可以同时连接到多个远程主机上执行任务组和主机之间的关系通过 inventory 文件配置. 默认的文件路径为 /etc/ansible/hosts。默认路径可以通过修改 ansible.cfg 的 hostfile 参数指定路径。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="运维相关" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/"/>
-    
-      <category term="Ansible" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/"/>
-    
-    
-      <category term="Ansible" scheme="http://wangshengzhuang.com/tags/Ansible/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Ansible安装</title>
-    <link href="http://wangshengzhuang.com/2017/05/13/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/Ansible%E5%AE%89%E8%A3%85/"/>
-    <id>http://wangshengzhuang.com/2017/05/13/运维相关/Ansible/Ansible安装/</id>
-    <published>2017-05-13T15:26:47.000Z</published>
-    <updated>2017-05-23T13:58:16.014Z</updated>
-    
-    <content type="html"><![CDATA[<p>本文主要记录了ansible的安装方法。</p>
-<p><img src="http://image.wangshengzhuang.com/17-5-19/88214161-file_1495207716369_76e1.jpg" alt=""></p>
-<a id="more"></a>
-<h1 id="一、安装前准备"><a href="#一、安装前准备" class="headerlink" title="一、安装前准备"></a><a href="http://www.ansible.com.cn/docs/intro_installation.html#id9" target="_blank" rel="external">一、安装前准备</a></h1><h2 id="需要安装些什么"><a href="#需要安装些什么" class="headerlink" title="需要安装些什么"></a><a href="http://www.ansible.com.cn/docs/intro_installation.html#id11" target="_blank" rel="external">需要安装些什么</a></h2><p>Ansible默认通过 SSH 协议管理机器.目前,只要机器上安装了 Python 2.6 或 Python 2.7 (windows系统不可以做控制主机),都可以运行Ansible.</p>
-<p>主机的系统可以是 Red Hat, Debian, CentOS, OS X, BSD的各种版本,等等.</p>
-<p>安装Ansible之后,不需要启动或运行一个后台进程,或是添加一个数据库.只要在一台电脑(可以是一台笔记本)上安装好,就可以通过这台电脑管理一组远程的机器.在远程被管理的机器上,不需要安装运行任何软件,因此升级Ansible版本不会有太多问题.</p>
-<h2 id="版本及安装方式选择"><a href="#版本及安装方式选择" class="headerlink" title="版本及安装方式选择?"></a><a href="http://www.ansible.com.cn/docs/intro_installation.html#id12" target="_blank" rel="external">版本及安装方式选择?</a></h2><p>因为Ansible可以很简单的从源码运行,且不必在远程被管理机器上安装任何软件,很多Ansible用户会跟进使用开发版本.</p>
-<p>Ansible一般每两个月出一个发行版本.小bugs一般在下一个发行版本中修复,并在稳定分支中做backports.大bugs会在必要时出一个维护版本,不过这不是很频繁.</p>
-<p>若你希望使用Ansible的最新版本,并且你使用的操作系统是 Red Hat Enterprise Linux (TM), CentOS, Fedora, Debian, Ubuntu,<strong>我们建议使用系统的软件包管理器</strong>.</p>
-<p>另有一种选择是通过”pip”工具安装,”pip”是一个安装和管理Python包的工具.</p>
-<p>若你希望跟进开发版本,想使用和测试最新的功能特性,我们会分享如何从源码运行Ansible的方法.从源码运行程序不需要进行软件安装.</p>
-<h1 id="二、安装"><a href="#二、安装" class="headerlink" title="二、安装"></a><a href="http://www.ansible.com.cn/docs/intro_installation.html#id15" target="_blank" rel="external">二、安装</a></h1><h2 id="2-1-通过Yum安装最新发布版本"><a href="#2-1-通过Yum安装最新发布版本" class="headerlink" title="2.1 通过Yum安装最新发布版本"></a><a href="http://www.ansible.com.cn/docs/intro_installation.html#id17" target="_blank" rel="external">2.1 通过Yum安装最新发布版本</a></h2><p>RHEL或CentOS用户,需要 <a href="http://fedoraproject.org/wiki/EPEL" target="_blank" rel="external">配置 EPEL</a></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> install the epel-release RPM <span class="keyword">if</span> needed on CentOS, RHEL, or Scientific Linux</span></div><div class="line"><span class="meta">$</span><span class="bash"> sudo yum install epel-release</span></div><div class="line"><span class="meta">$</span><span class="bash"> sudo yum install ansible</span></div></pre></td></tr></table></figure>
-<h2 id="2-2-自己创建RPM软件包"><a href="#2-2-自己创建RPM软件包" class="headerlink" title="2.2 自己创建RPM软件包"></a>2.2 自己创建RPM软件包</h2><p>你也可以自己创建RPM软件包.在Ansible项目的checkout的根目录下,或是在一个tarball中,使用 <code>make rpm</code> 命令创建RPM软件包. 然后可分发这个软件包或是使用它来安装Ansible.在创建之前,先确定你已安装了 <code>rpm-build</code>, <code>make</code>, and <code>python2-devel</code> .</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> git://github.com/ansible/ansible.git</span></div><div class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> ./ansible</span></div><div class="line"><span class="meta">$</span><span class="bash"> make rpm</span></div><div class="line"><span class="meta">$</span><span class="bash"> sudo rpm -Uvh ~/rpmbuild/ansible-*.noarch.rpm</span></div></pre></td></tr></table></figure>
-<h2 id="2-3-通过Apt-Ubuntu-安装最新发布版本"><a href="#2-3-通过Apt-Ubuntu-安装最新发布版本" class="headerlink" title="2.3 通过Apt (Ubuntu)安装最新发布版本"></a><a href="http://www.ansible.com.cn/docs/intro_installation.html#id18" target="_blank" rel="external">2.3 通过Apt (Ubuntu)安装最新发布版本</a></h2><p>配置PPA及安装ansible,执行如下命令:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">$</span><span class="bash"> sudo apt-get install software-properties-common</span></div><div class="line"><span class="meta">$</span><span class="bash"> sudo apt-add-repository ppa:ansible/ansible</span></div><div class="line"><span class="meta">$</span><span class="bash"> sudo apt-get update</span></div><div class="line"><span class="meta">$</span><span class="bash"> sudo apt-get install ansible</span></div></pre></td></tr></table></figure>
-<h2 id="2-4-通过-Pip-安装最新发布版本"><a href="#2-4-通过-Pip-安装最新发布版本" class="headerlink" title="2.4 通过 Pip 安装最新发布版本"></a><a href="http://www.ansible.com.cn/docs/intro_installation.html#id24" target="_blank" rel="external">2.4 通过 Pip 安装最新发布版本</a></h2><p>Ansible可通过 “pip” 安装(安装和管理Python包的工具),若你还没有安装 pip,可执行如下命令安装:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">$</span><span class="bash"> sudo easy_install pip</span></div></pre></td></tr></table></figure>
-<p>然后安装Ansible:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">$</span><span class="bash"> sudo pip install ansible</span></div></pre></td></tr></table></figure>
-<p>如果你是在 OS X Mavericks 上安装,编译器可能或告警或报错,可通过如下设置避免这种情况:</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo CFLAGS=-Qunused-<span class="built_in">arguments</span> CPPFLAGS=-Qunused-<span class="built_in">arguments</span> pip install ansible</div></pre></td></tr></table></figure>
-<h2 id="2-5-发行版的Tarball"><a href="#2-5-发行版的Tarball" class="headerlink" title="2.5 发行版的Tarball"></a><a href="http://www.ansible.com.cn/docs/intro_installation.html#id25" target="_blank" rel="external">2.5 发行版的Tarball</a></h2><p>不想通过git checkout 创建Ansible的软件包？在这里可获取Tarball <a href="http://releases.ansible.com/ansible" target="_blank" rel="external">Ansible downloads</a></p>
-<h2 id="2-6-在Mac-OSX-上安装最新发布版本"><a href="#2-6-在Mac-OSX-上安装最新发布版本" class="headerlink" title="2.6 在Mac OSX 上安装最新发布版本"></a><a href="http://www.ansible.com.cn/docs/intro_installation.html#id21" target="_blank" rel="external">2.6 在Mac OSX 上安装最新发布版本</a></h2><p>在 Mac 上安装 ansible，最好是通过 pip 安装，参照 <a href="http://www.ansible.com.cn/docs/intro_installation.html#pip" target="_blank" rel="external">通过 Pip 安装最新发布版本</a> .</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;本文主要记录了ansible的安装方法。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://image.wangshengzhuang.com/17-5-19/88214161-file_1495207716369_76e1.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="运维相关" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/"/>
-    
-      <category term="Ansible" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/"/>
-    
-    
-      <category term="Ansible" scheme="http://wangshengzhuang.com/tags/Ansible/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>初识Ansible</title>
-    <link href="http://wangshengzhuang.com/2017/05/12/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/%E5%88%9D%E8%AF%86Ansible/"/>
-    <id>http://wangshengzhuang.com/2017/05/12/运维相关/Ansible/初识Ansible/</id>
-    <published>2017-05-12T15:26:47.000Z</published>
-    <updated>2017-05-23T14:03:55.504Z</updated>
-    
-    <content type="html"><![CDATA[<p>初识ansible。</p>
-<p><img src="http://image.wangshengzhuang.com/17-5-19/88214161-file_1495207716369_76e1.jpg" alt=""></p>
-<a id="more"></a>
-<h3 id="Ansible是什么？"><a href="#Ansible是什么？" class="headerlink" title="Ansible是什么？"></a>Ansible<strong>是什么</strong>？</h3><p>官方的描述如下 </p>
-<figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Simple, agentless <span class="built_in">and</span> powerful <span class="keyword">open</span> <span class="keyword">source</span> IT automation</div></pre></td></tr></table></figure>
-<p>Ansible是近年越来越火的一款基于Python开发的运维自动化工具，2012.02月出现至今，已成为排名前10的python项目。</p>
-<p><img src="http://image.wangshengzhuang.com/17-5-22/53522347-file_1495460433051_500c.png" alt=""></p>
-<p>其主要功能是帮助运维实现IT工作的自动化、降低人为操作失误、提高业务自动化率、提升运维工作效率，常用于软件部署自动化、配置自动化、管理自动化、系统化系统任务、持续集成、零宕机平滑升级等。</p>
-<h3 id="Ansible名字来源？"><a href="#Ansible名字来源？" class="headerlink" title="Ansible名字来源？"></a>Ansible<strong>名字来源</strong>？</h3><p>Ansible名字其实是来源于作者喜欢的一本书——奥森·斯科特·卡特的《安德的游戏》，该书中Ansible是一种能跨越时空的即时通信工具，使用Ansible可以在相距数光年的距离远程实时控制前线的舰队战斗。Michael DeHaan希望借这个名词比喻控制远端大量的服务器，因此便将自己的这款产品命名为Ansible。</p>
-<h3 id="为什么选择Ansible？"><a href="#为什么选择Ansible？" class="headerlink" title="为什么选择Ansible？"></a>为什么选择Ansible？</h3><ol>
-<li>noagents：不需要在被管控主机上安装任何客户端</li>
-<li>noserver：无服务器daemon进程</li>
-<li>基于SSH工作</li>
-<li>安装简单</li>
-<li>Redhat收购</li>
-<li>Ansible galaxy</li>
-<li>支持docker的模块管理</li>
-</ol>
-<h3 id="Ansible架构"><a href="#Ansible架构" class="headerlink" title="Ansible架构"></a>Ansible架构</h3><p><img src="http://image.wangshengzhuang.com/17-5-22/58519827-file_1495460630196_15282.png" alt=""></p>
-<p>Ansible没有客户端，因此底层通信依赖于系统软件，Linux系统下基于OpenSSH通信，Windows系统下基于PowerShell，管理端必须是Linux系统，使用者认证通过后在管理节点通过Ansible工具调用各应用模块将指令推送至被管理端执行，并在执行完毕后自动删除产生的临时文件。</p>
-<p>ansible是基于模块工作的，本身没有批量部署的能力。真正具有批量部署的是ansible所运行的模块，ansible只是提供一种框架。主要包括：</p>
-<p>(1)、连接插件connectionplugins：负责和被监控端实现通信；</p>
-<p>(2)、host inventory：指定操作的主机，是一个配置文件里面定义监控的主机；</p>
-<p>(3)、各种模块核心模块、command模块、自定义模块；</p>
-<p>(4)、借助于插件完成记录日志邮件等功能；</p>
-<p>(5)、playbook：剧本执行多个任务</p>
-<h3 id="Ansible任务执行流程"><a href="#Ansible任务执行流程" class="headerlink" title="Ansible任务执行流程"></a>Ansible任务执行流程</h3><p><img src="http://image.wangshengzhuang.com/17-5-22/67984305-file_1495460751602_df86.jpg" alt=""></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;初识ansible。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://image.wangshengzhuang.com/17-5-19/88214161-file_1495207716369_76e1.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
     
     </summary>
     

@@ -4,6 +4,56 @@
 
     
   <url>
+    <loc>http://wangshengzhuang.com/2017/06/02/Linux/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4/cut/</loc>
+    <lastmod>2017-06-30T15:38:18.237Z</lastmod>
+    <data>
+        <display>
+        <title>cut命令</title>
+        <pubTime>2017-06-02T14:12:49.000Z</pubTime>
+        
+        <tag>每天一个Linux命令</tag>
+         
+        <tag>cut</tag>
+         
+         
+           
+             
+              <breadCrumb title="Linux" url="http://wangshengzhuang.com/categories/Linux/"/>
+          
+             
+              <breadCrumb title="每天一个Linux命令" url="http://wangshengzhuang.com/categories/Linux/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://wangshengzhuang.com/2017/06/01/Linux/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4/dig%E5%91%BD%E4%BB%A4/</loc>
+    <lastmod>2017-06-30T15:29:55.928Z</lastmod>
+    <data>
+        <display>
+        <title>dig命令</title>
+        <pubTime>2017-06-01T14:55:56.000Z</pubTime>
+        
+        <tag>每天一个Linux命令</tag>
+         
+        <tag>dig</tag>
+         
+         
+           
+             
+              <breadCrumb title="Linux" url="http://wangshengzhuang.com/categories/Linux/"/>
+          
+             
+              <breadCrumb title="每天一个Linux命令" url="http://wangshengzhuang.com/categories/Linux/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://wangshengzhuang.com/2017/05/09/Linux/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4/pwd%E5%91%BD%E4%BB%A4/</loc>
     <lastmod>2017-06-29T15:51:42.078Z</lastmod>
     <data>
@@ -629,9 +679,9 @@
         
         <tag>MySQL</tag>
          
-        <tag>Group Replication</tag>
-         
         <tag>InnoDB Cluster</tag>
+         
+        <tag>Group Replication</tag>
          
          
            
