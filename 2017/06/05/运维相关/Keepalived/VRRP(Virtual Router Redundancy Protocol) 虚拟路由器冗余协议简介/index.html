@@ -1,0 +1,1576 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*��������ɫ*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*��Ӱ��ɫ*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*�ϱ߿���ɫ*/
+        border-left-color: #1E92FB;    /*���߿���ɫ*/
+    }
+</style>
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Keepalived,VRRP," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小强斋太-Study Notes" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="因工作中使用Keepalived配置Nginx代理和MySQL代理的高可用，而Keepalived是VRRP协议在linux上的软件实现。因此了解了下VRRP的基础。">
+<meta name="keywords" content="Keepalived,VRRP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VRRP(Virtual Router Redundancy Protocol) 虚拟路由器冗余协议简介">
+<meta property="og:url" content="http://wangshengzhuang.com/2017/06/05/运维相关/Keepalived/VRRP(Virtual Router Redundancy Protocol) 虚拟路由器冗余协议简介/index.html">
+<meta property="og:site_name" content="小强斋太-Study Notes">
+<meta property="og:description" content="因工作中使用Keepalived配置Nginx代理和MySQL代理的高可用，而Keepalived是VRRP协议在linux上的软件实现。因此了解了下VRRP的基础。">
+<meta property="og:image" content="http://image.wangshengzhuang.com/17-7-2/71192622.jpg">
+<meta property="og:image" content="http://image.wangshengzhuang.com/17-7-2/90512760.jpg">
+<meta property="og:image" content="http://image.wangshengzhuang.com/17-7-2/30323425.jpg">
+<meta property="og:image" content="http://image.wangshengzhuang.com/17-7-2/45816589.jpg">
+<meta property="og:image" content="http://image.wangshengzhuang.com/17-7-2/71893986.jpg">
+<meta property="og:image" content="http://image.wangshengzhuang.com/17-7-2/71192622.jpg">
+<meta property="og:image" content="http://image.wangshengzhuang.com/17-7-2/70221115.jpg">
+<meta property="og:image" content="http://image.wangshengzhuang.com/17-7-2/19860403.jpg">
+<meta property="og:image" content="http://image.wangshengzhuang.com/17-7-2/36995365.jpg">
+<meta property="og:image" content="http://image.wangshengzhuang.com/17-7-2/15448999.jpg">
+<meta property="og:updated_time" content="2017-07-03T14:32:10.810Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="VRRP(Virtual Router Redundancy Protocol) 虚拟路由器冗余协议简介">
+<meta name="twitter:description" content="因工作中使用Keepalived配置Nginx代理和MySQL代理的高可用，而Keepalived是VRRP协议在linux上的软件实现。因此了解了下VRRP的基础。">
+<meta name="twitter:image" content="http://image.wangshengzhuang.com/17-7-2/71192622.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wangshengzhuang.com/2017/06/05/运维相关/Keepalived/VRRP(Virtual Router Redundancy Protocol) 虚拟路由器冗余协议简介/"/>
+
+
+
+
+
+  <title>VRRP(Virtual Router Redundancy Protocol) 虚拟路由器冗余协议简介 | 小强斋太-Study Notes</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d5edeb6a5e3eb7303821bb702fa1df54";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/wangshengzhuang"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小强斋太-Study Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay hungry. Stay foolish</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-[object Object]"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/06/05/运维相关/Keepalived/VRRP(Virtual Router Redundancy Protocol) 虚拟路由器冗余协议简介/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小强斋太">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小强斋太-Study Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                VRRP(Virtual Router Redundancy Protocol) 虚拟路由器冗余协议简介
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-05T23:26:47+08:00">
+                2017-06-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/运维相关/" itemprop="url" rel="index">
+                    <span itemprop="name">运维相关</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/运维相关/Keepalived/" itemprop="url" rel="index">
+                    <span itemprop="name">Keepalived</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/06/05/运维相关/Keepalived/VRRP(Virtual Router Redundancy Protocol) 虚拟路由器冗余协议简介/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/06/05/运维相关/Keepalived/VRRP(Virtual Router Redundancy Protocol) 虚拟路由器冗余协议简介/" class="leancloud_visitors" data-flag-title="VRRP(Virtual Router Redundancy Protocol) 虚拟路由器冗余协议简介">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  5,087
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长预计</span>
+                
+                <span title="阅读时长预计">
+                  18
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>因工作中使用Keepalived配置Nginx代理和MySQL代理的高可用，而Keepalived是VRRP协议在linux上的软件实现。因此了解了下VRRP的基础。</p>
+<p><img src="http://image.wangshengzhuang.com/17-7-2/71192622.jpg" alt=""></p>
+<a id="more"></a>
+<h1 id="1-VRRP技术的引入"><a href="#1-VRRP技术的引入" class="headerlink" title="1. VRRP技术的引入"></a>1. VRRP技术的引入</h1><p>随着Internet的发展，人们对网络的可靠性的要求越来越高。对于局域网用户来说，能够时刻与外部网络保持联系是非常重要的。</p>
+<p>我们知道，为了实现不同子网之间的设备通信，需要配置路由。</p>
+<p>目前常用的指定路由方法有两种：</p>
+<ol>
+<li>​       第一种是通过路由协议 ：RIP、OSPF动态学习</li>
+<li>​       第二种是通过静态路由： 对终端PC机配置静态路由。</li>
+</ol>
+<p>这两种路由各有各的优缺点：</p>
+<p>第一种路由可以自动寻找最优路径，邻居路由也可以通过学习来获得路由表，但是动态路由占用线路带宽和CPU处理时间。</p>
+<p>第二种路由是不需要CPU处理时间同样也不占用线路带宽，但是这个路由需要对终端的PC机进行配置网关来实现，工作量是比较大的。内部网络中的所有主机都设置一条相同的缺省路由，指向出口网关，实现主机与外部网络的通信。</p>
+<p>对于以上的两种路由在现在来说都是广泛应用的。我们现在只来分析静态路由的缺点，因为VRRP技术就是使用在静态路由上，而不是动态路由上。</p>
+<p>对于静态路由来说，对终端PC机配置默认网关。如果作为默认网关的路由器出现故障，所有使用该网关为下一跳的主机的通信是要中断的。如下图所示；</p>
+<p><img src="http://image.wangshengzhuang.com/17-7-2/90512760.jpg" alt=""></p>
+<p>在上图中，主机Ａ—Ｄ都配置了一个默认的网关：１0.1.1.1，网关路由的下一跳指向主机所在网段内的一个路由器RouterA，RouterA将报文发送到外网，但是如果现在RouterA坏掉了，那么所有的主机将无法与其他网段进行通信了。</p>
+<p>配置多个出口网关是提高系统可靠性的常见方法，但局域网内的主机设备通常不支持动态路由协议，如何在多个出口网关之间进行选路是个问题。</p>
+<p>为了解决以上的问题，将可以承担网关功能的路由器加入到备份组中，形成一台虚拟路由器，由VRRP的选举机制决定哪台路由器承担转发任务，局域网内的主机只需将虚拟路由器配置为缺省网关。我们可以加一个路由器RouterB，当RouterA坏掉时，所有的PC机将网关切换到RouterB上的网关。这样就实现了路由器的备份。这个技术就是VRRP技术—虚拟路由器冗余协议。</p>
+<p><img src="http://image.wangshengzhuang.com/17-7-2/30323425.jpg" alt=""></p>
+<h1 id="2-VRRP简介"><a href="#2-VRRP简介" class="headerlink" title="2. VRRP简介"></a>2. VRRP简介</h1><p><strong>VRRP（Virtual Router Redundancy Protocol）虚拟路由冗余协议</strong>，IETF（Internet Engineering Task Force，因特网工程任务组）推出，用来解决局域网主机访问外部网络的可靠性问题。<strong>VRRP协议的实现有VRRPv2和VRRPv3两个版本</strong>，VRRPv2于IPv4，VRRPv3基于IPv6。Vrrp协议在linux上的实现（软件实现）是keepalived。</p>
+<p>VRRP是一种容错协议，它通过把几台路由设备联合组成一台虚拟的路由设备，并通过一定的机制来保证当主机的下一跳设备出现故障时，可以及时将业务切换到其它设备，从而保持通讯的连续性和可靠性。使用VRRP的优势在于：既不需要改变组网情况，也不需要在主机上配置任何动态路由或者路由发现协议，就可以获得更高可靠性的缺省路由。如下图所示： 有两个路由器，从两个路由器中选举出一个路由器作为主路由器，其他的都是备份路由器，主路由器负责发转发数据报，而备份路由器处于空闲状态，当主路由器出现故障后，备份路由器会成为主路由器，代替主路由器实现转发功能。</p>
+<p><img src="http://image.wangshengzhuang.com/17-7-2/45816589.jpg" alt=""></p>
+<h1 id="3-VRRP相关概念"><a href="#3-VRRP相关概念" class="headerlink" title="3. VRRP相关概念"></a>3. VRRP相关概念</h1><table>
+<thead>
+<tr>
+<th><strong>概念</strong></th>
+<th><strong>解释</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VRRP路由器（VRRP Router</td>
+<td>所有运行VRRP协议的路由器就叫做VRRP路由器，它可能属于一个或多个虚拟路由器。</td>
+</tr>
+<tr>
+<td>虚拟路由器（Virtual Router）</td>
+<td>虚拟路由器是VRRP备份组中所有路由器的集合，它是一个逻辑概念，并不是正真存在的。从备份组外面看备份组中的路由器，感觉组中的所有路由器就像一个 一样，你可以理解为 在一个组中： 主路由器+所有备份路由器=虚拟路由器。虚拟路由器有一个虚拟的IP地址和MAC地址。如果虚拟IP和备份组中的某台路由器的IP相同的话，那么这台路由器称为IP地址拥有者，并且作为备份组中的主路由器。</td>
+</tr>
+<tr>
+<td>虚拟IP地址(Virtual IP Address)</td>
+<td>虚拟路由器的IP地址，一个虚拟路由器可以有一个或多个IP地址，由用户配置。</td>
+</tr>
+<tr>
+<td>IP地址拥有者（IP Address Owner）</td>
+<td>如果一个VRRP路由器将虚拟路由器的IP地址作为真实的接口地址，则该设备是IP地址拥有者。 当这台设备正常工作时，它会响应目的地址是虚拟IP地址的报文，如ping、TCP连接等。</td>
+</tr>
+<tr>
+<td>虚拟MAC地址</td>
+<td>是虚拟路由器根据虚拟路由器ID生成的MAC地址。 一个虚拟路由器拥有一个虚拟MAC地址，格式为：00-00-5E-00-01-{VRID}。 VRID为VRRP组的编号，范围是0~255. 当虚拟路由器回应ARP请求时，使用虚拟MAC地址，而不是接口的真实MAC地址。</td>
+</tr>
+<tr>
+<td>主IP地址（Primary IP Address）</td>
+<td>虚拟路由器的 IP 地址可以是备份组所在网段中未被分配的IP 地址，也可以和备份组内的某个路由器的接口IP 地址相同。从接口的真实IP地址中选出来的一个主用IP地址，通常选择配置的第一个IP地址。 VRRP广播报文使用主IP地址作为IP报文的源地址。</td>
+</tr>
+<tr>
+<td>Master路由器（Virtual Router Master）</td>
+<td>是承担转发报文或者应答ARP请求的VRRP路由器，转发报文都是发送到虚拟IP地址的。 如果IP地址拥有者是可用的，通常它将成为Master。</td>
+</tr>
+<tr>
+<td>Backup路由器（Virtual Router Backup）</td>
+<td>一组没有承担转发任务的VRRP路由器，当Master设备出现故障时，它们将通过竞选成为新的Master。</td>
+</tr>
+<tr>
+<td>抢占模式</td>
+<td>在抢占模式下，如果Backup的优先级比当前Master的优先级高，将主动将自己升级成Master。</td>
+</tr>
+</tbody>
+</table>
+<p>如下图所示:  RA、RB和RC都是VRRP路由器，他们构成了一个VRRP备份组，RA为主路由器，RB和RC为备份路由器，这三台路由器从外界来看就像一台一样，这样构成一个虚拟路由器Router Group，虚拟路由器有一个虚拟的ＩＰ地址为10.1.1.1（RA主路由器的IP）。RA是IP地址拥有者，也是主路由器。</p>
+<p><img src="http://image.wangshengzhuang.com/17-7-2/71893986.jpg" alt=""></p>
+<h1 id="4-VRRP的工作过程和原理"><a href="#4-VRRP的工作过程和原理" class="headerlink" title="4. VRRP的工作过程和原理"></a>4. VRRP的工作过程和原理</h1><p>VRRP将局域网的一组路由器构成一个备份组，相当于一台虚拟路由器。局域网内的主机只需要知道这个虚拟路由器的IP地址，并不需知道具体某台设备的IP地址，将网络内主机的缺省网关设置为该虚拟路由器的IP地址，主机就可以利用该虚拟网关与外部网络进行通信。</p>
+<p>VRRP将该虚拟路由器动态关联到承担传输业务的物理路由器上，当该物理路由器出现故障时，再次选择新路由器来接替业务传输工作，整个过程对用户完全透明，实现了内部网络和外部网络不间断通信。</p>
+<p><img src="http://image.wangshengzhuang.com/17-7-2/71192622.jpg" alt=""></p>
+<p>如图所示，虚拟路由器的组网环境如下：</p>
+<ul>
+<li>RouterA、RouterB和RouterC属于同一个VRRP组，组成一个虚拟路由器，这个虚拟路由器有自己的IP地址10.110.10.1。虚拟IP地址可以直接指定，也可以借用该VRRP组所包含的路由器上某接口地址。</li>
+<li>物理路由器RouterA、RouterB和RouterC的实际IP地址分别是10.110.10.5、10.110.10.6和10.110.10.7。</li>
+<li>局域网内的主机只需要将缺省路由设为10.110.10.1即可，无需知道具体路由器上的接口地址。</li>
+</ul>
+<h2 id="4-1-VRRP的状态"><a href="#4-1-VRRP的状态" class="headerlink" title="4.1 VRRP的状态"></a>4.1 VRRP的状态</h2><p>VRRP协议中定义了三种状态机：初始状态（Initialize）、活动状态（Master）、备份状态（Backup）。其中，只有处于活动状态的设备才可以转发那些发送到虚拟IP地址的报文。</p>
+<p><img src="http://image.wangshengzhuang.com/17-7-2/70221115.jpg" alt=""></p>
+<p><strong>Initialize</strong></p>
+<p>设备启动时进入此状态，当收到接口Startup的消息，将转入Backup或Master状态（IP地址拥有者的接口优先级为255，直接转为Master）。在此状态时，不会对VRRP报文做任何处理。</p>
+<p><strong>Master</strong></p>
+<p>当路由器处于Master状态时，它将会做下列工作：</p>
+<ul>
+<li>定期发送VRRP报文。</li>
+<li>以虚拟MAC地址响应对虚拟IP地址的ARP请求。</li>
+<li>转发目的MAC地址为虚拟MAC地址的IP报文。</li>
+<li>如果它是这个虚拟IP地址的拥有者，则接收目的IP地址为这个虚拟IP地址的IP报文。否则，丢弃这个IP报文。</li>
+<li>如果收到比自己优先级大的报文则转为Backup状态。</li>
+<li>如果收到优先级和自己相同的报文，并且发送端的主IP地址比自己的主IP地址大，则转为Backup状态。</li>
+<li>当接收到接口的Shutdown事件时，转为Initialize。</li>
+</ul>
+<p><strong>Backup</strong></p>
+<p>当路由器处于Backup状态时，它将会做下列工作：</p>
+<ul>
+<li>接收Master发送的VRRP报文，判断Master的状态是否正常。</li>
+<li>对虚拟IP地址的ARP请求，不做响应。</li>
+<li>丢弃目的MAC地址为虚拟MAC地址的IP报文。</li>
+<li>丢弃目的IP地址为虚拟IP地址的IP报文。</li>
+<li>Backup状态下如果收到比自己优先级小的报文时，丢弃报文，不重置定时器；如果收到优先级和自己相同的报文，则重置定时器，不进一步比较IP地址。</li>
+<li>当Backup接收到MASTER_DOWN_TIMER定时器超时的事件时，才会转为Master。</li>
+<li>当接收到接口的Shutdown事件时，转为Initialize。</li>
+</ul>
+<h2 id="4-2-VRRP工作过程"><a href="#4-2-VRRP工作过程" class="headerlink" title="4.2 VRRP工作过程"></a>4.2 VRRP工作过程</h2><ol>
+<li>路由器使能VRRP 功能后，会根据优先级确定自己在备份组中的角色。优先级高的路由器成为Master 路由器，优先级低的成为Backup 路由器。Master 路由器定期发送VRRP 通告报文，通知备份组内的其他设备自己工作正常；Backup 路由器则启动定时器等待通告报文的到来。</li>
+<li>在抢占方式下，当Backup 路由器收到VRRP 通告报文后，会将自己的优先级与通告报 文中的优先级进行比较。如果大于通告报文中的优先级，则成为Master 路由器；否则将保持Backup状态</li>
+<li>在非抢占方式下，只要Master 路由器没有出现故障，备份组中的路由器始终保持Master 或Backup 状态，Backup 路由器即使随后被配置了更高的优先级也不会成为Master 路由器</li>
+<li>如果Backup 路由器的定时器超时后仍未收到Master 路由器发送来的VRRP 通告报文，则认为Master 路由器已经无法正常工作，此时Backup 路由器会认为自己是Master 路由器，并对外发送VRRP 通告报文。一个VRRP组里有多台备份路由器时，短时间内可能产生多个Master，此时，路由器将会将收到的VRRP报文中的优先级与本地优先级做比较。从而选取优先级高的设备做Master。备份组内的路由器根据优先级选举出Master 路由器，承担报文的转发功能</li>
+<li>虚拟路由器状态切换时，Master路由器由一台设备切换为另外一台设备，新的 Master路由器只是简单地发送一个携带虚拟路由器的 MAC 地址和虚拟 IP地址信息的免费 ARP报文，这样就可以更新与它连接的主机或设备中的ARP 相关信息。网络中的主机感知不到Master路由器已经切换为另外一台设备。</li>
+</ol>
+<h2 id="4-3-VRRP选举机制"><a href="#4-3-VRRP选举机制" class="headerlink" title="4.3 VRRP选举机制"></a>4.3 VRRP选举机制</h2><p>VRRP使用选举机制来确定路由器的状态，运行VRRP的一组路由器对外构成了一个虚拟路由器，其中一台路由器处于Master状态，其他处于Backup状态。所以主路由器又叫做Master路由器，备份路由器又叫做Backup路由器。</p>
+<p><strong>优先级选举：</strong></p>
+<ol>
+<li>1.VRRP组中IP拥有者。如果虚拟IP地址与VRRP组中的某台VRRP路由器IP地址相同，则此路由器为IP地址拥有者，这台路由器将被定位主路由器。</li>
+<li>比较优先级。如果没有IP地址拥有者，则比较路由器的优先级，优先级的范围是0~255，大的作为主路由器。</li>
+<li>比较IP地址。在没有Ip地址拥有者和优先级相同的情况下，IP地址大的作为主路由器。</li>
+</ol>
+<p>如下图所示： 虚拟IP为10.1.1.254，在VRRP组中没有IP地址拥有者，则比较优先级，很明显RB和RA的优先级要大于RC，则比较RA和RB的IP地址，RB的IP地址大。所以RB为组中的主路由器。</p>
+<p><img src="http://image.wangshengzhuang.com/17-7-2/19860403.jpg" alt=""></p>
+<h2 id="4-4-VRRP报文格式"><a href="#4-4-VRRP报文格式" class="headerlink" title="4.4. VRRP报文格式"></a>4.4. VRRP报文格式</h2><p>VRRP只使用VRRP通告报文。</p>
+<p>VRRP通告报文使用Ip组播数据包进行封装，组播地址为223.0.0.18，IANA给其分配的协议号为112。</p>
+<p> VRRP通告报文的TTL值必须是255，如果VRRP路由器接受到TTL值不为255的VRRP通告报文，必须丢弃。</p>
+<p> VRRP组中的主路由器会定期发送通告报文，备份路由器接受，他们通过这种方式来交流选举</p>
+<h1 id="5-负载均衡"><a href="#5-负载均衡" class="headerlink" title="5.负载均衡"></a>5.负载均衡</h1><p>在一组VRRP组中，主路由器承担数据转发任务的同时，备份路由器的链路将处于空闲状态，这必然造成了带宽资源的浪费。为了避免这种浪费，使用VRRP负载均衡。</p>
+<p>   　VRRP并不具备对流量进行监控的机制，它的负载均衡只是通过使用多个VRRP组来实现的。VRRP负载均衡是通过实现将路由器加入到多个VRRP组实现的，使VRRP路由器在不同的组中担任不同的角色。</p>
+<p><img src="http://image.wangshengzhuang.com/17-7-2/36995365.jpg" alt=""></p>
+<p>如上图所示：RA为组35的主路由器，同时又是组36的备份路由器。 RB为组36的主路由器，同时又是组35的备份路由器。</p>
+<p>在正常状态下，PC1和PC2走RA，PC3和PC4走RB，但是两个路由器一旦出现故障，就将网关切换到备份路由器。RA和RB可以说是相辅相成的。</p>
+<p>负载分担方式具有以下特点。</p>
+<ul>
+<li>每个备份组都包括一个Master设备和若干Backup设备。</li>
+<li>各备份组的Master可以不同。</li>
+<li>同一台路由器可以加入多个备份组，在不同备份组中有不同的优先级。</li>
+</ul>
+<p><img src="http://image.wangshengzhuang.com/17-7-2/15448999.jpg" alt=""></p>
+<p>如图所示：</p>
+<ul>
+<li><p>配置两个备份组：组1和组2；</p>
+</li>
+<li><p>RouterA在备份组1中作为Master，在备份组2中作为Backup；</p>
+</li>
+<li><p>RouterB在备份组1和2中都作为Backup；</p>
+</li>
+<li><p>RouterC在备份组2中作为Master，在备份组1中作为Backup。</p>
+</li>
+<li><p>一部分主机使用备份组1作网关，另一部分主机使用备份组2作为网关。</p>
+</li>
+</ul>
+<p>这样，以达到分担数据流，而又相互备份的目的。</p>
+<h1 id="6-VRRP的安全功能"><a href="#6-VRRP的安全功能" class="headerlink" title="6. VRRP的安全功能"></a>6. VRRP的安全功能</h1><p>对于安全程度不同的网络环境，可以在报头上设定不同的认证方式和认证字。</p>
+<p>VRRP提供了三种认证方式：</p>
+<p>1.无认证：不进行任何 VRRP 报文的合法性认证，不提供安全性保障。一般不要用这种。</p>
+<p>2.简单字符认证：在一个有可能受到安全威胁的网络中，可以将认证方式设置为简单字符认证。发送 VRRP 报文的路由器将认证字填入到<br>VRRP 报文中，而收到 VRRP 报文的路由器会将收到的 VRRP 报文中的认证字和本地配置的认证字进行比较。如果认证字相同，则认为接收到的报文是合法的 VRRP 报文；否则认为接收到的报文是一个非法报文。</p>
+<p>一般用的就是这种。</p>
+<ol>
+<li>MD5 认证：在一个非常不安全的网络中，可以将认证方式设置为 MD5 认证。发送 VRRP 报文的路由器利用认证字和 MD5 算法对 VRRP 报文进行加密，加密后的报文保存在 Authentication Header（认证头）中。收到 VRRP报文的路由器会利用认证字解密报文，检查该报文的合法性。MD5比较麻烦，有一些路由设备不支持。</li>
+</ol>
+<h1 id="7-其他VRRP功能"><a href="#7-其他VRRP功能" class="headerlink" title="7. 其他VRRP功能"></a>7. 其他VRRP功能</h1><h2 id="监视接口状态"><a href="#监视接口状态" class="headerlink" title="监视接口状态"></a>监视接口状态</h2><p>VRRP可以监视所有接口的状态。当被监视的接口Down或Up时，该路由器的优先级会自动降低或升高一定的数值，使得备份组中各设备优先级高低顺序发生变化，VRRP路由器重新进行Master竞选。</p>
+<h2 id="虚拟IP地址Ping开关"><a href="#虚拟IP地址Ping开关" class="headerlink" title="虚拟IP地址Ping开关"></a>虚拟IP地址Ping开关</h2><p>RFC3768并没有规定虚拟IP地址应不应该Ping通。不能Ping通虚拟IP地址，会给监控虚拟路由器的工作情况带来一定的麻烦，能够Ping通虚拟IP地址可以比较方便的监控虚拟路由器的工作情况，但是带来可能遭到ICMP攻击的隐患。控制Ping通虚拟IP地址的开关命令，用户可以选择是否打开。</p>
+<h2 id="VRRP定时器"><a href="#VRRP定时器" class="headerlink" title="VRRP定时器"></a>VRRP定时器</h2><p>①　VRRP通告报文时间间隔定时器</p>
+<ol>
+<li>VRRP备份组中的Master路由器会定时发送VRRP通告报文，通知备份组内的 路由器自己工作正常</li>
+<li>用户可以通过设置VRRP定时器来调整Master路由器发送VRRP 通告报文的时间间隔</li>
+<li>如果Backup路由器在等待了3个间隔时间后，依然没有收到VRRP 通告报文，则认为自己是Master路由器，并对外发送VRRP通告报文，重新进行Master路由器的选举</li>
+</ol>
+<p>②　VRRP抢占延迟时间定时器</p>
+<ol>
+<li>为了避免备份组内的成员频繁进行主备状态转换，让Backup路由器有足够的</li>
+<li>时间搜集必要的信息（如路由信息），Backup 路由器接收到优先级低于本地优 先级的通告报文后，不会立即抢占成为Master</li>
+<li>而是等待一定时间——抢占延迟时间后，才会对外发送VRRP通告报文取代原 来的Master路由器</li>
+</ol>
+<h1 id="8-VRRP基本配置（略）"><a href="#8-VRRP基本配置（略）" class="headerlink" title="8. VRRP基本配置（略）"></a>8. VRRP基本配置（略）</h1><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>VRRP简单的讲，就是利用心跳信息实现高可用。主节点不断的向备用节点广播信息，信息包含自己的心跳和优先级。不光如此，还可以在主节点上安装一个监控，来监控其他资源，如果这些资源运行正常，就可以给其他客户端发送心跳信息（包含优先级），一旦监控的资源出现问题了，就降低自己的优先级（降低后的优先级要低于备用节点的优先级，自己设置）。这时候，备用节点可以在主节点未出现故障的时候，就抢占主节点的资源（工作在抢占模式的备用节点）。备用节点发现自己的优先级比主节点的优先级高，就触发一次选举。将主节点变为备用节点，备用节点变为主节点。主节点拥有VIP.</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://zhaoyuqiang.blog.51cto.com/6328846/1166840/" target="_blank" rel="external">虚拟路由器冗余协议【原理篇】VRRP详解</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Virtual_Router_Redundancy_Protocol" target="_blank" rel="external">Virtual Router Redundancy Protocol</a></p>
+<p><a href="https://tools.ietf.org/html/rfc5798#section-8.3.2" target="_blank" rel="external">Virtual Router Redundancy Protocol (VRRP) Version 3 for IPv4 and IPv6</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>好记性不如烂笔头，生命不息，学习不止！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/wechatpay.jpg" alt="小强斋太 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/alipay.jpg" alt="小强斋太 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      小强斋太
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://wangshengzhuang.com/2017/06/05/运维相关/Keepalived/VRRP(Virtual Router Redundancy Protocol) 虚拟路由器冗余协议简介/" title="VRRP(Virtual Router Redundancy Protocol) 虚拟路由器冗余协议简介">http://wangshengzhuang.com/2017/06/05/运维相关/Keepalived/VRRP(Virtual Router Redundancy Protocol) 虚拟路由器冗余协议简介/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本文版权归作者所有,转载请注明出处！'
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Keepalived/" rel="tag"> <i class="fa fa-tag"> </i> Keepalived</a>
+          
+            <a href="/tags/VRRP/" rel="tag"> <i class="fa fa-tag"> </i> VRRP</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/04/运维相关/Keepalived/keepalived配置文件简介/" rel="next" title="keepalived.conf说明">
+                <i class="fa fa-chevron-left"></i> keepalived.conf说明
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/06/运维相关/Keepalived/Configuring Simple Virtual IP Address Failover Using Keepalived/" rel="prev" title="Configuring Simple Virtual IP Address Failover Using Keepalived">
+                Configuring Simple Virtual IP Address Failover Using Keepalived <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        ﻿<!--MOB SHARE BEGIN-->
+                            <div class="-mob-share-ui-button -mob-share-open">分享</div>
+                            <div class="-mob-share-ui" style="display: none">
+                                <ul class="-mob-share-list">
+				    <li class="-mob-share-weixin"><p>微信</p></li>
+                                    <li class="-mob-share-qq"><p>QQ好友</p></li>
+				    <li class="-mob-share-qzone"><p>QQ空间</p></li>
+				    <li class="-mob-share-youdao"><p>有道云笔记</p></li>
+				    <li class="-mob-share-weibo"><p>新浪微博</p></li>
+                                    <li class="-mob-share-tencentweibo"><p>腾讯微博</p></li>
+                                    <li class="-mob-share-douban"><p>豆瓣</p></li>
+                                    <li class="-mob-share-facebook"><p>Facebook</p></li>
+                                    <li class="-mob-share-twitter"><p>Twitter</p></li>
+                                    <li class="-mob-share-google"><p>Google+</p></li>
+                                    <li class="-mob-share-linkedin"><p>LinkedIn</p></li>
+                                </ul>
+                                <div class="-mob-share-close">取消</div>
+                            </div>
+<div class="-mob-share-ui-bg"></div>
+<script id="-mob-share" src="http://f1.webshare.mob.com/code/mob-share.js?appkey=b21b3b396423fbd4db32b55d570db922"></script>
+<!--MOB SHARE END-->
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.png"
+               alt="小强斋太" />
+          <p class="site-author-name" itemprop="name">小强斋太</p>
+           
+              <p class="site-description motion-element" itemprop="description">Stay hungry. Stay foolish</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">37</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wangshengzhuang" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wangshengzhuang.com" title="小强斋太-Study Notes" target="_blank">小强斋太-Study Notes</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        <br/>
+<div>
+<span> 总访问量(PV): <img src="http://cc.amazingcounters.com/counter.php?i=3214342&c=9643339" alt="UV" title="总访问量">
+独立访客(UV): <img src="http://cc.amazingcounters.com/counter.php?i=3214343&c=9643342" alt="PV" title="访问人数"> 
+</span>
+</div>
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-VRRP技术的引入"><span class="nav-text">1. VRRP技术的引入</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-VRRP简介"><span class="nav-text">2. VRRP简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-VRRP相关概念"><span class="nav-text">3. VRRP相关概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-VRRP的工作过程和原理"><span class="nav-text">4. VRRP的工作过程和原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-VRRP的状态"><span class="nav-text">4.1 VRRP的状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-VRRP工作过程"><span class="nav-text">4.2 VRRP工作过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-VRRP选举机制"><span class="nav-text">4.3 VRRP选举机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-4-VRRP报文格式"><span class="nav-text">4.4. VRRP报文格式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-负载均衡"><span class="nav-text">5.负载均衡</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-VRRP的安全功能"><span class="nav-text">6. VRRP的安全功能</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-其他VRRP功能"><span class="nav-text">7. 其他VRRP功能</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#监视接口状态"><span class="nav-text">监视接口状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟IP地址Ping开关"><span class="nav-text">虚拟IP地址Ping开关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VRRP定时器"><span class="nav-text">VRRP定时器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8-VRRP基本配置（略）"><span class="nav-text">8. VRRP基本配置（略）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小强斋太</span>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "e97c4421445f4327b7168d5d1f51a36c",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      $('#local-search-input').focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("wtjyw6ICkB3kdGGpS6e750op-gzGzoHsz", "1VgU4A2cb7V5hk7UskuqbrWr");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wangshengzhuang.com/"/>
-  <updated>2017-06-30T15:38:18.237Z</updated>
+  <updated>2017-07-03T14:32:21.030Z</updated>
   <id>http://wangshengzhuang.com/</id>
   
   <author>
@@ -14,6 +14,446 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Configuring Simple Virtual IP Address Failover Using Keepalived</title>
+    <link href="http://wangshengzhuang.com/2017/06/06/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Keepalived/Configuring%20Simple%20Virtual%20IP%20Address%20Failover%20Using%20Keepalived/"/>
+    <id>http://wangshengzhuang.com/2017/06/06/运维相关/Keepalived/Configuring Simple Virtual IP Address Failover Using Keepalived/</id>
+    <published>2017-06-06T15:26:47.000Z</published>
+    <updated>2017-07-03T14:32:21.030Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文主要介绍了利用Keepalived实现简单的VIP自动切换。</p>
+<p><img src="http://image.wangshengzhuang.com/17-7-3/62480061.jpg" alt=""></p>
+<a id="more"></a>
+<h1 id="Configuring-Simple-Virtual-IP-Address-Failover-Using-Keepalived"><a href="#Configuring-Simple-Virtual-IP-Address-Failover-Using-Keepalived" class="headerlink" title="Configuring Simple Virtual IP Address Failover Using Keepalived"></a>Configuring Simple Virtual IP Address Failover Using Keepalived</h1><p>A typical Keepalived high-availability configuration consists of one master server and one or more backup servers. One or more virtual IP addresses, defined as <em>VRRP instances</em>, are assigned to the master server’s network interfaces so that it can service network clients. The backup servers listen for multicast VRRP advertisement packets that the master server transmits at regular intervals. The default advertisement interval is one second. If the backup nodes fail to receive three consecutive VRRP advertisements, the backup server with the highest assigned priority takes over as the master server and assigns the virtual IP addresses to its own network interfaces. If several backup servers have the same priority, the backup server with the highest IP address value becomes the master server.</p>
+<p>The following example uses Keepalived to implement a simple failover configuration on two servers. One server acts as the master, the other acts as a backup, and the master server has a higher priority than the backup server.</p>
+<p><img src="http://image.wangshengzhuang.com/17-7-2/60540152.jpg" alt=""></p>
+<p> the virtual IP address 10.0.0.100 is initially assigned to the master server (10.0.0.71). When the master server fails, the backup server (10.0.0.72) becomes the new master server and is assigned the virtual IP address 10.0.0.100.</p>
+<h1 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h1><p><code>/etc/keepalived/keepalived.conf</code>  on the master server:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">global_defs &#123;</div><div class="line">   notification_email &#123;</div><div class="line">     root@mydomain.com</div><div class="line">   &#125;</div><div class="line">   notification_email_from svr1@mydomain.com</div><div class="line">   smtp_server localhost</div><div class="line">   smtp_connect_timeout 30</div><div class="line">&#125;</div><div class="line"></div><div class="line">vrrp_instance VRRP1 &#123;</div><div class="line">    state MASTER</div><div class="line">#   Specify the network interface to which the virtual address is assigned</div><div class="line">    interface enp0s8</div><div class="line">#   The virtual router ID must be unique to each VRRP instance that you define</div><div class="line">    virtual_router_id 41</div><div class="line">#   Set the value of priority higher on the master server than on a backup server</div><div class="line">    priority 200</div><div class="line">    advert_int 1</div><div class="line">    authentication &#123;</div><div class="line">        auth_type PASS</div><div class="line">        auth_pass 1066</div><div class="line">    &#125;</div><div class="line">    virtual_ipaddress &#123;</div><div class="line">        10.0.0.100/24</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>/etc/keepalived/keepalived.conf</code> </p>
+<p>The configuration of the backup server is the same except for the values of <code>notification_email_from</code>, <code>state</code>, <code>priority</code>, and possibly <code>interface</code> if the system hardware configuration is different:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">global_defs &#123;</div><div class="line">   notification_email &#123;</div><div class="line">     root@mydomain.com</div><div class="line">   &#125;</div><div class="line">   notification_email_from svr2@mydomain.com</div><div class="line">   smtp_server localhost</div><div class="line">   smtp_connect_timeout 30</div><div class="line">&#125;</div><div class="line"></div><div class="line">vrrp_instance VRRP1 &#123;</div><div class="line">    state BACKUP</div><div class="line">#   Specify the network interface to which the virtual address is assigned</div><div class="line">    interface enp0s8</div><div class="line">    virtual_router_id 41</div><div class="line">#   Set the value of priority lower on the backup server than on the master server</div><div class="line">    priority 100</div><div class="line">    advert_int 1</div><div class="line">    authentication &#123;</div><div class="line">        auth_type PASS</div><div class="line">        auth_pass 1066</div><div class="line">    &#125;</div><div class="line">    virtual_ipaddress &#123;</div><div class="line">        10.0.0.100/24</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>查看IP 绑定</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ip <span class="keyword">addr </span><span class="keyword">show </span></div><div class="line">ip <span class="keyword">addr </span>list</div></pre></td></tr></table></figure>
+<p>另外切换时 <code>/var/log/messages</code> 记录了主从切换的信息</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p> (Configuring Simple Virtual IP Address Failover Using Keepalived](<a href="https://docs.oracle.com/cd/E52668_01/E54669/html/section_uxg_lzh_nr.html" target="_blank" rel="external">https://docs.oracle.com/cd/E52668_01/E54669/html/section_uxg_lzh_nr.html</a>)</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文主要介绍了利用Keepalived实现简单的VIP自动切换。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://image.wangshengzhuang.com/17-7-3/62480061.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="运维相关" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/"/>
+    
+      <category term="Keepalived" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Keepalived/"/>
+    
+    
+      <category term="Keepalived" scheme="http://wangshengzhuang.com/tags/Keepalived/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>VRRP(Virtual Router Redundancy Protocol) 虚拟路由器冗余协议简介</title>
+    <link href="http://wangshengzhuang.com/2017/06/05/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Keepalived/VRRP(Virtual%20Router%20Redundancy%20Protocol)%20%E8%99%9A%E6%8B%9F%E8%B7%AF%E7%94%B1%E5%99%A8%E5%86%97%E4%BD%99%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/"/>
+    <id>http://wangshengzhuang.com/2017/06/05/运维相关/Keepalived/VRRP(Virtual Router Redundancy Protocol) 虚拟路由器冗余协议简介/</id>
+    <published>2017-06-05T15:26:47.000Z</published>
+    <updated>2017-07-03T14:32:10.810Z</updated>
+    
+    <content type="html"><![CDATA[<p>因工作中使用Keepalived配置Nginx代理和MySQL代理的高可用，而Keepalived是VRRP协议在linux上的软件实现。因此了解了下VRRP的基础。</p>
+<p><img src="http://image.wangshengzhuang.com/17-7-2/71192622.jpg" alt=""></p>
+<a id="more"></a>
+<h1 id="1-VRRP技术的引入"><a href="#1-VRRP技术的引入" class="headerlink" title="1. VRRP技术的引入"></a>1. VRRP技术的引入</h1><p>随着Internet的发展，人们对网络的可靠性的要求越来越高。对于局域网用户来说，能够时刻与外部网络保持联系是非常重要的。</p>
+<p>我们知道，为了实现不同子网之间的设备通信，需要配置路由。</p>
+<p>目前常用的指定路由方法有两种：</p>
+<ol>
+<li>​       第一种是通过路由协议 ：RIP、OSPF动态学习</li>
+<li>​       第二种是通过静态路由： 对终端PC机配置静态路由。</li>
+</ol>
+<p>这两种路由各有各的优缺点：</p>
+<p>第一种路由可以自动寻找最优路径，邻居路由也可以通过学习来获得路由表，但是动态路由占用线路带宽和CPU处理时间。</p>
+<p>第二种路由是不需要CPU处理时间同样也不占用线路带宽，但是这个路由需要对终端的PC机进行配置网关来实现，工作量是比较大的。内部网络中的所有主机都设置一条相同的缺省路由，指向出口网关，实现主机与外部网络的通信。</p>
+<p>对于以上的两种路由在现在来说都是广泛应用的。我们现在只来分析静态路由的缺点，因为VRRP技术就是使用在静态路由上，而不是动态路由上。</p>
+<p>对于静态路由来说，对终端PC机配置默认网关。如果作为默认网关的路由器出现故障，所有使用该网关为下一跳的主机的通信是要中断的。如下图所示；</p>
+<p><img src="http://image.wangshengzhuang.com/17-7-2/90512760.jpg" alt=""></p>
+<p>在上图中，主机Ａ—Ｄ都配置了一个默认的网关：１0.1.1.1，网关路由的下一跳指向主机所在网段内的一个路由器RouterA，RouterA将报文发送到外网，但是如果现在RouterA坏掉了，那么所有的主机将无法与其他网段进行通信了。</p>
+<p>配置多个出口网关是提高系统可靠性的常见方法，但局域网内的主机设备通常不支持动态路由协议，如何在多个出口网关之间进行选路是个问题。</p>
+<p>为了解决以上的问题，将可以承担网关功能的路由器加入到备份组中，形成一台虚拟路由器，由VRRP的选举机制决定哪台路由器承担转发任务，局域网内的主机只需将虚拟路由器配置为缺省网关。我们可以加一个路由器RouterB，当RouterA坏掉时，所有的PC机将网关切换到RouterB上的网关。这样就实现了路由器的备份。这个技术就是VRRP技术—虚拟路由器冗余协议。</p>
+<p><img src="http://image.wangshengzhuang.com/17-7-2/30323425.jpg" alt=""></p>
+<h1 id="2-VRRP简介"><a href="#2-VRRP简介" class="headerlink" title="2. VRRP简介"></a>2. VRRP简介</h1><p><strong>VRRP（Virtual Router Redundancy Protocol）虚拟路由冗余协议</strong>，IETF（Internet Engineering Task Force，因特网工程任务组）推出，用来解决局域网主机访问外部网络的可靠性问题。<strong>VRRP协议的实现有VRRPv2和VRRPv3两个版本</strong>，VRRPv2于IPv4，VRRPv3基于IPv6。Vrrp协议在linux上的实现（软件实现）是keepalived。</p>
+<p>VRRP是一种容错协议，它通过把几台路由设备联合组成一台虚拟的路由设备，并通过一定的机制来保证当主机的下一跳设备出现故障时，可以及时将业务切换到其它设备，从而保持通讯的连续性和可靠性。使用VRRP的优势在于：既不需要改变组网情况，也不需要在主机上配置任何动态路由或者路由发现协议，就可以获得更高可靠性的缺省路由。如下图所示： 有两个路由器，从两个路由器中选举出一个路由器作为主路由器，其他的都是备份路由器，主路由器负责发转发数据报，而备份路由器处于空闲状态，当主路由器出现故障后，备份路由器会成为主路由器，代替主路由器实现转发功能。</p>
+<p><img src="http://image.wangshengzhuang.com/17-7-2/45816589.jpg" alt=""></p>
+<h1 id="3-VRRP相关概念"><a href="#3-VRRP相关概念" class="headerlink" title="3. VRRP相关概念"></a>3. VRRP相关概念</h1><table>
+<thead>
+<tr>
+<th><strong>概念</strong></th>
+<th><strong>解释</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VRRP路由器（VRRP Router</td>
+<td>所有运行VRRP协议的路由器就叫做VRRP路由器，它可能属于一个或多个虚拟路由器。</td>
+</tr>
+<tr>
+<td>虚拟路由器（Virtual Router）</td>
+<td>虚拟路由器是VRRP备份组中所有路由器的集合，它是一个逻辑概念，并不是正真存在的。从备份组外面看备份组中的路由器，感觉组中的所有路由器就像一个 一样，你可以理解为 在一个组中： 主路由器+所有备份路由器=虚拟路由器。虚拟路由器有一个虚拟的IP地址和MAC地址。如果虚拟IP和备份组中的某台路由器的IP相同的话，那么这台路由器称为IP地址拥有者，并且作为备份组中的主路由器。</td>
+</tr>
+<tr>
+<td>虚拟IP地址(Virtual IP Address)</td>
+<td>虚拟路由器的IP地址，一个虚拟路由器可以有一个或多个IP地址，由用户配置。</td>
+</tr>
+<tr>
+<td>IP地址拥有者（IP Address Owner）</td>
+<td>如果一个VRRP路由器将虚拟路由器的IP地址作为真实的接口地址，则该设备是IP地址拥有者。 当这台设备正常工作时，它会响应目的地址是虚拟IP地址的报文，如ping、TCP连接等。</td>
+</tr>
+<tr>
+<td>虚拟MAC地址</td>
+<td>是虚拟路由器根据虚拟路由器ID生成的MAC地址。 一个虚拟路由器拥有一个虚拟MAC地址，格式为：00-00-5E-00-01-{VRID}。 VRID为VRRP组的编号，范围是0~255. 当虚拟路由器回应ARP请求时，使用虚拟MAC地址，而不是接口的真实MAC地址。</td>
+</tr>
+<tr>
+<td>主IP地址（Primary IP Address）</td>
+<td>虚拟路由器的 IP 地址可以是备份组所在网段中未被分配的IP 地址，也可以和备份组内的某个路由器的接口IP 地址相同。从接口的真实IP地址中选出来的一个主用IP地址，通常选择配置的第一个IP地址。 VRRP广播报文使用主IP地址作为IP报文的源地址。</td>
+</tr>
+<tr>
+<td>Master路由器（Virtual Router Master）</td>
+<td>是承担转发报文或者应答ARP请求的VRRP路由器，转发报文都是发送到虚拟IP地址的。 如果IP地址拥有者是可用的，通常它将成为Master。</td>
+</tr>
+<tr>
+<td>Backup路由器（Virtual Router Backup）</td>
+<td>一组没有承担转发任务的VRRP路由器，当Master设备出现故障时，它们将通过竞选成为新的Master。</td>
+</tr>
+<tr>
+<td>抢占模式</td>
+<td>在抢占模式下，如果Backup的优先级比当前Master的优先级高，将主动将自己升级成Master。</td>
+</tr>
+</tbody>
+</table>
+<p>如下图所示:  RA、RB和RC都是VRRP路由器，他们构成了一个VRRP备份组，RA为主路由器，RB和RC为备份路由器，这三台路由器从外界来看就像一台一样，这样构成一个虚拟路由器Router Group，虚拟路由器有一个虚拟的ＩＰ地址为10.1.1.1（RA主路由器的IP）。RA是IP地址拥有者，也是主路由器。</p>
+<p><img src="http://image.wangshengzhuang.com/17-7-2/71893986.jpg" alt=""></p>
+<h1 id="4-VRRP的工作过程和原理"><a href="#4-VRRP的工作过程和原理" class="headerlink" title="4. VRRP的工作过程和原理"></a>4. VRRP的工作过程和原理</h1><p>VRRP将局域网的一组路由器构成一个备份组，相当于一台虚拟路由器。局域网内的主机只需要知道这个虚拟路由器的IP地址，并不需知道具体某台设备的IP地址，将网络内主机的缺省网关设置为该虚拟路由器的IP地址，主机就可以利用该虚拟网关与外部网络进行通信。</p>
+<p>VRRP将该虚拟路由器动态关联到承担传输业务的物理路由器上，当该物理路由器出现故障时，再次选择新路由器来接替业务传输工作，整个过程对用户完全透明，实现了内部网络和外部网络不间断通信。</p>
+<p><img src="http://image.wangshengzhuang.com/17-7-2/71192622.jpg" alt=""></p>
+<p>如图所示，虚拟路由器的组网环境如下：</p>
+<ul>
+<li>RouterA、RouterB和RouterC属于同一个VRRP组，组成一个虚拟路由器，这个虚拟路由器有自己的IP地址10.110.10.1。虚拟IP地址可以直接指定，也可以借用该VRRP组所包含的路由器上某接口地址。</li>
+<li>物理路由器RouterA、RouterB和RouterC的实际IP地址分别是10.110.10.5、10.110.10.6和10.110.10.7。</li>
+<li>局域网内的主机只需要将缺省路由设为10.110.10.1即可，无需知道具体路由器上的接口地址。</li>
+</ul>
+<h2 id="4-1-VRRP的状态"><a href="#4-1-VRRP的状态" class="headerlink" title="4.1 VRRP的状态"></a>4.1 VRRP的状态</h2><p>VRRP协议中定义了三种状态机：初始状态（Initialize）、活动状态（Master）、备份状态（Backup）。其中，只有处于活动状态的设备才可以转发那些发送到虚拟IP地址的报文。</p>
+<p><img src="http://image.wangshengzhuang.com/17-7-2/70221115.jpg" alt=""></p>
+<p><strong>Initialize</strong></p>
+<p>设备启动时进入此状态，当收到接口Startup的消息，将转入Backup或Master状态（IP地址拥有者的接口优先级为255，直接转为Master）。在此状态时，不会对VRRP报文做任何处理。</p>
+<p><strong>Master</strong></p>
+<p>当路由器处于Master状态时，它将会做下列工作：</p>
+<ul>
+<li>定期发送VRRP报文。</li>
+<li>以虚拟MAC地址响应对虚拟IP地址的ARP请求。</li>
+<li>转发目的MAC地址为虚拟MAC地址的IP报文。</li>
+<li>如果它是这个虚拟IP地址的拥有者，则接收目的IP地址为这个虚拟IP地址的IP报文。否则，丢弃这个IP报文。</li>
+<li>如果收到比自己优先级大的报文则转为Backup状态。</li>
+<li>如果收到优先级和自己相同的报文，并且发送端的主IP地址比自己的主IP地址大，则转为Backup状态。</li>
+<li>当接收到接口的Shutdown事件时，转为Initialize。</li>
+</ul>
+<p><strong>Backup</strong></p>
+<p>当路由器处于Backup状态时，它将会做下列工作：</p>
+<ul>
+<li>接收Master发送的VRRP报文，判断Master的状态是否正常。</li>
+<li>对虚拟IP地址的ARP请求，不做响应。</li>
+<li>丢弃目的MAC地址为虚拟MAC地址的IP报文。</li>
+<li>丢弃目的IP地址为虚拟IP地址的IP报文。</li>
+<li>Backup状态下如果收到比自己优先级小的报文时，丢弃报文，不重置定时器；如果收到优先级和自己相同的报文，则重置定时器，不进一步比较IP地址。</li>
+<li>当Backup接收到MASTER_DOWN_TIMER定时器超时的事件时，才会转为Master。</li>
+<li>当接收到接口的Shutdown事件时，转为Initialize。</li>
+</ul>
+<h2 id="4-2-VRRP工作过程"><a href="#4-2-VRRP工作过程" class="headerlink" title="4.2 VRRP工作过程"></a>4.2 VRRP工作过程</h2><ol>
+<li>路由器使能VRRP 功能后，会根据优先级确定自己在备份组中的角色。优先级高的路由器成为Master 路由器，优先级低的成为Backup 路由器。Master 路由器定期发送VRRP 通告报文，通知备份组内的其他设备自己工作正常；Backup 路由器则启动定时器等待通告报文的到来。</li>
+<li>在抢占方式下，当Backup 路由器收到VRRP 通告报文后，会将自己的优先级与通告报 文中的优先级进行比较。如果大于通告报文中的优先级，则成为Master 路由器；否则将保持Backup状态</li>
+<li>在非抢占方式下，只要Master 路由器没有出现故障，备份组中的路由器始终保持Master 或Backup 状态，Backup 路由器即使随后被配置了更高的优先级也不会成为Master 路由器</li>
+<li>如果Backup 路由器的定时器超时后仍未收到Master 路由器发送来的VRRP 通告报文，则认为Master 路由器已经无法正常工作，此时Backup 路由器会认为自己是Master 路由器，并对外发送VRRP 通告报文。一个VRRP组里有多台备份路由器时，短时间内可能产生多个Master，此时，路由器将会将收到的VRRP报文中的优先级与本地优先级做比较。从而选取优先级高的设备做Master。备份组内的路由器根据优先级选举出Master 路由器，承担报文的转发功能</li>
+<li>虚拟路由器状态切换时，Master路由器由一台设备切换为另外一台设备，新的 Master路由器只是简单地发送一个携带虚拟路由器的 MAC 地址和虚拟 IP地址信息的免费 ARP报文，这样就可以更新与它连接的主机或设备中的ARP 相关信息。网络中的主机感知不到Master路由器已经切换为另外一台设备。</li>
+</ol>
+<h2 id="4-3-VRRP选举机制"><a href="#4-3-VRRP选举机制" class="headerlink" title="4.3 VRRP选举机制"></a>4.3 VRRP选举机制</h2><p>VRRP使用选举机制来确定路由器的状态，运行VRRP的一组路由器对外构成了一个虚拟路由器，其中一台路由器处于Master状态，其他处于Backup状态。所以主路由器又叫做Master路由器，备份路由器又叫做Backup路由器。</p>
+<p><strong>优先级选举：</strong></p>
+<ol>
+<li>1.VRRP组中IP拥有者。如果虚拟IP地址与VRRP组中的某台VRRP路由器IP地址相同，则此路由器为IP地址拥有者，这台路由器将被定位主路由器。</li>
+<li>比较优先级。如果没有IP地址拥有者，则比较路由器的优先级，优先级的范围是0~255，大的作为主路由器。</li>
+<li>比较IP地址。在没有Ip地址拥有者和优先级相同的情况下，IP地址大的作为主路由器。</li>
+</ol>
+<p>如下图所示： 虚拟IP为10.1.1.254，在VRRP组中没有IP地址拥有者，则比较优先级，很明显RB和RA的优先级要大于RC，则比较RA和RB的IP地址，RB的IP地址大。所以RB为组中的主路由器。</p>
+<p><img src="http://image.wangshengzhuang.com/17-7-2/19860403.jpg" alt=""></p>
+<h2 id="4-4-VRRP报文格式"><a href="#4-4-VRRP报文格式" class="headerlink" title="4.4. VRRP报文格式"></a>4.4. VRRP报文格式</h2><p>VRRP只使用VRRP通告报文。</p>
+<p>VRRP通告报文使用Ip组播数据包进行封装，组播地址为223.0.0.18，IANA给其分配的协议号为112。</p>
+<p> VRRP通告报文的TTL值必须是255，如果VRRP路由器接受到TTL值不为255的VRRP通告报文，必须丢弃。</p>
+<p> VRRP组中的主路由器会定期发送通告报文，备份路由器接受，他们通过这种方式来交流选举</p>
+<h1 id="5-负载均衡"><a href="#5-负载均衡" class="headerlink" title="5.负载均衡"></a>5.负载均衡</h1><p>在一组VRRP组中，主路由器承担数据转发任务的同时，备份路由器的链路将处于空闲状态，这必然造成了带宽资源的浪费。为了避免这种浪费，使用VRRP负载均衡。</p>
+<p>   　VRRP并不具备对流量进行监控的机制，它的负载均衡只是通过使用多个VRRP组来实现的。VRRP负载均衡是通过实现将路由器加入到多个VRRP组实现的，使VRRP路由器在不同的组中担任不同的角色。</p>
+<p><img src="http://image.wangshengzhuang.com/17-7-2/36995365.jpg" alt=""></p>
+<p>如上图所示：RA为组35的主路由器，同时又是组36的备份路由器。 RB为组36的主路由器，同时又是组35的备份路由器。</p>
+<p>在正常状态下，PC1和PC2走RA，PC3和PC4走RB，但是两个路由器一旦出现故障，就将网关切换到备份路由器。RA和RB可以说是相辅相成的。</p>
+<p>负载分担方式具有以下特点。</p>
+<ul>
+<li>每个备份组都包括一个Master设备和若干Backup设备。</li>
+<li>各备份组的Master可以不同。</li>
+<li>同一台路由器可以加入多个备份组，在不同备份组中有不同的优先级。</li>
+</ul>
+<p><img src="http://image.wangshengzhuang.com/17-7-2/15448999.jpg" alt=""></p>
+<p>如图所示：</p>
+<ul>
+<li><p>配置两个备份组：组1和组2；</p>
+</li>
+<li><p>RouterA在备份组1中作为Master，在备份组2中作为Backup；</p>
+</li>
+<li><p>RouterB在备份组1和2中都作为Backup；</p>
+</li>
+<li><p>RouterC在备份组2中作为Master，在备份组1中作为Backup。</p>
+</li>
+<li><p>一部分主机使用备份组1作网关，另一部分主机使用备份组2作为网关。</p>
+</li>
+</ul>
+<p>这样，以达到分担数据流，而又相互备份的目的。</p>
+<h1 id="6-VRRP的安全功能"><a href="#6-VRRP的安全功能" class="headerlink" title="6. VRRP的安全功能"></a>6. VRRP的安全功能</h1><p>对于安全程度不同的网络环境，可以在报头上设定不同的认证方式和认证字。</p>
+<p>VRRP提供了三种认证方式：</p>
+<p>1.无认证：不进行任何 VRRP 报文的合法性认证，不提供安全性保障。一般不要用这种。</p>
+<p>2.简单字符认证：在一个有可能受到安全威胁的网络中，可以将认证方式设置为简单字符认证。发送 VRRP 报文的路由器将认证字填入到<br>VRRP 报文中，而收到 VRRP 报文的路由器会将收到的 VRRP 报文中的认证字和本地配置的认证字进行比较。如果认证字相同，则认为接收到的报文是合法的 VRRP 报文；否则认为接收到的报文是一个非法报文。</p>
+<p>一般用的就是这种。</p>
+<ol>
+<li>MD5 认证：在一个非常不安全的网络中，可以将认证方式设置为 MD5 认证。发送 VRRP 报文的路由器利用认证字和 MD5 算法对 VRRP 报文进行加密，加密后的报文保存在 Authentication Header（认证头）中。收到 VRRP报文的路由器会利用认证字解密报文，检查该报文的合法性。MD5比较麻烦，有一些路由设备不支持。</li>
+</ol>
+<h1 id="7-其他VRRP功能"><a href="#7-其他VRRP功能" class="headerlink" title="7. 其他VRRP功能"></a>7. 其他VRRP功能</h1><h2 id="监视接口状态"><a href="#监视接口状态" class="headerlink" title="监视接口状态"></a>监视接口状态</h2><p>VRRP可以监视所有接口的状态。当被监视的接口Down或Up时，该路由器的优先级会自动降低或升高一定的数值，使得备份组中各设备优先级高低顺序发生变化，VRRP路由器重新进行Master竞选。</p>
+<h2 id="虚拟IP地址Ping开关"><a href="#虚拟IP地址Ping开关" class="headerlink" title="虚拟IP地址Ping开关"></a>虚拟IP地址Ping开关</h2><p>RFC3768并没有规定虚拟IP地址应不应该Ping通。不能Ping通虚拟IP地址，会给监控虚拟路由器的工作情况带来一定的麻烦，能够Ping通虚拟IP地址可以比较方便的监控虚拟路由器的工作情况，但是带来可能遭到ICMP攻击的隐患。控制Ping通虚拟IP地址的开关命令，用户可以选择是否打开。</p>
+<h2 id="VRRP定时器"><a href="#VRRP定时器" class="headerlink" title="VRRP定时器"></a>VRRP定时器</h2><p>①　VRRP通告报文时间间隔定时器</p>
+<ol>
+<li>VRRP备份组中的Master路由器会定时发送VRRP通告报文，通知备份组内的 路由器自己工作正常</li>
+<li>用户可以通过设置VRRP定时器来调整Master路由器发送VRRP 通告报文的时间间隔</li>
+<li>如果Backup路由器在等待了3个间隔时间后，依然没有收到VRRP 通告报文，则认为自己是Master路由器，并对外发送VRRP通告报文，重新进行Master路由器的选举</li>
+</ol>
+<p>②　VRRP抢占延迟时间定时器</p>
+<ol>
+<li>为了避免备份组内的成员频繁进行主备状态转换，让Backup路由器有足够的</li>
+<li>时间搜集必要的信息（如路由信息），Backup 路由器接收到优先级低于本地优 先级的通告报文后，不会立即抢占成为Master</li>
+<li>而是等待一定时间——抢占延迟时间后，才会对外发送VRRP通告报文取代原 来的Master路由器</li>
+</ol>
+<h1 id="8-VRRP基本配置（略）"><a href="#8-VRRP基本配置（略）" class="headerlink" title="8. VRRP基本配置（略）"></a>8. VRRP基本配置（略）</h1><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>VRRP简单的讲，就是利用心跳信息实现高可用。主节点不断的向备用节点广播信息，信息包含自己的心跳和优先级。不光如此，还可以在主节点上安装一个监控，来监控其他资源，如果这些资源运行正常，就可以给其他客户端发送心跳信息（包含优先级），一旦监控的资源出现问题了，就降低自己的优先级（降低后的优先级要低于备用节点的优先级，自己设置）。这时候，备用节点可以在主节点未出现故障的时候，就抢占主节点的资源（工作在抢占模式的备用节点）。备用节点发现自己的优先级比主节点的优先级高，就触发一次选举。将主节点变为备用节点，备用节点变为主节点。主节点拥有VIP.</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://zhaoyuqiang.blog.51cto.com/6328846/1166840/" target="_blank" rel="external">虚拟路由器冗余协议【原理篇】VRRP详解</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Virtual_Router_Redundancy_Protocol" target="_blank" rel="external">Virtual Router Redundancy Protocol</a></p>
+<p><a href="https://tools.ietf.org/html/rfc5798#section-8.3.2" target="_blank" rel="external">Virtual Router Redundancy Protocol (VRRP) Version 3 for IPv4 and IPv6</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;因工作中使用Keepalived配置Nginx代理和MySQL代理的高可用，而Keepalived是VRRP协议在linux上的软件实现。因此了解了下VRRP的基础。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://image.wangshengzhuang.com/17-7-2/71192622.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="运维相关" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/"/>
+    
+      <category term="Keepalived" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Keepalived/"/>
+    
+    
+      <category term="Keepalived" scheme="http://wangshengzhuang.com/tags/Keepalived/"/>
+    
+      <category term="VRRP" scheme="http://wangshengzhuang.com/tags/VRRP/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>keepalived.conf说明</title>
+    <link href="http://wangshengzhuang.com/2017/06/04/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Keepalived/keepalived%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E7%AE%80%E4%BB%8B/"/>
+    <id>http://wangshengzhuang.com/2017/06/04/运维相关/Keepalived/keepalived配置文件简介/</id>
+    <published>2017-06-04T15:26:47.000Z</published>
+    <updated>2017-07-03T14:36:27.299Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文主要介绍了Keepalived配置文件keepalived.conf。</p>
+<p><img src="http://image.wangshengzhuang.com/17-7-3/62480061.jpg" alt=""></p>
+<a id="more"></a>
+<p>keepalived只有一个配置文件keepalived.conf，里面主要包括以下几个配置区域，分别是global_defs、static_ipaddress、static_routes、vrrp_script、vrrp_instance和virtual_server。</p>
+<h3 id="1-global-defs区域"><a href="#1-global-defs区域" class="headerlink" title="1. global_defs区域"></a>1. global_defs区域</h3><p>主要是配置故障发生时的通知对象以及机器标识</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">global_defs &#123;</div><div class="line">    notification_email &#123;</div><div class="line">        a@abc<span class="selector-class">.com</span></div><div class="line">        b@abc<span class="selector-class">.com</span></div><div class="line">        ...</div><div class="line">    &#125;</div><div class="line">    notification_email_from alert@abc<span class="selector-class">.com</span></div><div class="line">    smtp_server smtp<span class="selector-class">.abc</span><span class="selector-class">.com</span></div><div class="line">    smtp_connect_timeout <span class="number">30</span></div><div class="line">    enable_traps</div><div class="line">    router_id host163</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>notification_email 故障发生时给谁发邮件通知。</li>
+<li>notification_email_from 通知邮件从哪个地址发出。</li>
+<li>smpt_server 通知邮件的smtp地址。</li>
+<li>smtp_connect_timeout 连接smtp服务器的超时时间。</li>
+<li>enable_traps 开启SNMP陷阱（<a href="http://en.wikipedia.org/wiki/Simple_Network_Management_Protocol" target="_blank" rel="external">Simple Network Management Protocol</a>）。</li>
+<li>router_id 标识本节点的字条串，通常为hostname，但不一定非得是hostname。故障发生时，邮件通知会用到。</li>
+</ul>
+<h3 id="2-static-ipaddress和static-routes区域"><a href="#2-static-ipaddress和static-routes区域" class="headerlink" title="2. static_ipaddress和static_routes区域"></a>2. static_ipaddress和static_routes区域</h3><p>static_ipaddress和static_routes区域配置的是是本节点的IP和路由信息。<strong>如果你的机器上已经配置了IP和路由，那么这两个区域可以不用配置</strong>。其实，一般情况下你的机器都会有IP地址和路由信息的，因此没必要再在这两个区域配置。</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">static_ipaddress &#123;</div><div class="line">    <span class="number">10.210</span><span class="number">.214</span><span class="number">.163</span>/<span class="number">24</span> brd <span class="number">10.210</span><span class="number">.214</span><span class="number">.255</span> dev eth0</div><div class="line">    ...</div><div class="line">&#125;</div><div class="line">static_routes &#123;</div><div class="line">    <span class="number">10.0</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">8</span> via <span class="number">10.210</span><span class="number">.214</span><span class="number">.1</span> dev eth0</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>以上分别表示启动/关闭keepalived时在本机执行的如下命令：</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># /sbin/ip addr add <span class="number">10.210</span><span class="number">.214</span><span class="number">.163</span>/<span class="number">24</span> brd <span class="number">10.210</span><span class="number">.214</span><span class="number">.255</span> dev eth0</div><div class="line"># /sbin/ip route add <span class="number">10.0</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">8</span> via <span class="number">10.210</span><span class="number">.214</span><span class="number">.1</span> dev eth0</div><div class="line"># /sbin/ip addr del <span class="number">10.210</span><span class="number">.214</span><span class="number">.163</span>/<span class="number">24</span> brd <span class="number">10.210</span><span class="number">.214</span><span class="number">.255</span> dev eth0</div><div class="line"># /sbin/ip route del <span class="number">10.0</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">8</span> via <span class="number">10.210</span><span class="number">.214</span><span class="number">.1</span> dev eth0</div></pre></td></tr></table></figure>
+<p>注意： 请忽略这两个区域，因为我坚信你的机器肯定已经配置了IP和路由。</p>
+<h3 id="3-vrrp-script区域"><a href="#3-vrrp-script区域" class="headerlink" title="3. vrrp_script区域"></a>3. vrrp_script区域</h3><p>用来做健康检查的，当时检查失败时会将<code>vrrp_instance</code>的<code>priority</code>减少相应的值。</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">vrrp_script chk_http_port &#123;</div><div class="line">    script <span class="string">"&lt;/dev/tcp/127.0.0.1/80"</span></div><div class="line">    interval <span class="number">1</span></div><div class="line">    weight <span class="number">-10</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>以上意思是如果<code>script</code>中的指令执行失败，那么相应的<code>vrrp_instance</code>的优先级会减少10个点。</p>
+<h3 id="4-vrrp-instance和vrrp-sync-group区域"><a href="#4-vrrp-instance和vrrp-sync-group区域" class="headerlink" title="4. vrrp_instance和vrrp_sync_group区域"></a>4. vrrp_instance和vrrp_sync_group区域</h3><p>vrrp_instance用来定义对外提供服务的VIP区域及其相关属性。</p>
+<p>vrrp_rsync_group用来定义vrrp_intance组，使得这个组内成员动作一致。举个例子来说明一下其功能：</p>
+<p>两个vrrp_instance同属于一个vrrp_rsync_group，那么其中一个vrrp_instance发生故障切换时，另一个vrrp_instance也会跟着切换（即使这个instance没有发生故障）。</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line">vrrp_sync_group VG_1 &#123;</div><div class="line">    group &#123;</div><div class="line">        inside_network   # name of vrrp_instance (below)</div><div class="line">        outside_network  # One for each moveable IP.</div><div class="line">        ...</div><div class="line">    &#125;</div><div class="line">    notify_master /path/to_master.sh</div><div class="line">    notify_backup /path/to_backup.sh</div><div class="line">    notify_fault <span class="string">"/path/fault.sh VG_1"</span></div><div class="line">    notify /path/notify.sh</div><div class="line">    smtp_alert</div><div class="line">&#125;</div><div class="line">vrrp_instance VI_1 &#123;</div><div class="line">    <span class="section">state</span> MASTER</div><div class="line">    interface eth0</div><div class="line">    use_vmac &lt;VMAC_INTERFACE&gt;</div><div class="line">    dont_track_primary</div><div class="line">    track_interface &#123;</div><div class="line">        eth0</div><div class="line">        eth1</div><div class="line">    &#125;</div><div class="line">    mcast_src_ip &lt;IPADDR&gt;</div><div class="line">    lvs_sync_daemon_interface eth1</div><div class="line">    garp_master_delay <span class="number">10</span></div><div class="line">    virtual_router_id <span class="number">1</span></div><div class="line">    priority <span class="number">100</span></div><div class="line">    advert_int <span class="number">1</span></div><div class="line">    authentication &#123;</div><div class="line">        auth_type PASS</div><div class="line">        auth_pass <span class="number">12345678</span></div><div class="line">    &#125;</div><div class="line">    virtual_ipaddress &#123;</div><div class="line">        <span class="number">10.210</span><span class="number">.214</span><span class="number">.253</span>/<span class="number">24</span> brd <span class="number">10.210</span><span class="number">.214</span><span class="number">.255</span> dev eth0</div><div class="line">        <span class="number">192.168</span><span class="number">.1</span><span class="number">.11</span>/<span class="number">24</span> brd <span class="number">192.168</span><span class="number">.1</span><span class="number">.255</span> dev eth1</div><div class="line">    &#125;</div><div class="line">    virtual_routes &#123;</div><div class="line">        <span class="number">172.16</span><span class="number">.0</span><span class="number">.0</span>/<span class="number">12</span> via <span class="number">10.210</span><span class="number">.214</span><span class="number">.1</span></div><div class="line">        <span class="number">192.168</span><span class="number">.1</span><span class="number">.0</span>/<span class="number">24</span> via <span class="number">192.168</span><span class="number">.1</span><span class="number">.1</span> dev eth1</div><div class="line">        <span class="section">default</span> via <span class="number">202.102</span><span class="number">.152</span><span class="number">.1</span></div><div class="line">    &#125;</div><div class="line">    track_script &#123;</div><div class="line">        chk_http_port</div><div class="line">    &#125;</div><div class="line">    nopreempt</div><div class="line">    preempt_delay <span class="number">300</span></div><div class="line">    debug</div><div class="line">    notify_master &lt;STRING&gt;|&lt;QUOTED-STRING&gt;</div><div class="line">    notify_backup &lt;STRING&gt;|&lt;QUOTED-STRING&gt;</div><div class="line">    notify_fault &lt;STRING&gt;|&lt;QUOTED-STRING&gt;</div><div class="line">    notify &lt;STRING&gt;|&lt;QUOTED-STRING&gt;</div><div class="line">    smtp_alert</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>notify_master/backup/fault 分别表示切换为主/备/出错时所执行的脚本。</li>
+<li>notify 表示任何一状态切换时都会调用该脚本，并且该脚本在以上三个脚本执行完成之后进行调用，keepalived会自动传递三个参数（$1 = “GROUP”|”INSTANCE”，$2 = name of group or instance，$3 = target state of transition(MASTER/BACKUP/FAULT)）。</li>
+<li>smtp_alert 表示是否开启邮件通知（用全局区域的邮件设置来发通知）。</li>
+<li>state 可以是MASTER或BACKUP，不过当其他节点keepalived启动时会将priority比较大的节点选举为MASTER，因此该项其实没有实质用途。</li>
+<li>interface 节点固有IP（非VIP）的网卡，用来发VRRP包。</li>
+<li>use_vmac 是否使用VRRP的虚拟MAC地址。</li>
+<li>dont_track_primary 忽略VRRP网卡错误。（默认未设置）</li>
+<li>track_interface 监控以下网卡，如果任何一个不通就会切换到FAULT状态。（可选项）</li>
+<li>mcast_src_ip 修改vrrp组播包的源地址，默认源地址为master的IP。（由于是组播，因此即使修改了源地址，该master还是能收到回应的）</li>
+<li>lvs_sync_daemon_interface 绑定lvs syncd的网卡。</li>
+<li>garp_master_delay 当切为主状态后多久更新ARP缓存，默认5秒。</li>
+<li>virtual_router_id 取值在0-255之间，用来区分多个instance的VRRP组播。</li>
+</ul>
+<p>注意： 同一网段中virtual_router_id的值不能重复，否则会出错，相关错误信息如下。  </p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Keepalived_vrrp[<span class="number">27120</span>]: ip address associated <span class="keyword">with</span> VRID <span class="keyword">not</span> present <span class="keyword">in</span> received packet :</div><div class="line">one <span class="keyword">or</span> more VIP associated <span class="keyword">with</span> VRID mismatch actual MASTER advert</div><div class="line">bogus VRRP packet received <span class="keyword">on</span> eth1 !!!</div><div class="line">receive an invalid ip <span class="built_in">number</span> <span class="built_in">count</span> associated <span class="keyword">with</span> VRID!</div><div class="line">VRRP_Instance(xxx) <span class="keyword">ignoring</span> received advertisment...</div></pre></td></tr></table></figure>
+<p>可以用这条命令来查看该网络中所存在的vrid：<code>tcpdump -nn -i any net 224.0.0.0/8</code></p>
+<ul>
+<li>priority 用来选举master的，要成为master，那么这个选项的值<a href="http://tools.ietf.org/html/rfc5798#section-8.3.2" target="_blank" rel="external">最好高于其他机器50个点</a>，该项<a href="http://tools.ietf.org/html/rfc5798#section-5.2.4" target="_blank" rel="external">取值范围</a>是1-255（在此范围之外会被识别成默认值100）。</li>
+<li>advert_int 发VRRP包的时间间隔，即多久进行一次master选举（可以认为是健康查检时间间隔）。</li>
+<li>authentication 认证区域，认证类型有PASS和HA（IPSEC），推荐使用PASS（密码只识别前8位）。</li>
+<li>virtual_ipaddress vip，不解释了。</li>
+<li>virtual_routes 虚拟路由，当IP漂过来之后需要添加的路由信息。</li>
+<li>virtual_ipaddress_excluded 发送的VRRP包里不包含的IP地址，为减少回应VRRP包的个数。在网卡上绑定的IP地址比较多的时候用。</li>
+<li>nopreempt 允许一个priority比较低的节点作为master，即使有priority更高的节点启动。</li>
+</ul>
+<p>首先nopreemt必须在state为BACKUP的节点上才生效（因为是BACKUP节点决定是否来成为MASTER的），其次要实现类似于关闭auto failback的功能需要将所有节点的state都设置为BACKUP，或者将master节点的priority设置的比BACKUP低。我个人推荐使用将所有节点的state都设置成BACKUP并且都加上nopreempt选项，这样就完成了关于autofailback功能，当想手动将某节点切换为MASTER时只需去掉该节点的nopreempt选项并且将priority改的比其他节点大，然后重新加载配置文件即可（等MASTER切过来之后再将配置文件改回去再reload一下）。</p>
+<p>当使用<code>track_script</code>时可以不用加<code>nopreempt</code>，只需要加上<code>preempt_delay 5</code>，这里的间隔时间要大于<code>vrrp_script</code>中定义的时长。</p>
+<ul>
+<li>preempt_delay master启动多久之后进行接管资源（VIP/Route信息等），并提是没有<code>nopreempt</code>选项。</li>
+</ul>
+<h3 id="5-virtual-server-group和virtual-server区域"><a href="#5-virtual-server-group和virtual-server区域" class="headerlink" title="5. virtual_server_group和virtual_server区域"></a>5. virtual_server_group和virtual_server区域</h3><p>virtual_server_group一般在超大型的LVS中用到，一般LVS用不过这东西，因此不多说。</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">virtual_server IP <span class="class">Port </span>&#123;</div><div class="line">    delay_loop <span class="params">&lt;INT&gt;</span></div><div class="line">    lb_algo rr|wrr|lc|wlc|lblc|sh|dh</div><div class="line">    lb_kind NAT|DR|TUN</div><div class="line">    persistence_timeout <span class="params">&lt;INT&gt;</span></div><div class="line">    persistence_granularity <span class="params">&lt;NETMASK&gt;</span></div><div class="line">    protocol TCP</div><div class="line">    ha_suspend</div><div class="line">    virtualhost <span class="params">&lt;STRING&gt;</span></div><div class="line">    alpha</div><div class="line">    omega</div><div class="line">    quorum <span class="params">&lt;INT&gt;</span></div><div class="line">    hysteresis <span class="params">&lt;INT&gt;</span></div><div class="line">    quorum_up <span class="params">&lt;STRING&gt;</span>|<span class="params">&lt;QUOTED-STRING&gt;</span></div><div class="line">    quorum_down <span class="params">&lt;STRING&gt;</span>|<span class="params">&lt;QUOTED-STRING&gt;</span></div><div class="line">    sorry_server <span class="params">&lt;IPADDR&gt;</span> <span class="params">&lt;PORT&gt;</span></div><div class="line">    real_server <span class="params">&lt;IPADDR&gt;</span> <span class="params">&lt;PORT&gt;</span> &#123;</div><div class="line">        weight <span class="params">&lt;INT&gt;</span></div><div class="line">        inhibit_on_failure</div><div class="line">        notify_up <span class="params">&lt;STRING&gt;</span>|<span class="params">&lt;QUOTED-STRING&gt;</span></div><div class="line">        notify_down <span class="params">&lt;STRING&gt;</span>|<span class="params">&lt;QUOTED-STRING&gt;</span></div><div class="line">        <span class="meta"># HTTP_GET|SSL_GET|TCP_CHECK|SMTP_CHECK|MISC_CHECK</span></div><div class="line">        HTTP_GET|<span class="class">SSL_GET </span>&#123;</div><div class="line">            <span class="class">url </span>&#123;</div><div class="line">                path <span class="params">&lt;STRING&gt;</span></div><div class="line">                <span class="meta"># Digest computed with genhash</span></div><div class="line">                digest <span class="params">&lt;STRING&gt;</span></div><div class="line">                status_code <span class="params">&lt;INT&gt;</span></div><div class="line">            &#125;</div><div class="line">            connect_port <span class="params">&lt;PORT&gt;</span></div><div class="line">            connect_timeout <span class="params">&lt;INT&gt;</span></div><div class="line">            nb_get_retry <span class="params">&lt;INT&gt;</span></div><div class="line">            delay_before_retry <span class="params">&lt;INT&gt;</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>delay_loop 延迟轮询时间（单位秒）。</li>
+<li>lb_algo 后端调试算法（load balancing algorithm）。</li>
+<li>lb_kind LVS调度类型<a href="http://kb.linuxvirtualserver.org/wiki/LVS/NAT" target="_blank" rel="external">NAT</a>/<a href="http://kb.linuxvirtualserver.org/wiki/LVS/DR" target="_blank" rel="external">DR</a>/<a href="http://kb.linuxvirtualserver.org/wiki/LVS/TUN" target="_blank" rel="external">TUN</a>。</li>
+<li>virtualhost 用来给HTTP_GET和SSL_GET配置请求header的。</li>
+<li>sorry_server 当所有real server宕掉时，sorry server顶替。</li>
+<li>real_server 真正提供服务的服务器。</li>
+<li>weight 权重。</li>
+<li>notify_up/down 当real server宕掉或启动时执行的脚本。</li>
+<li>健康检查的方式，N多种方式。</li>
+<li>path 请求real serserver上的路径。</li>
+<li>digest/status_code 分别表示用genhash算出的结果和http状态码。</li>
+<li>connect_port 健康检查，如果端口通则认为服务器正常。</li>
+<li>connect_timeout,nb_get_retry,delay_before_retry分别表示超时时长、重试次数，下次重试的时间延迟。</li>
+</ul>
+<p>其他选项暂时不作说明。</p>
+<p>###参考</p>
+<p><a href="https://docs.oracle.com/cd/E52668_01/E54669/html/section_wv3_hjn_pr.html" target="_blank" rel="external"> About the Keepalived Configuration File</a></p>
+<p><a href="http://www.linuxidc.com/Linux/2012-08/69383.htm" target="_blank" rel="external">Keepalived配置及典型应用案例</a></p>
+<p><a href="http://outofmemory.cn/wiki/keepalived-configuration" target="_blank" rel="external">keepalived工作原理和配置说明</a></p>
+<p><a href="http://www.cnblogs.com/wnlja/p/4439278.html" target="_blank" rel="external">详解keepalived配置和使用</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文主要介绍了Keepalived配置文件keepalived.conf。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://image.wangshengzhuang.com/17-7-3/62480061.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="运维相关" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/"/>
+    
+      <category term="Keepalived" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Keepalived/"/>
+    
+    
+      <category term="Keepalived" scheme="http://wangshengzhuang.com/tags/Keepalived/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Keepalived安装配置</title>
+    <link href="http://wangshengzhuang.com/2017/06/03/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Keepalived/keepalived%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE/"/>
+    <id>http://wangshengzhuang.com/2017/06/03/运维相关/Keepalived/keepalived安装配置/</id>
+    <published>2017-06-03T15:26:47.000Z</published>
+    <updated>2017-07-03T14:31:45.500Z</updated>
+    
+    <content type="html"><![CDATA[<p>本文主要介绍了Keepalived安装配置。</p>
+<p><img src="http://image.wangshengzhuang.com/17-7-3/62480061.jpg" alt=""></p>
+<a id="more"></a>
+<h3 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h3><blockquote>
+<p>Keepalived provides simple and robust facilities for load-balancing and high-availability. The load-balancing framework relies on well-known and widely used Linux Virtual Server (IPVS) kernel module providing Layer4 load-balancing. Keepalived implements a set of checkers to dynamically and adaptively maintain and manage load-balanced server pool according their health. Keepalived also implements the VRRPv2 protocol to achieve high-availability with director failover.</p>
+</blockquote>
+<p>keepalived是集群管理中保证集群高可用的一个服务软件，其功能类似于<a href="https://github.com/chenzhiwei/linux/tree/master/heartbeat" target="_blank" rel="external">heartbeat</a>，用来防止单点故障。</p>
+<p>keepalived是以VRRP协议为实现基础的，VRRP全称Virtual Router Redundancy Protocol，即<a href="http://en.wikipedia.org/wiki/VRRP" target="_blank" rel="external">虚拟路由冗余协议</a>。</p>
+<p>虚拟路由冗余协议，可以认为是实现路由器高可用的协议，即将N台提供相同功能的路由器组成一个路由器组，这个组里面有一个master和多个backup，master上面有一个对外提供服务的vip（该路由器所在局域网内其他机器的默认路由为该vip），master会发组播，当backup收不到vrrp包时就认为master宕掉了，这时就需要根据<a href="http://tools.ietf.org/html/rfc5798#section-5.1" target="_blank" rel="external">VRRP的优先级</a>来<a href="http://en.wikipedia.org/wiki/Virtual_Router_Redundancy_Protocol#Elections_of_master_routers" target="_blank" rel="external">选举一个backup当master</a>。这样的话就可以保证路由器的高可用了。</p>
+<p>keepalived主要有三个模块，分别是core、check和vrrp。core模块为keepalived的核心，负责主进程的启动、维护以及全局配置文件的加载和解析。check负责健康检查，包括常见的各种检查方式。vrrp模块是来实现VRRP协议的。</p>
+<h3 id="2-安装"><a href="#2-安装" class="headerlink" title="2. 安装"></a>2. 安装</h3><p>yum 安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">yum install keepalived</div><div class="line">systemctl <span class="built_in">enable</span> keepalived</div></pre></td></tr></table></figure>
+<h3 id="3-Enable-IP-forwarding"><a href="#3-Enable-IP-forwarding" class="headerlink" title="3. Enable IP forwarding"></a>3. Enable IP forwarding</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">echo</span> <span class="string">"net.ipv4.ip_forward = 1"</span> &gt;&gt; /etc/sysctl.conf</span></div><div class="line"><span class="meta">#</span><span class="bash"> sysctl -p</span></div><div class="line">net.ipv4.ip_forward = 1</div></pre></td></tr></table></figure>
+<h3 id="4-防火墙配置"><a href="#4-防火墙配置" class="headerlink" title="4. 防火墙配置"></a>4. 防火墙配置</h3><p>Add firewall rules to allow VRRP communication using the multicast IP address 224.0.0.18 and the VRRP protocol (112) on each network interface that Keepalived will control, for example:</p>
+<p>VRRP communication between routers uses multicast IP address 224.0.0.18[1] and IP protocol number 112[2].</p>
+<p>Thus, you only need to allow incoming and outgoing traffic with these specific parameters for VRRP to work correctly. The firewall rules that are usually mentioned are redundant and unnecessarily widely formulated.</p>
+<p><strong>记得改掉网卡名称</strong>，此处我绑定的是enp0s3，其他的不需要改</p>
+   <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">firewall-cmd --direct --permanent --add-rule ipv4 filter INPUT 0 --in-interface enp0s3 --destination 224.0.0.18 --protocol vrrp -j ACCEPT</div><div class="line">firewall-cmd --direct --permanent --add-rule ipv4 filter OUTPUT 0 --out-interface enp0s3 --destination 224.0.0.18 --protocol vrrp -j ACCEPT</div><div class="line">firewall-cmd --reload</div></pre></td></tr></table></figure>
+<h3 id="5-编辑-etc-keepalived-keepalived-conf"><a href="#5-编辑-etc-keepalived-keepalived-conf" class="headerlink" title="5. 编辑/etc/keepalived/keepalived.conf"></a>5. 编辑/etc/keepalived/keepalived.conf</h3><p>默认的配置文件<code>/etc/keepalived/keepalived.conf</code></p>
+<h3 id="6-例子Configuring-Simple-Virtual-IP-Address-Failover-Using-Keepalived"><a href="#6-例子Configuring-Simple-Virtual-IP-Address-Failover-Using-Keepalived" class="headerlink" title="6. 例子Configuring Simple Virtual IP Address Failover Using Keepalived"></a>6. 例子Configuring Simple Virtual IP Address Failover Using Keepalived</h3><p>默认情况下由节点A提供服务，当节点A不可用时，由节点B提供服务(即虚拟IP漂移至节点B)。</p>
+<table>
+<thead>
+<tr>
+<th>节点</th>
+<th>IP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>主节点</td>
+<td>192.168.0.104</td>
+</tr>
+<tr>
+<td>备节点</td>
+<td>192.168.0.105</td>
+</tr>
+<tr>
+<td>VIP</td>
+<td>192.168.0.106</td>
+</tr>
+</tbody>
+</table>
+<p>节点A上的配置文件</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">global_defs &#123;</div><div class="line">   notification_email &#123;</div><div class="line">     root@localhost</div><div class="line">   &#125;</div><div class="line">   notification_email_from  root@localhost</div><div class="line">   smtp_server localhost</div><div class="line">   smtp_connect_timeout 30</div><div class="line">   router_id maxscale001</div><div class="line">&#125;</div><div class="line"></div><div class="line">vrrp_instance VI_1 &#123;</div><div class="line">    state MASTER      #指定A节点为主节点 备用节点上设置为BACKUP即可</div><div class="line">    interface enp0s3   #绑定虚拟IP的网络接口</div><div class="line">    virtual_router_id 51   #VRRP组名，两个节点的设置必须一样，以指明各个节点属于同一VRRP组</div><div class="line">    priority 100   #主节点的优先级（1-254之间），备用节点必须比主节点优先级低</div><div class="line">    advert_int 1    #组播信息发送间隔，两个节点设置必须一样</div><div class="line">    nopreempt</div><div class="line">    authentication &#123;   #设置验证信息，两个节点必须一致</div><div class="line">        auth_type PASS</div><div class="line">        auth_pass 1111</div><div class="line">    &#125;</div><div class="line">    virtual_ipaddress &#123;   #指定虚拟IP, 两个节点设置必须一样</div><div class="line">        192.168.0.106/24</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>节点B上的配置文件(router_id 、state  、priority   不同)，其它项不必修改。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">global_defs &#123;</div><div class="line">   notification_email &#123;</div><div class="line">     root@localhost</div><div class="line">   &#125;</div><div class="line">   notification_email_from root@localhost</div><div class="line">   smtp_server localhost</div><div class="line">   smtp_connect_timeout 30</div><div class="line">   router_id maxscale002</div><div class="line">&#125;</div><div class="line"></div><div class="line">vrrp_instance VI_1 &#123;</div><div class="line">    state BACKUP</div><div class="line">    interface enp0s3</div><div class="line">    virtual_router_id 51</div><div class="line">    priority 99</div><div class="line">    advert_int 1</div><div class="line">    nopreempt</div><div class="line">    authentication &#123;</div><div class="line">        auth_type PASS</div><div class="line">        auth_pass 1111</div><div class="line">    &#125;</div><div class="line">    virtual_ipaddress &#123;</div><div class="line">        192.168.0.106/24</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>节点A启动keepalived后,查看IP</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[root@mysql001 keepalived]<span class="comment"># ip addr show enp0s3</span></div><div class="line">2: enp0s3: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP qlen 1000</div><div class="line">    link/ether 08:00:27:54:b1:88 brd ff:ff:ff:ff:ff:ff</div><div class="line">    inet 192.168.0.104/24 brd 192.168.0.255 scope global dynamic enp0s3</div><div class="line">       valid_lft 85696sec preferred_lft 85696sec</div><div class="line">    inet 192.168.0.106/24 scope global secondary enp0s3</div><div class="line">       valid_lft forever preferred_lft forever</div></pre></td></tr></table></figure>
+<p>节点B启动keepalived后,查看IP</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@mysql002 keepalived]<span class="comment"># ip addr show enp0s3</span></div><div class="line">2: enp0s3: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP qlen 1000</div><div class="line">    link/ether 08:00:27:6d:87:72 brd ff:ff:ff:ff:ff:ff</div><div class="line">    inet 192.168.0.105/24 brd 192.168.0.255 scope global dynamic enp0s3</div><div class="line">       valid_lft 85484sec preferred_lft 85484sec</div></pre></td></tr></table></figure>
+<p>测试及验证：拔掉节点A的网线，就发现虚拟IP已经绑定到节点B上，再恢复A节点的网线，虚拟IP又绑定回节点A之上。</p>
+<p>说明：</p>
+<ol>
+<li>默认的配置文件中，使用第三方smtp服务器，但这在现实中几乎没有意义（需要验证的原因），我们将其指定为localhost, 将通知信息的发送交给本地sendmail服务处理。通过alias发送给接收人</li>
+<li>虚拟IP需要指定子网掩码，否则会默认使用255.255.255.255，可能导致无法从其它机器访问虚拟IP</li>
+<li>在配置keepalived vrrp instance时, 有一个nopreempt的选项, 如果配置了nopreempt, 表示进入BACKUP状态的路由器不会在Master还活着的情况下, 抢占MASTER的位置(即使BACKUP路由器的优先级更高)</li>
+</ol>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://docs.oracle.com/cd/E52668_01/E54669/html/section_ksr_psb_nr.html" target="_blank" rel="external"> Installing and Configuring Keepalived</a></p>
+<p><a href="http://tools.ietf.org/html/rfc5798#section-5.1.1.2" target="_blank" rel="external">http://tools.ietf.org/html/rfc5798#section-5.1.1.2</a></p>
+<p><a href="http://tools.ietf.org/html/rfc5798#section-5.1.1.4" target="_blank" rel="external">http://tools.ietf.org/html/rfc5798#section-5.1.1.4</a></p>
+<p><a href="https://serverfault.com/questions/634903/vip-not-dropping-from-backup-keepalived" target="_blank" rel="external">https://serverfault.com/questions/634903/vip-not-dropping-from-backup-keepalived</a></p>
+<p><a href="http://www.linuxidc.com/Linux/2012-08/69383.htm" target="_blank" rel="external">Keepalived配置及典型应用案例</a></p>
+<p><a href="http://outofmemory.cn/wiki/keepalived-configuration" target="_blank" rel="external">keepalived工作原理和配置说明</a></p>
+<p><a href="http://www.cnblogs.com/wnlja/p/4439278.html" target="_blank" rel="external">详解keepalived配置和使用</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;本文主要介绍了Keepalived安装配置。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://image.wangshengzhuang.com/17-7-3/62480061.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="运维相关" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/"/>
+    
+      <category term="Keepalived" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Keepalived/"/>
+    
+    
+      <category term="Keepalived" scheme="http://wangshengzhuang.com/tags/Keepalived/"/>
+    
+  </entry>
   
   <entry>
     <title>cut命令</title>
@@ -347,8 +787,8 @@
   
   <entry>
     <title>Supervisor简介、安装、配置</title>
-    <link href="http://wangshengzhuang.com/2017/05/26/Linux/Supervisor/Supervisor%E7%AE%80%E4%BB%8B/"/>
-    <id>http://wangshengzhuang.com/2017/05/26/Linux/Supervisor/Supervisor简介/</id>
+    <link href="http://wangshengzhuang.com/2017/05/26/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Supervisor/Supervisor%E7%AE%80%E4%BB%8B/"/>
+    <id>http://wangshengzhuang.com/2017/05/26/运维相关/Supervisor/Supervisor简介/</id>
     <published>2017-05-25T16:00:00.000Z</published>
     <updated>2017-06-29T15:25:40.583Z</updated>
     
@@ -432,9 +872,9 @@
     
     </summary>
     
-      <category term="Linux" scheme="http://wangshengzhuang.com/categories/Linux/"/>
+      <category term="运维相关" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/"/>
     
-      <category term="Supervisor" scheme="http://wangshengzhuang.com/categories/Linux/Supervisor/"/>
+      <category term="Supervisor" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Supervisor/"/>
     
     
       <category term="supervisor" scheme="http://wangshengzhuang.com/tags/supervisor/"/>
@@ -963,257 +1403,6 @@
     <summary type="html">
     
       &lt;h3 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;&lt;a href=&quot;http://www.ansible.com.cn/docs/playbooks_roles.html#id6&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;简介&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;当我们刚开始学习运用 playbook 时，可能会把 playbook 写成一个很大的文件，到后来可能你会希望这些文件是可以方便去重用的，所以需要重新去组织这些文件。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="运维相关" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/"/>
-    
-      <category term="Ansible" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/"/>
-    
-    
-      <category term="Ansible" scheme="http://wangshengzhuang.com/tags/Ansible/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Ansible Playbook</title>
-    <link href="http://wangshengzhuang.com/2017/05/17/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/Ansilbe%20Playbook/"/>
-    <id>http://wangshengzhuang.com/2017/05/17/运维相关/Ansible/Ansilbe Playbook/</id>
-    <published>2017-05-17T15:26:47.000Z</published>
-    <updated>2017-05-23T14:07:09.954Z</updated>
-    
-    <content type="html"><![CDATA[<p>Playbooks 是 Ansible的配置,部署,编排语言.他们可以被描述为一个需要希望远程主机执行命令的方案,或者一组IT程序运行的命令集合.</p>
-<a id="more"></a>
-<p>Playbooks 的格式是YAML 语法做到最小化,意在避免 playbooks 成为一种编程语言或是脚本</p>
-<p>playbook 由一个或多个 ‘plays’ 组成.它的内容是一个以 ‘plays’ 为元素的列表.play 的内容,被称为 tasks,即任务.在基本层次的应用中,一个任务是一个对 ansible 模块的调用。playbook命令根据自上而下的顺序依次执行。‘plays’ 好似音符,playbook 好似由 ‘plays’ 构成的曲谱,通过 playbook,可以编排步骤进行多机器的部署,比如在 webservers 组的所有机器上运行一定的步骤, 然后在 database server 组运行一些步骤,最后回到 webservers 组,再运行一些步骤,诸如此类.使得你可以实现一些复杂的部署机制,这是ansible命令无法实现的。</p>
-<p>playbook通过ansible-playbook命令使用,它的参数和ansible命令类似,ansible-playbook的简单使用方法: </p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">ansible-playbook</span> <span class="selector-tag">example-play</span><span class="selector-class">.yml</span></div></pre></td></tr></table></figure>
-<h3 id="一、一个简单的示例"><a href="#一、一个简单的示例" class="headerlink" title="一、一个简单的示例"></a>一、一个简单的示例</h3><p>下面是一个简单的ansible-playbook示例，可以了解其构成:</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="meta">---</span></div><div class="line"><span class="attr">- hosts:</span> <span class="string">webservers</span></div><div class="line"><span class="attr">  vars:</span></div><div class="line"><span class="attr">    http_port:</span> <span class="number">80</span></div><div class="line"><span class="attr">    max_clients:</span> <span class="number">200</span></div><div class="line"><span class="attr">  remote_user:</span> <span class="string">root</span></div><div class="line"><span class="attr">  tasks:</span></div><div class="line"><span class="attr">  - name:</span> <span class="string">ensure</span> <span class="string">apache</span> <span class="string">is</span> <span class="string">at</span> <span class="string">the</span> <span class="string">latest</span> <span class="string">version</span></div><div class="line"><span class="attr">    yum:</span> <span class="string">pkg=httpd</span> <span class="string">state=latest</span></div><div class="line"><span class="attr">  - name:</span> <span class="string">write</span> <span class="string">the</span> <span class="string">apache</span> <span class="string">config</span> <span class="string">file</span></div><div class="line"><span class="attr">    template:</span> <span class="string">src=/srv/httpd.j2</span> <span class="string">dest=/etc/httpd.conf</span></div><div class="line"><span class="attr">    notify:</span></div><div class="line"><span class="bullet">    -</span> <span class="string">restart</span> <span class="string">apache</span></div><div class="line"><span class="attr">  - name:</span> <span class="string">ensure</span> <span class="string">apache</span> <span class="string">is</span> <span class="string">running</span></div><div class="line"><span class="attr">    service:</span> <span class="string">name=httpd</span> <span class="string">state=started</span></div><div class="line"><span class="attr">  handlers:</span></div><div class="line"><span class="attr">    - name:</span> <span class="string">restart</span> <span class="string">apache</span></div><div class="line"><span class="attr">      service:</span> <span class="string">name=httpd</span> <span class="string">state=restarted</span></div></pre></td></tr></table></figure>
-<h3 id="二、playbook的构成"><a href="#二、playbook的构成" class="headerlink" title="二、playbook的构成"></a>二、playbook的构成</h3><p>playbook 由一个或多个 ‘plays’ 组成.它的内容是一个以 ‘plays’ 为元素的列表.play 的内容,被称为 tasks,即任务.在基本层次的应用中,一个任务是一个对 ansible 模块的调用。将多个play组织在一个playbook中即可以让它们联同起来按事先编排的机制同唱一台大戏。其主要有以下四部分构成:</p>
-<figure class="highlight gams"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">playbooks组成：</div><div class="line">  Target section：   定义将要执行 playbook 的远程主机组</div><div class="line">  <span class="keyword">Variable</span> section： 定义 playbook 运行时需要使用的变量</div><div class="line">  Task <span class="comment">section</span>：     定义将要在远程主机上执行的任务列表</div><div class="line">  Handler <span class="comment">section</span>：  定义<span class="comment"> task</span> 执行完成以后需要调用的任务</div></pre></td></tr></table></figure>
-<p>而其对应的目录层为五个，如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">一般所需的目录层有：(视情况可变化)</div><div class="line">  vars     变量层</div><div class="line">  tasks    任务层</div><div class="line">  handlers 触发条件</div><div class="line">  files    文件</div><div class="line">  <span class="keyword">template</span> 模板</div></pre></td></tr></table></figure>
-<h4 id="1、Hosts和Users"><a href="#1、Hosts和Users" class="headerlink" title="1、Hosts和Users"></a>1、Hosts和Users</h4><p>playbook中的每一个play的目的都是为了让某个或某些主机以某个指定的用户身份执行任务。</p>
-<ul>
-<li>hosts：用于指定要执行指定任务的主机其可以是一个或多个由冒号分隔主机组。</li>
-<li>remote_user ：用于指定远程主机上的执行任务的用户。不过remote_user也可用于各task中。也可以通过指定其通过sudo的方式在远程主机上执行任务其可用于play全局或某任务。此外甚至可以在sudo时使用sudo_user指定sudo时切换的用户。</li>
-<li>user：于remote_user相同</li>
-<li>sudo：如果设置为yes，执行该任务组的用户在执行任务的时候，获取root权限</li>
-<li>sudo_user：如果设置user为breeze，sudo为yes，sudo_user为bernie时，则breeze用户在执行任务时会获得bernie用户的权限</li>
-<li>gather_facts：除非明确说明不需要在远程主机上执行setup模块，否则默认自动执行。如果确实不需要setup模块传递过来的变量，则可以将该选项设置为False</li>
-</ul>
-<h4 id="2、任务列表和action"><a href="#2、任务列表和action" class="headerlink" title="2、任务列表和action"></a>2、任务列表和action</h4><p>play的主体部分是任务列表。任务列表中的各任务按次序逐个在hosts中指定的所有主机上执行即在所有主机上完成第一个任务后再开始第二个。在自上而下运行某playbook时如果中途发生错误，所有已执行任务都将回滚因此在更正playbook后重新执行一次即可。 </p>
-<p>​ task的目的是使用指定的参数执行模块，而在模块参数中可以使用变量。模块执行是幂等的，这意味着多次执行是安全的，因为其结果均一致。module 具有”幂等”性,所以当远端系统被人改动时,可以重放 playbooks 达到恢复的目的. playbooks 本身可以识别这种改动,并且有一个基本的 event system（事件系统）,可以响应这种改动.</p>
-<p>每个task都应该有其name用于playbook的执行结果输出，建议其内容尽可能清晰地描述任务执行步骤。如果未提供name则action的结果将用于输出。 </p>
-<figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">tasks:</div><div class="line">  - <span class="built_in">name</span>: make sure apache <span class="keyword">is</span> <span class="built_in">running</span></div><div class="line">    service: <span class="built_in">name</span>=httpd state=<span class="built_in">running</span></div></pre></td></tr></table></figure>
-<p>如果命令或脚本的退出码不为零可以使用如下方式替代</p>
-<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">tasks:</div><div class="line">  - name: <span class="keyword">run</span><span class="bash"> this <span class="built_in">command</span> and ignore the result</span></div><div class="line">    <span class="keyword">shell</span><span class="bash">: /usr/bin/somecommand || /bin/<span class="literal">true</span></span></div></pre></td></tr></table></figure>
-<p>使用ignore_errors来忽略错误信息</p>
-<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">tasks:</div><div class="line">  - name: <span class="keyword">run</span><span class="bash"> this <span class="built_in">command</span> and ignore the result</span></div><div class="line">    <span class="keyword">shell</span><span class="bash">: /usr/bin/somecommand</span></div><div class="line">    ignore_errors: True</div></pre></td></tr></table></figure>
-<h4 id="3、handlers：-在发生改变时执行的操作"><a href="#3、handlers：-在发生改变时执行的操作" class="headerlink" title="3、handlers： 在发生改变时执行的操作"></a>3、handlers： 在发生改变时执行的操作</h4><p>“notify”这个action可用于在每个play的最后被触发，这样可以避免多次有改变发生时每次都执行指定的操作，取而代之仅在所有的变化发生完成后一次性地执行指定操作。在notify中列出的操作称为handler也即notify中调用handler中定义的操作。 </p>
-<p>注意：在notify中定义内容一定要和tasks中定义的 - name 内容一样，这样才能达到触发的效果，否则会不生效。</p>
-<figure class="highlight haml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">-<span class="ruby"> <span class="symbol">name:</span> template configuration file</span></div><div class="line">  template: src=template.j2 dest=/etc/foo.conf</div><div class="line">  notify:</div><div class="line">  -<span class="ruby"> restart memcached</span></div><div class="line">  -<span class="ruby"> restart apache</span></div></pre></td></tr></table></figure>
-<figure class="highlight pf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#handler是task列表这些task与前述的task并没有本质上的不同。</span></div><div class="line">handlers:</div><div class="line">  - name: restart memcached</div><div class="line">    service: name=memcached <span class="keyword">state</span>=restarted</div><div class="line">  - name: restart apache</div><div class="line">    service: name=apache <span class="keyword">state</span>=restarted</div></pre></td></tr></table></figure>
-<h4 id="4、tags"><a href="#4、tags" class="headerlink" title="4、tags"></a>4、tags</h4><p>tags用于让用户选择运行或略过playbook中的部分代码。ansible具有幂等性，因此会自动跳过没有变化的部分，即便如此，有些代码为测试其确实没有发生变化的时间依然会非常地长。此时如果确信其没有变化就可以通过tags跳过这些代码片断。</p>
-<h3 id="三、列出影响的主机"><a href="#三、列出影响的主机" class="headerlink" title="三、列出影响的主机"></a>三、列出影响的主机</h3><p>在执行一个 playbook 之前,想看看这个 playbook 的执行会影响到哪些 hosts,你可以这样做:</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ansible-playbook playbook<span class="selector-class">.yml</span> --list-hosts</div></pre></td></tr></table></figure>
-<h3 id="执行一个-playbook"><a href="#执行一个-playbook" class="headerlink" title="执行一个 playbook"></a>执行一个 playbook</h3><p>如何运行一个 playbook 呢？这很简单,这里的示例是并行的运行 playbook,并行的级别 是10</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ansible-playbook playbook<span class="selector-class">.yml</span> -f <span class="number">10</span></div></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Playbooks 是 Ansible的配置,部署,编排语言.他们可以被描述为一个需要希望远程主机执行命令的方案,或者一组IT程序运行的命令集合.&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="运维相关" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/"/>
-    
-      <category term="Ansible" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/"/>
-    
-    
-      <category term="Ansible" scheme="http://wangshengzhuang.com/tags/Ansible/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ad-hoc命令</title>
-    <link href="http://wangshengzhuang.com/2017/05/16/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/Ad-hoc%E4%B8%8E%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%A8%A1%E5%9D%97/"/>
-    <id>http://wangshengzhuang.com/2017/05/16/运维相关/Ansible/Ad-hoc与命令执行模块/</id>
-    <published>2017-05-16T15:26:47.000Z</published>
-    <updated>2017-05-23T14:01:57.134Z</updated>
-    
-    <content type="html"><![CDATA[<p>本文主要介绍了ansible的Ad-hoc命令。</p>
-<p><img src="http://image.wangshengzhuang.com/17-5-19/88214161-file_1495207716369_76e1.jpg" alt=""></p>
-<a id="more"></a>
-<p>Ansible提供两种方式去完成任务,一是 ad-hoc 命令,一是写 Ansible playbook.前者可以解决一些简单的任务, 后者解决较复杂的任务.</p>
-<p>ad-hoc 是相对于写 Ansible playbook 来说的.类似于在命令行敲入shell命令和 写shell scripts两者之间的关系。 </p>
-<p> Ad-Hoc 是指ansible下临时执行的一条命令，并且不需要保存的命令，对于复杂的命令会使用playbook。那我们会在什么情境下去使用ad-hoc 命令呢?比如说因为圣诞节要来了,想要把所有实验室的电源关闭,我们只需要执行一行命令 就可以达成这个任务,而不需要写 playbook 来做这个任务.至于说做配置管理或部署这种事,还是要借助 playbook 来完成,即使用 ‘/usr/bin/ansible-playbook’ 这个命令.</p>
-<p>Ad-hoc的执行依赖于模块，ansible官方提供了大量的模块。 如：command、raw、shell、file、cron等，具体可以通过ansible-doc -l 进行查看 。</p>
-<h3 id="一、Ad-hoc命令"><a href="#一、Ad-hoc命令" class="headerlink" title="一、Ad-hoc命令"></a>一、Ad-hoc命令</h3><h4 id="1-1、命令格式说明"><a href="#1-1、命令格式说明" class="headerlink" title="1.1、命令格式说明"></a>1.1、命令格式说明</h4><p>一个ad-hoc命令的执行，需要按以下格式进行执行：</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ansible 主机或组 -m 模块名  -<span class="selector-tag">a</span> <span class="string">'模块参数'</span>  ansible参数</div></pre></td></tr></table></figure>
-<ul>
-<li>主机和组，是在/etc/ansible/hosts 里进行指定的部分，当然动态Inventory 使用的是脚本从外部应用里获取的主机；</li>
-<li>模块名，可以通过ansible-doc -l 查看目前安装的模块，默认不指定时，使用的是command模块，具体可以查看/etc/ansible/ansible.cfg 的<code>module_name = command</code> 部分，默认模块可以在该配置文件中进行修改；</li>
-<li>模块参数，可以通过 “ansible-doc -s 模块名” 查看具体的用法及后面的参数；</li>
-<li>ansible参数，可以通过ansible命令的帮助信息里查看到，这里有很多参数可以供选择，如是否需要输入密码、是否sudo等。</li>
-</ul>
-<figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">ansible <span class="keyword">all</span> -<span class="keyword">m</span> ping</div><div class="line">ansible <span class="keyword">all</span> -<span class="keyword">m</span> <span class="keyword">command</span> -<span class="keyword">a</span> <span class="string">'uptime'</span></div><div class="line">ansible <span class="keyword">all</span> -<span class="keyword">m</span> yum -<span class="keyword">a</span> <span class="string">'name=nginx state=latest'</span></div><div class="line">ansible <span class="keyword">all</span> -<span class="keyword">m</span> service -<span class="keyword">a</span> <span class="comment">"name=nginx state=started enabled=yes“</span></div><div class="line">ansible <span class="keyword">all</span> -<span class="keyword">m</span> <span class="keyword">shell</span> -<span class="keyword">a</span> <span class="string">'systemctl status nginx'</span></div><div class="line">ansible <span class="keyword">all</span> -<span class="keyword">m</span> <span class="keyword">shell</span> -<span class="keyword">a</span> <span class="string">'systemctl list-unit-files|grep nginx'</span></div></pre></td></tr></table></figure>
-<h4 id="1-2、后台执行"><a href="#1-2、后台执行" class="headerlink" title="1.2、后台执行"></a>1.2、后台执行</h4><p>当命令执行时间比较长时，也可以放到后台执行，使用-B、-P参数，如下：</p>
-<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ansible all -B <span class="number">3600</span> -a <span class="string">"/usr/bin/long_running_operation --do-stuff"</span>   #后台执行命令<span class="number">3600</span>s，-B 表示后台执行的时间, 命令会返回一个jid</div><div class="line">ansible all -m async_status -a <span class="string">"jid=123456789"</span>  #检查任务的状态</div><div class="line">ansible all -B <span class="number">1800</span> -P <span class="number">60</span> -a <span class="string">"/usr/bin/long_running_operation --do-stuff"</span> #后台执行命令最大时间是<span class="number">1800</span>s即<span class="number">30</span>分钟，-P 每<span class="number">60</span>s检查下状态，默认<span class="number">15</span>s</div></pre></td></tr></table></figure>
-<h4 id="1-3、查看所有模块"><a href="#1-3、查看所有模块" class="headerlink" title="1.3、查看所有模块"></a>1.3、查看所有模块</h4><figure class="highlight autoit"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root<span class="symbol">@ansible</span> ~]<span class="meta"># ansible-doc -l |wc -l</span></div><div class="line"><span class="number">773</span></div></pre></td></tr></table></figure>
-<h3 id="二、使用ansible-doc-查看模块使用方法"><a href="#二、使用ansible-doc-查看模块使用方法" class="headerlink" title="二、使用ansible-doc 查看模块使用方法"></a>二、使用ansible-doc 查看模块使用方法</h3><p>可以使用ansible-doc -s module来查看某个模块的参数，也可以使用ansible-doc help module来查看该模块更详细的信息。</p>
-<figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line">[root@ansible ansible]<span class="comment"># ansible-doc command</span></div><div class="line">&gt; COMMAND</div><div class="line"></div><div class="line">  The [command] module takes <span class="keyword">the</span> command <span class="built_in">name</span> followed <span class="keyword">by</span> a <span class="built_in">list</span> <span class="keyword">of</span> <span class="literal">space</span>-delimited arguments. The <span class="keyword">given</span> command will be executed <span class="keyword">on</span> all</div><div class="line">  selected nodes. It will <span class="keyword">not</span> be processed <span class="keyword">through</span> <span class="keyword">the</span> shell, so variables like `$HOME' <span class="keyword">and</span> operations like `<span class="string">"&lt;"</span>', `<span class="string">"&gt;"</span>', `<span class="string">"|"</span>', `<span class="string">";"</span>' <span class="keyword">and</span></div><div class="line">  `<span class="string">"&amp;"</span>' will <span class="keyword">not</span> work (use <span class="keyword">the</span> [shell] module <span class="keyword">if</span> you need these features).</div><div class="line"></div><div class="line">Options (= <span class="keyword">is</span> mandatory):</div><div class="line"></div><div class="line">- chdir</div><div class="line">        cd <span class="keyword">into</span> this directory <span class="keyword">before</span> <span class="built_in">running</span> <span class="keyword">the</span> command</div><div class="line">        [Default: None]</div><div class="line">- creates</div><div class="line">        a filename <span class="keyword">or</span> (<span class="keyword">since</span> <span class="number">2.0</span>) glob pattern, when <span class="keyword">it</span> already exists, this step will *<span class="keyword">not</span>* be <span class="built_in">run</span>.</div><div class="line">        [Default: None]</div><div class="line">- executable</div><div class="line">        change <span class="keyword">the</span> shell used <span class="keyword">to</span> execute <span class="keyword">the</span> command. Should be an absolute <span class="built_in">path to</span> <span class="keyword">the</span> executable.</div><div class="line">        [Default: None]</div><div class="line">= free_form</div><div class="line">        <span class="keyword">the</span> command module takes a free form command <span class="keyword">to</span> <span class="built_in">run</span>.  There <span class="keyword">is</span> no parameter actually named 'free form'. See <span class="keyword">the</span> examples!</div><div class="line">        [Default: None]</div><div class="line">- removes</div><div class="line">        a filename <span class="keyword">or</span> (<span class="keyword">since</span> <span class="number">2.0</span>) glob pattern, when <span class="keyword">it</span> <span class="keyword">does</span> <span class="keyword">not</span> exist, this step will *<span class="keyword">not</span>* be <span class="built_in">run</span>.</div><div class="line">        [Default: None]</div><div class="line">- warn</div><div class="line">        <span class="keyword">if</span> command warnings are <span class="keyword">on</span> <span class="keyword">in</span> ansible.cfg, do <span class="keyword">not</span> warn <span class="keyword">about</span> this particular line <span class="keyword">if</span> <span class="keyword">set</span> <span class="keyword">to</span> no/<span class="literal">false</span>.</div><div class="line">        [Default: True]</div><div class="line">Notes:</div><div class="line">  * If you want <span class="keyword">to</span> <span class="built_in">run</span> a command <span class="keyword">through</span> <span class="keyword">the</span> shell (<span class="built_in">say</span> you are using `&lt;', `&gt;', `|', etc), you actually want <span class="keyword">the</span> [shell] module</div><div class="line">        instead. The [command] module <span class="keyword">is</span> much more secure <span class="keyword">as</span> <span class="keyword">it</span>'s <span class="keyword">not</span> affected <span class="keyword">by</span> <span class="keyword">the</span> user's environment.</div><div class="line">  *  `creates', `removes', <span class="keyword">and</span> `chdir' can be specified <span class="keyword">after</span> <span class="keyword">the</span> command. For instance, <span class="keyword">if</span> you only want <span class="keyword">to</span> <span class="built_in">run</span> a command <span class="keyword">if</span> a</div><div class="line">        certain <span class="built_in">file</span> <span class="keyword">does</span> <span class="keyword">not</span> exist, use this.</div><div class="line">EXAMPLES:</div><div class="line"><span class="comment"># Example from Ansible Playbooks.</span></div><div class="line">- command: /sbin/shutdown -t now</div><div class="line"></div><div class="line"><span class="comment"># Run the command if the specified file does not exist.</span></div><div class="line">- command: /usr/bin/make_database.sh arg1 arg2 creates=/path/<span class="keyword">to</span>/database</div><div class="line"></div><div class="line"><span class="comment"># You can also use the 'args' form to provide the options. This command</span></div><div class="line"><span class="comment"># will change the working directory to somedir/ and will only run when</span></div><div class="line"><span class="comment"># /path/to/database doesn't exist.</span></div><div class="line">- command: /usr/bin/make_database.sh arg1 arg2</div><div class="line">  args:</div><div class="line">    chdir: somedir/</div><div class="line">    creates: /path/<span class="keyword">to</span>/database</div></pre></td></tr></table></figure>
-<h3 id="三、命令执行模块"><a href="#三、命令执行模块" class="headerlink" title="三、命令执行模块"></a>三、命令执行模块</h3><p>命令执行模块包含如下 四个模块：</p>
-<ul>
-<li><a href="http://docs.ansible.com/command_module.html" target="_blank" rel="external">command模块</a>：该模块通过-a跟上要执行的命令可以直接执行</li>
-<li><a href="http://docs.ansible.com/shell_module.html" target="_blank" rel="external">shell 模块</a>：用法基本和command一样，不过其是通过/bin/sh进行执行，所以shell 模块可以执行任何命令，就像在本机执行一样；</li>
-<li><a href="http://docs.ansible.com/raw_module.html" target="_blank" rel="external">raw模块</a>：用法和shell 模块一样 ，其也可以执行任意命令，就像在本机执行一样；</li>
-<li><a href="http://docs.ansible.com/script_module.html" target="_blank" rel="external">script模块</a>：其是将管理端的shell 在被管理主机上执行，其原理是先将shell 复制到远程主机，再在远程主机上执行，原理类似于raw模块。</li>
-</ul>
-<p>注：raw模块和comand、shell 模块不同的是其没有chdir、creates、removes参数，chdir参数的作用就是先切到chdir指定的目录后，再执行后面的命令，这在后面很多模块里都会有该参数 。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;本文主要介绍了ansible的Ad-hoc命令。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://image.wangshengzhuang.com/17-5-19/88214161-file_1495207716369_76e1.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="运维相关" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/"/>
-    
-      <category term="Ansible" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/"/>
-    
-    
-      <category term="Ansible" scheme="http://wangshengzhuang.com/tags/Ansible/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Ansible参数配置文件ansible.cfg</title>
-    <link href="http://wangshengzhuang.com/2017/05/15/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/Ansible%E5%8F%82%E6%95%B0%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6ansible.cfg/"/>
-    <id>http://wangshengzhuang.com/2017/05/15/运维相关/Ansible/Ansible参数配置文件ansible.cfg/</id>
-    <published>2017-05-15T15:26:47.000Z</published>
-    <updated>2017-05-23T14:01:46.251Z</updated>
-    
-    <content type="html"><![CDATA[<p>Ansible默认安装好后有一个配置文件/etc/ansible/ansible.cfg，该配置文件中定义了ansible的主机的默认配置部分，如默认是否需要输入密码、是否开启sudo认证、action_plugins插件的位置、hosts主机组的位置、是否开启log功能、默认端口、key文件位置等等。</p>
-<a id="more"></a>
-<p>Ansible的一些的设置可以通过配置文件完成.在大多数场景下默认的配置就能满足大多数用户的需求,在一些特殊场景下,用户还是需要自行修改这些配置文件。</p>
-<p>用户可以修改一下配置文件来修改设置,他们的被读取的顺序如下:</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="bullet">* </span>ANSIBLE_CONFIG (一个环境变量)</div><div class="line"><span class="bullet">* </span>ansible.cfg (位于当前目录中)</div><div class="line"><span class="bullet">* </span>.ansible.cfg (位于家目录中)</div><div class="line"><span class="bullet">* </span>/etc/ansible/ansible.cfg</div></pre></td></tr></table></figure>
-<p>Ansible 将会按以上顺序逐个查询这些文件,直到找到一个为止,并且使用第一个寻找到个配置文件的配置,这些配置将不会被叠加.</p>
-<h4 id="ask-pass"><a href="#ask-pass" class="headerlink" title="ask_pass"></a><a href="http://www.ansible.com.cn/docs/intro_configuration.html#id63" target="_blank" rel="external">ask_pass</a></h4><ul>
-<li><p>这个可以控制,Ansible 剧本playbook 是否会自动默认弹出弹出密码.默认为no::</p>
-<p>ask_pass=True</p>
-</li>
-</ul>
-<p>如果使用SSH 密钥匙做身份认证.可能需要修改这一参数</p>
-<h4 id="ask-sudo-pass"><a href="#ask-sudo-pass" class="headerlink" title="ask_sudo_pass"></a><a href="http://www.ansible.com.cn/docs/intro_configuration.html#id64" target="_blank" rel="external">ask_sudo_pass</a></h4><p>类似 ask_pass,用来控制Ansible playbook 在执行sudo之前是否询问sudo密码.默认为no:</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attr">ask_sudo_pass</span>=<span class="literal">True</span></div></pre></td></tr></table></figure>
-<p>如果用户使用的系统平台开启了sudo 密码的话,应该开绿这一参数</p>
-<h4 id="forks"><a href="#forks" class="headerlink" title="forks"></a><a href="http://www.ansible.com.cn/docs/intro_configuration.html#id76" target="_blank" rel="external">forks</a></h4><p>这个选项设置在与主机通信时的默认并行进程数.从Ansible 1.3开始,fork数量默认自动设置为主机数量或者潜在的主机数量, 这将直接控制有多少网络资源活着cpu可以被使用.很多用户把这个设置为50,有些设置为500或者更多.如果你有很多的主机, 高数值将会使得跨主机行为变快.默认值比较保守:</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attr">_forks</span>=<span class="number">5</span></div></pre></td></tr></table></figure>
-<h4 id="gathering"><a href="#gathering" class="headerlink" title="gathering"></a><a href="http://www.ansible.com.cn/docs/intro_configuration.html#id77" target="_blank" rel="external">gathering</a></h4><p>1.6版本中的新特性,这个设置控制默认facts收集（远程系统变量）. 默认值为’implicit’, 每一次play,facts都会被手机,除非设置’gather_facts: False’. 选项‘explicit’正好相反,facts不会被收集,直到play中需要. ‘smart’选项意思是,没有facts的新hosts将不会被扫描, 但是如果同样一个主机,在不同的plays里面被记录地址,在playbook运行中将不会通信.这个选项当有需求节省fact收集时比较有用.</p>
-<h4 id="inventory"><a href="#inventory" class="headerlink" title="inventory"></a><a href="http://www.ansible.com.cn/docs/intro_configuration.html#id81" target="_blank" rel="external">inventory</a></h4><p>这个事默认库文件位置,脚本,或者存放可通信主机的目录:</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attr">inventory</span> = /etc/ansible/hosts</div></pre></td></tr></table></figure>
-<h4 id="log-path"><a href="#log-path" class="headerlink" title="log_path"></a><a href="http://www.ansible.com.cn/docs/intro_configuration.html#id84" target="_blank" rel="external">log_path</a></h4><p>如果出现在ansible.cfg文件中.Ansible 将会在选定的位置登陆执行信息.请留意用户运行的Ansible对于logfile有权限:</p>
-<figure class="highlight lasso"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">log_path=/<span class="built_in">var</span>/<span class="keyword">log</span>/ansible.<span class="keyword">log</span></div></pre></td></tr></table></figure>
-<p>这个特性不是默认开启的.如果不设置,ansible将会吧模块加载纪录在系统日志系统中.不包含用密码.</p>
-<p>对于需要了解更多日志系统的企业及用户,你也许对:doc:tower 感兴趣.</p>
-<h4 id="module-name"><a href="#module-name" class="headerlink" title="module_name"></a><a href="http://www.ansible.com.cn/docs/intro_configuration.html#id87" target="_blank" rel="external">module_name</a></h4><p>这个是/usr/bin/ansible的默认模块名（-m）. 默认是’command’模块. 之前提到过,command模块不支持shell变量,管道,配额. 所以也许你希望把这个参数改为’shell’:</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attr">module_name</span> = command</div></pre></td></tr></table></figure>
-<h4 id="poll-interval"><a href="#poll-interval" class="headerlink" title="poll_interval"></a><a href="http://www.ansible.com.cn/docs/intro_configuration.html#id91" target="_blank" rel="external">poll_interval</a></h4><p>对于Ansible中的异步任务(详见 <a href="http://www.ansible.com.cn/docs/playbooks_async.html" target="_blank" rel="external"><em>异步操作和轮询</em></a>）, 这个是设置定义,当具体的poll interval 没有定义时,多少时间回查一下这些任务的状态, 默认值是一个折中选择15秒钟.这个时间是个回查频率和任务完成叫回频率和当任务完成时的回转频率的这种:</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attr">poll_interval</span>=<span class="number">15</span></div></pre></td></tr></table></figure>
-<h4 id="private-key-file"><a href="#private-key-file" class="headerlink" title="private_key_file"></a><a href="http://www.ansible.com.cn/docs/intro_configuration.html#id92" target="_blank" rel="external">private_key_file</a></h4><p>如果你是用pem密钥文件而不是SSH 客户端或秘密啊认证的话,你可以设置这里的默认值,来避免每一次提醒设置密钥文件位置<code>–ansible-private-keyfile</code>:</p>
-<figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">private_key_file=/path/<span class="keyword">to</span>/<span class="built_in">file</span>.pem</div></pre></td></tr></table></figure>
-<h4 id="remote-port"><a href="#remote-port" class="headerlink" title="remote_port"></a><a href="http://www.ansible.com.cn/docs/intro_configuration.html#id93" target="_blank" rel="external">remote_port</a></h4><p>这个设置是你系统默认的远程SSH端口,如果不指定,默认为22号端口:</p>
-<figure class="highlight basic"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">remote_port = 22</span></div></pre></td></tr></table></figure>
-<h4 id="remote-tmp"><a href="#remote-tmp" class="headerlink" title="remote_tmp"></a><a href="http://www.ansible.com.cn/docs/intro_configuration.html#id94" target="_blank" rel="external">remote_tmp</a></h4><p>Ansible 通过远程传输模块到远程主机,然后远程执行,执行后在清理现场.在有些场景下,你也许想使用默认路径希望像更换补丁一样使用, 这时候你可以使用这个选项.:</p>
-<figure class="highlight basic"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">remote_tmp = $HOME/.ansible/tmp</span></div></pre></td></tr></table></figure>
-<p>默认路径是在用户家目录下属的目录.Ansible 会在这个目录中使用一个随机的文件夹名称.</p>
-<h4 id="remote-user"><a href="#remote-user" class="headerlink" title="remote_user"></a><a href="http://www.ansible.com.cn/docs/intro_configuration.html#id95" target="_blank" rel="external">remote_user</a></h4><p>这是个ansible使用/usr/bin/ansible-playbook链接的默认用户名. 注意如果不指定,/usr/bin/ansible默认使用当前用户名称:</p>
-<figure class="highlight basic"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">remote_user = root</span></div></pre></td></tr></table></figure>
-<h4 id="roles-path"><a href="#roles-path" class="headerlink" title="roles_path"></a><a href="http://www.ansible.com.cn/docs/intro_configuration.html#id96" target="_blank" rel="external">roles_path</a></h4><p>roles 路径指的是’roles/’下的额外目录,用于playbook搜索Ansible roles.比如, 如果我们有个用于common roles源代码控制仓库和一个不同的 playbooks仓库,你也许会建立一个惯例去在 /opt/mysite/roles 里面查找roles.:</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attr">roles_path</span> = /opt/mysite/roles</div></pre></td></tr></table></figure>
-<p>多余的路径可以用冒号分隔,类似于其他path字符串:</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">roles_path = <span class="regexp">/opt/my</span>site<span class="regexp">/roles:/</span>opt<span class="regexp">/othersite/</span>roles</div></pre></td></tr></table></figure>
-<p>Roles将会在playbook目录中开始搜索.如果role没有找到,这个参数指定了其它可能的搜索路径.</p>
-<h4 id="sudo-user"><a href="#sudo-user" class="headerlink" title="sudo_user"></a><a href="http://www.ansible.com.cn/docs/intro_configuration.html#id99" target="_blank" rel="external">sudo_user</a></h4><p>这个是sudo使用的默认用户,如果<code>–sudo-user</code> 没有特指或者’sudo_user’ 在Ansible playbooks中没有特指,在大多数的逻辑中 默认为: ‘root’</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attr">sudo_user</span>=root</div></pre></td></tr></table></figure>
-<h4 id="timeout"><a href="#timeout" class="headerlink" title="timeout"></a><a href="http://www.ansible.com.cn/docs/intro_configuration.html#id101" target="_blank" rel="external">timeout</a></h4><p>这个事默认SSH链接尝试超市时间:</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attr">timeout</span> = <span class="number">10</span></div></pre></td></tr></table></figure>
-<h4 id="vault-password-file"><a href="#vault-password-file" class="headerlink" title="vault_password_file"></a><a href="http://www.ansible.com.cn/docs/intro_configuration.html#id104" target="_blank" rel="external">vault_password_file</a></h4><p>New in version 1.7.</p>
-<p>这个用来设置密码文件,也可以通过命令行指定<code>–vault-password-file</code>:</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attr">vault_password_file</span> = /path/to/vault_password_file</div></pre></td></tr></table></figure>
-<p>在1.7版本中,这个文件也可以称为一个脚本的形式.如果你使用脚本而不是单纯文件的话,请确保它可以执行并且密码可以在标准输出上打印出来.如果你的脚本需要提示请求数据,请求将会发到标准错误输出中.</p>
-<h4 id="record-host-keys"><a href="#record-host-keys" class="headerlink" title="record_host_keys"></a><a href="http://www.ansible.com.cn/docs/intro_configuration.html#id106" target="_blank" rel="external">record_host_keys</a></h4><p>默认设置会记录并验证通过在用户hostfile中新发现的的主机（如果host key checking 被激活的话）. 这个选项在有很多主机的时候将会性能很差.在 这种情况下,建议使用SSH传输代替. 当设置为False时, 性能将会提升,在hostkey checking 被禁用时候,建议使用.:</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attr">record_host_keys</span>=<span class="literal">True</span></div></pre></td></tr></table></figure>
-<h4 id="host-key-checking"><a href="#host-key-checking" class="headerlink" title="host_key_checking"></a><a href="http://www.ansible.com.cn/docs/intro_configuration.html#id80" target="_blank" rel="external">host_key_checking</a></h4><p>如果有台被管节点重新安装系统并在known_hosts中有了与之前不同的密钥信息，就会提示一个密钥不匹配的错误信息，直到被纠正为止，在使用Ansible时，如果有台被管理节点没有在known_hosts中被初始化，将会在使用Ansible或定时执行Ansible时提示对key信息的确认。如果你不想出现这种情况，并且你明白禁用此项行为的含义，只要修改该参数为False即可 </p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attr">host_key_checking</span>=<span class="literal">True</span></div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Ansible默认安装好后有一个配置文件/etc/ansible/ansible.cfg，该配置文件中定义了ansible的主机的默认配置部分，如默认是否需要输入密码、是否开启sudo认证、action_plugins插件的位置、hosts主机组的位置、是否开启log功能、默认端口、key文件位置等等。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="运维相关" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/"/>
-    
-      <category term="Ansible" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/"/>
-    
-    
-      <category term="Ansible" scheme="http://wangshengzhuang.com/tags/Ansible/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Ansible主机清单Inventory文件hosts</title>
-    <link href="http://wangshengzhuang.com/2017/05/14/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/Ansible%E4%B8%BB%E6%9C%BA%E6%B8%85%E5%8D%95Inventory%E6%96%87%E4%BB%B6hosts/"/>
-    <id>http://wangshengzhuang.com/2017/05/14/运维相关/Ansible/Ansible主机清单Inventory文件hosts/</id>
-    <published>2017-05-14T15:26:47.000Z</published>
-    <updated>2017-05-23T14:01:33.718Z</updated>
-    
-    <content type="html"><![CDATA[<p>Ansible 通过读取默认的主机清单配置,可以同时连接到多个远程主机上执行任务组和主机之间的关系通过 inventory 文件配置. 默认的文件路径为 /etc/ansible/hosts。默认路径可以通过修改 ansible.cfg 的 hostfile 参数指定路径。</p>
-<a id="more"></a>
-<p>除默认文件外,你还可以同时使用多个 inventory 文件(后面会讲到),也可以从动态源,或云上拉取 inventory 配置信息.详见 <a href="http://www.ansible.com.cn/docs/intro_dynamic_inventory.html" target="_blank" rel="external"><em>动态 Inventory</em></a>.</p>
-<h2 id="1-主机与组"><a href="#1-主机与组" class="headerlink" title="1.主机与组"></a><a href="http://www.ansible.com.cn/docs/intro_inventory.html#id8" target="_blank" rel="external">1.主机与组</a></h2><p>/etc/ansible/hosts 文件的格式与windows的ini配置文件类似:</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">mail<span class="selector-class">.example</span><span class="selector-class">.com</span></div><div class="line"></div><div class="line">[webservers]</div><div class="line">foo<span class="selector-class">.example</span><span class="selector-class">.com</span></div><div class="line">bar<span class="selector-class">.example</span><span class="selector-class">.com</span></div><div class="line"></div><div class="line">[dbservers]</div><div class="line">one<span class="selector-class">.example</span><span class="selector-class">.com</span></div><div class="line">two<span class="selector-class">.example</span><span class="selector-class">.com</span></div><div class="line">three<span class="selector-class">.example</span><span class="selector-class">.com</span></div></pre></td></tr></table></figure>
-<ol>
-<li>方括号[]中是组名,用于对系统进行分类,便于对不同系统进行个别的管理.可以根据自己的需求将庞大的主机分成具有标识的组，如上面分了两个组webservers和dbservers组；</li>
-<li>一个主机可以属于不同的组,比如一台服务器可以同时属于 webserver组 和 dbserver组.这时属于两个组的变量都可以为这台主机所用,</li>
-<li>如果有主机的SSH端口不是标准的22端口,可在主机名之后加上端口号,用冒号分隔.</li>
-</ol>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">badwolf</span><span class="selector-class">.example</span><span class="selector-class">.com</span><span class="selector-pseudo">:5309</span></div></pre></td></tr></table></figure>
-<p> 4.假设你有一些静态IP地址,希望设置一些别名,但不是在系统的 host 文件中设置,那么可以设置如下:</p>
-<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">jumper ansible_ssh_port=<span class="number">5555</span> ansible_ssh_host=<span class="number">192.168</span><span class="number">.1</span><span class="number">.50</span></div></pre></td></tr></table></figure>
-<ol>
-<li>可以按照范围指定主机，一组相似的 hostname , 可简写如下:</li>
-</ol>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="selector-attr">[webservers]</span></div><div class="line"><span class="selector-tag">www</span><span class="selector-attr">[01:50]</span><span class="selector-class">.example</span><span class="selector-class">.com</span></div><div class="line"></div><div class="line"><span class="selector-attr">[databases]</span></div><div class="line"><span class="selector-tag">db-</span><span class="selector-attr">[a:f]</span><span class="selector-class">.example</span><span class="selector-class">.com</span></div></pre></td></tr></table></figure>
-<h2 id="2-主机变量"><a href="#2-主机变量" class="headerlink" title="2.主机变量"></a><a href="http://www.ansible.com.cn/docs/intro_inventory.html#id9" target="_blank" rel="external">2.主机变量</a></h2><p>前面已经提到过,分配变量给主机很容易做到,这些变量定义后可在 playbooks 中使用:</p>
-<p>对于每一个 host,你还可以选择连接类型和连接用户名:</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[targets]</div><div class="line"></div><div class="line">localhost              ansible_connection=local</div><div class="line">other1<span class="selector-class">.example</span><span class="selector-class">.com</span>     ansible_connection=ssh        ansible_ssh_user=mpdehaan</div><div class="line">other2<span class="selector-class">.example</span><span class="selector-class">.com</span>     ansible_connection=ssh        ansible_ssh_user=mdehaan</div></pre></td></tr></table></figure>
-<p>定义其他变量</p>
-<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[atlanta]</div><div class="line">host1 http_port=<span class="number">80</span>  maxRequestsPerChild=<span class="number">808</span></div><div class="line">host2 http_port=<span class="number">303</span> maxRequestsPerChild=<span class="number">909</span></div></pre></td></tr></table></figure>
-<h2 id="3-组的变量"><a href="#3-组的变量" class="headerlink" title="3.组的变量"></a><a href="http://www.ansible.com.cn/docs/intro_inventory.html#id10" target="_blank" rel="external">3.组的变量</a></h2><p>也可以定义属于整个组的变量，应用到组内的所有成员：</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[atlanta]</div><div class="line">host1</div><div class="line">host2</div><div class="line"></div><div class="line">[atlanta:vars]</div><div class="line">ntp_server=ntp<span class="selector-class">.atlanta</span><span class="selector-class">.example</span><span class="selector-class">.com</span></div><div class="line">proxy=proxy<span class="selector-class">.atlanta</span><span class="selector-class">.example</span><span class="selector-class">.com</span></div></pre></td></tr></table></figure>
-<p>上面atlanta组中包含两台主机，通过对atlanta组指定vars变更，相应的host1和host2相当于相应的指定了ntp_server和proxy变量参数值 。</p>
-<h2 id="4-把一个组作为另一个组的子成员"><a href="#4-把一个组作为另一个组的子成员" class="headerlink" title="4.把一个组作为另一个组的子成员"></a><a href="http://www.ansible.com.cn/docs/intro_inventory.html#id11" target="_blank" rel="external">4.把一个组作为另一个组的子成员</a></h2><p>可以把一个组作为另一个组的子成员,以及分配变量给整个组使用. 这些变量可以给 /usr/bin/ansible-playbook 使用,但不能给 /usr/bin/ansible 使用:</p>
-<figure class="highlight makefile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">[atlanta]</div><div class="line">host1</div><div class="line">host2</div><div class="line"></div><div class="line">[raleigh]</div><div class="line">host2</div><div class="line">host3</div><div class="line"></div><div class="line"><span class="section">[southeast:children]</span></div><div class="line">atlanta</div><div class="line">raleigh</div><div class="line"></div><div class="line"><span class="section">[southeast:vars]</span></div><div class="line">some_server=foo.southeast.example.com</div><div class="line">halon_system_timeout=30</div><div class="line">self_destruct_countdown=60</div><div class="line">escape_pods=2</div><div class="line"></div><div class="line"><span class="section">[usa:children]</span></div><div class="line">southeast</div><div class="line">northeast</div><div class="line">southwest</div><div class="line">northwest</div></pre></td></tr></table></figure>
-<h2 id="5、分文件定义-Host-和-Group-变量"><a href="#5、分文件定义-Host-和-Group-变量" class="headerlink" title="5、分文件定义 Host 和 Group 变量"></a><a href="http://www.ansible.com.cn/docs/intro_inventory.html#id12" target="_blank" rel="external">5、分文件定义 Host 和 Group 变量</a></h2><p>在 inventory 主文件中保存所有的变量并不是最佳的方式.还可以保存在独立的文件中,这些独立文件与 inventory 文件保持关联. 不同于 inventory 文件(INI 格式),这些独立文件的格式为 YAML.详见 <a href="http://www.ansible.com.cn/docs/YAMLSyntax.html" target="_blank" rel="external"><em>YAML 语法</em></a> .</p>
-<p>假设 inventory 文件的路径为:</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="regexp">/etc/</span>ansible<span class="regexp">/hosts</span></div></pre></td></tr></table></figure>
-<p>假设有一个主机名为 ‘foosball’, 主机同时属于两个组,一个是 ‘raleigh’, 另一个是 ‘webservers’. 那么以下配置文件(YAML 格式)中的变量可以为 ‘foosball’ 主机所用.依次为 ‘raleigh’ 的组变量,’webservers’ 的组变量,’foosball’ 的主机变量:</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="regexp">/etc/</span>ansible<span class="regexp">/group_vars/</span>raleigh</div><div class="line"><span class="regexp">/etc/</span>ansible<span class="regexp">/group_vars/</span>webservers</div><div class="line"><span class="regexp">/etc/</span>ansible<span class="regexp">/host_vars/</span>foosball</div></pre></td></tr></table></figure>
-<h2 id="6-Inventory-参数的说明"><a href="#6-Inventory-参数的说明" class="headerlink" title="6.Inventory 参数的说明"></a><a href="http://www.ansible.com.cn/docs/intro_inventory.html#id13" target="_blank" rel="external">6.Inventory 参数的说明</a></h2><p>如同前面提到的,通过设置下面的参数,可以控制 ansible 与远程主机的交互方式,其中一些我们已经讲到过:</p>
-<figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">ansible_ssh_host</div><div class="line">      将要连接的远程主机名.与你想要设定的主机的别名不同的话,可通过此变量设置.</div><div class="line"></div><div class="line">ansible_ssh_port</div><div class="line">      ssh端口号.如果不是默认的端口号,通过此变量设置.</div><div class="line"></div><div class="line">ansible_ssh_user</div><div class="line">      默认的 ssh 用户名</div><div class="line"></div><div class="line">ansible_ssh_pass</div><div class="line">      ssh 密码(这种方式并不安全,我们强烈建议使用 --ask-pass 或 SSH 密钥)</div><div class="line"></div><div class="line">ansible_sudo_pass</div><div class="line">      sudo 密码(这种方式并不安全,我们强烈建议使用 --ask-sudo-pass)</div><div class="line"></div><div class="line">ansible_sudo_exe (<span class="keyword">new</span> in <span class="keyword">version</span> <span class="number">1.8</span>)</div><div class="line">      sudo 命令路径(适用于<span class="number">1.8</span>及以上版本)</div><div class="line"></div><div class="line">ansible_connection</div><div class="line">      与主机的连接类型.比如:local, ssh 或者 paramiko. Ansible <span class="number">1.2</span> 以前默认使用 paramiko.<span class="number">1.2</span> 以后默认使用 <span class="string">'smart'</span>,<span class="string">'smart'</span> 方式会根据是否支持 ControlPersist, 来判断<span class="string">'ssh'</span> 方式是否可行.</div><div class="line"></div><div class="line">ansible_ssh_private_key_file</div><div class="line">      ssh 使用的私钥文件.适用于有多个密钥,而你不想使用 SSH 代理的情况.</div><div class="line"></div><div class="line">ansible_shell_type</div><div class="line">      目标系统的<span class="keyword">shell</span>类型.默认情况下,命令的执行使用 <span class="string">'sh'</span> 语法,可设置为 <span class="string">'csh'</span> 或 <span class="string">'fish'</span>.</div><div class="line"></div><div class="line">ansible_python_interpreter</div><div class="line">      目标主机的 <span class="keyword">python</span> 路径.适用于的情况: 系统中有多个 Python, 或者命令路径不是<span class="string">"/usr/bin/python"</span>,比如  \*BSD, 或者 /usr/bin/<span class="keyword">python</span></div><div class="line">      不是 <span class="number">2</span>.<span class="keyword">X</span> 版本的 Python.我们不使用 <span class="string">"/usr/bin/env"</span> 机制,因为这要求远程用户的路径设置正确,且要求 <span class="string">"python"</span> 可执行程序名不可为 <span class="keyword">python</span>以外的名字(实际有可能名为python26).</div><div class="line"></div><div class="line">      与 ansible_python_interpreter 的工作方式相同,可设定如 <span class="keyword">ruby</span> 或 <span class="keyword">perl</span> 的路径....</div></pre></td></tr></table></figure>
-<h2 id="7-一个主机文件的例子"><a href="#7-一个主机文件的例子" class="headerlink" title="7.一个主机文件的例子:"></a>7.一个主机文件的例子:</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> This is the default ansible <span class="string">'hosts'</span> file.</span></div><div class="line"><span class="meta">#</span><span class="bash"></span></div><div class="line"><span class="meta">#</span><span class="bash"> It should live <span class="keyword">in</span> /etc/ansible/hosts</span></div><div class="line"><span class="meta">#</span><span class="bash"></span></div><div class="line"><span class="meta">#</span><span class="bash">   - Comments begin with the <span class="string">'#'</span> character</span></div><div class="line"><span class="meta">#</span><span class="bash">   - Blank lines are ignored</span></div><div class="line"><span class="meta">#</span><span class="bash">   - Groups of hosts are delimited by [header] elements</span></div><div class="line"><span class="meta">#</span><span class="bash">   - You can enter hostnames or ip addresses</span></div><div class="line"><span class="meta">#</span><span class="bash">   - A hostname/ip can be a member of multiple groups</span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"> Ex 1: Ungrouped hosts, specify before any group headers.</span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"><span class="comment"># green.example.com</span></span></div><div class="line"><span class="meta">#</span><span class="bash"><span class="comment"># blue.example.com</span></span></div><div class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 192.168.100.1</span></span></div><div class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 192.168.100.10</span></span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"> Ex 2: A collection of hosts belonging to the <span class="string">'webservers'</span> group</span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"><span class="comment"># [webservers]</span></span></div><div class="line"><span class="meta">#</span><span class="bash"><span class="comment"># alpha.example.org</span></span></div><div class="line"><span class="meta">#</span><span class="bash"><span class="comment"># beta.example.org</span></span></div><div class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 192.168.1.100</span></span></div><div class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 192.168.1.110</span></span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"> If you have multiple hosts following a pattern you can specify</span></div><div class="line"><span class="meta">#</span><span class="bash"> them like this:</span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"><span class="comment"># www[001:006].example.com</span></span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"> Ex 3: A collection of database servers <span class="keyword">in</span> the <span class="string">'dbservers'</span> group</span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"><span class="comment"># [dbservers]</span></span></div><div class="line"><span class="meta">#</span><span class="bash"><span class="comment"># </span></span></div><div class="line"><span class="meta">#</span><span class="bash"><span class="comment"># db01.intranet.mydomain.net</span></span></div><div class="line"><span class="meta">#</span><span class="bash"><span class="comment"># db02.intranet.mydomain.net</span></span></div><div class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 10.25.1.56</span></span></div><div class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 10.25.1.57</span></span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"> Here<span class="string">'s another example of host ranges, this time there are no</span></span></div><div class="line"><span class="meta">#</span><span class="bash"><span class="string"> leading 0s:</span></span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"><span class="string"># db-[99:101]-node.example.com</span></span></div></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Ansible 通过读取默认的主机清单配置,可以同时连接到多个远程主机上执行任务组和主机之间的关系通过 inventory 文件配置. 默认的文件路径为 /etc/ansible/hosts。默认路径可以通过修改 ansible.cfg 的 hostfile 参数指定路径。&lt;/p&gt;
     
     </summary>
     
