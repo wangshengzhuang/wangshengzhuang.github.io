@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wangshengzhuang.com/"/>
-  <updated>2017-07-03T14:32:21.030Z</updated>
+  <updated>2017-08-20T15:16:11.166Z</updated>
   <id>http://wangshengzhuang.com/</id>
   
   <author>
@@ -14,6 +14,182 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>sysctl.conf禁用ipv6导致nfs无法启动的问题解决</title>
+    <link href="http://wangshengzhuang.com/2017/06/08/Linux/Linux%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/sysctl.conf%E7%A6%81%E7%94%A8ipv6%E5%AF%BC%E8%87%B4nfs%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E7%9A%84%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/"/>
+    <id>http://wangshengzhuang.com/2017/06/08/Linux/Linux问题解决/sysctl.conf禁用ipv6导致nfs无法启动的问题解决/</id>
+    <published>2017-06-07T16:00:00.000Z</published>
+    <updated>2017-08-20T15:16:11.166Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="rpcbind-socket-failed-to-listen-on-sockets-Address-family-not-supported-by-protocol"><a href="#rpcbind-socket-failed-to-listen-on-sockets-Address-family-not-supported-by-protocol" class="headerlink" title="rpcbind.socket failed to listen on sockets: Address family not supported by protocol"></a><a href="http://www.golinuxhub.com/2017/06/rpcbindsocket-failed-to-listen-on.html" target="_blank" rel="external">rpcbind.socket failed to listen on sockets: Address family not supported by protocol</a></h3><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>虚拟机模板禁用了ipv6，创建了虚拟机<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[root@centos7 ~]# <span class="keyword">cat</span> /etc/sysctl.<span class="keyword">conf</span> </div><div class="line"># System default settings live <span class="keyword">in</span> /usr/lib/sysctl.<span class="keyword">d</span>/00-system.<span class="keyword">conf</span>.</div><div class="line"># To override those settings, enter new settings here, or <span class="keyword">in</span> <span class="keyword">an</span> /etc/sysctl.<span class="keyword">d</span>/&lt;name&gt;.<span class="keyword">conf</span> <span class="keyword">file</span></div><div class="line">#</div><div class="line"># <span class="keyword">For</span> <span class="keyword">more</span> information, see sysctl.<span class="keyword">conf</span>(5) and sysctl.<span class="built_in">d</span>(5).</div><div class="line"><span class="keyword">net</span>.ipv6.<span class="keyword">conf</span>.all.disable_ipv6 =1</div><div class="line"><span class="keyword">net</span>.ipv6.<span class="keyword">conf</span>.default.disable_ipv6 =1</div></pre></td></tr></table></figure></p>
+<p>启动nfs报错，报错如下</p>
+<h3 id="Error"><a href="#Error" class="headerlink" title="Error:"></a>Error:</h3><p>rpcbind service fails to start with below error message in /var/log/messages</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">rpcbind.socket failed <span class="keyword">to</span> listen <span class="keyword">on</span> sockets: Address family <span class="keyword">not</span> support</div><div class="line">ed <span class="keyword">by</span> protocol</div></pre></td></tr></table></figure>
+<p>I got this error the other day while working on Red Hat Enterprise Linux 7.3 and after digging for a while I got to know there is a sort of a BUG in RHEL 7.3.</p>
+<h3 id="Analysis"><a href="#Analysis" class="headerlink" title="Analysis:"></a>Analysis:</h3><p>I found a BUG reported for this issue and I was facing the exact one.</p>
+<p><a href="https://bugzilla.redhat.com/show_bug.cgi?id=1402961" target="_blank" rel="external">https://bugzilla.redhat.com/show_bug.cgi?id=1402961</a></p>
+<p>As explained by one of the engineers on the above page</p>
+<figure class="highlight mizar"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">"The problem <span class="keyword">is</span> <span class="keyword">that</span> if you disable ipv6 n sysctl.conf, it <span class="keyword">is</span> <span class="keyword">not</span> disabled <span class="keyword">from</span> the beginning <span class="keyword">of</span> the boot, but actually quite late <span class="keyword">in</span> the boot process. Meanwhile systemd found out <span class="keyword">that</span> ipv6 <span class="keyword">is</span> enabled <span class="keyword">and</span> scheduled a start <span class="keyword">of</span> a socket, <span class="keyword">that</span> would listen on ipv6."</div></pre></td></tr></table></figure>
+<p>Just to summarise if you have disabled ipv6 using your sysctl configurations then it is disabled only on kernel level but not via GRUB so it is not disabled completely hence systemd will attempt to make a connection on port 111 on any ipv6 address, [::]:111 during the boot up.</p>
+<p>To know more on how to disable ipv6 follow below link</p>
+<p>How to disable or enable ipv6 in Linux</p>
+<h3 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法:"></a>解决办法:</h3><p> /etc/sysctl.conf</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">net<span class="selector-class">.ipv6</span><span class="selector-class">.conf</span><span class="selector-class">.all</span><span class="selector-class">.disable_ipv6</span> = <span class="number">1</span></div></pre></td></tr></table></figure>
+<p>grub级别禁用ipv6</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#</span><span class="bash"> dracut -v <span class="_">-f</span></span></div><div class="line"><span class="meta">#</span><span class="bash"> systemctl start rpcbind</span></div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;rpcbind-socket-failed-to-listen-on-sockets-Address-family-not-supported-by-protocol&quot;&gt;&lt;a href=&quot;#rpcbind-socket-failed-to-listen-on-so
+    
+    </summary>
+    
+      <category term="Linux" scheme="http://wangshengzhuang.com/categories/Linux/"/>
+    
+      <category term="Linux问题解决" scheme="http://wangshengzhuang.com/categories/Linux/Linux%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/"/>
+    
+    
+      <category term="Linux" scheme="http://wangshengzhuang.com/tags/Linux/"/>
+    
+      <category term="NFS" scheme="http://wangshengzhuang.com/tags/NFS/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>CentOS7安装配置 NFS</title>
+    <link href="http://wangshengzhuang.com/2017/06/07/Linux/Linux%E5%9F%BA%E7%A1%80/CentOS%207%20%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%20NFS/"/>
+    <id>http://wangshengzhuang.com/2017/06/07/Linux/Linux基础/CentOS 7 安装配置 NFS/</id>
+    <published>2017-06-06T16:00:00.000Z</published>
+    <updated>2017-08-20T14:54:42.829Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="一、NFS-简介"><a href="#一、NFS-简介" class="headerlink" title="一、NFS  简介"></a>一、NFS  简介</h1><p>NFS（Network File System）即网络文件系统，它允许网络中的计算机之间通过TCP/IP网络共享资源。在NFS的应用中，本地NFS的客户端应用可以透明地读写位于远端NFS服务器上的文件，就像访问本地文件一样。</p>
+<p><img src="http://image.wangshengzhuang.com/17-8-7/50203549.jpg" alt=""></p>
+<a id="more"></a>
+<h2 id="1-1-nfs为什么需要RPC"><a href="#1-1-nfs为什么需要RPC" class="headerlink" title="1.1 nfs为什么需要RPC?"></a>1.1 nfs为什么需要RPC?</h2><p>RPC（NFS服务需要依赖RPC服务，这个比较重要） 要想了解NFS，必然要提到RPC这个服务。 因为NFS支持的功能还是比较多的，并且不同的功能都会使用不同的程序来启动。每启动一个功能就会启用一些端口来传输数据，因此NFS的功能所对应的端口才没有固定，而是采用随机取用一些未被使用的小于1024的端口来作为传输之用。但如此一来又造成客户端要连接服务器时的困扰，因为客户端要知道服务器端的相关端口才能够联机，此时我们需要远程过程调用（RPC）的服务。 RPC最主要的功能就是指定每个NFS功能所对应的端口号，并且回报给客户端，让客户端可以连接到正确的端口上。当服务器在启动NFS时会随机选用数个端口，并主动地向RPC注册。因此RPC可以知道每个端口对应的NFS功能。然后RPC固定使用端口111来监听客户端的请求并回报客户端正确的端口，所以可以让NFS的启动更为容易。 注意，启动NFS之前，要先启动RPC服务；否则NFS无法向RPC注册。另外，重新启动RPC时原本注册的数据会不见，因此RPC重新启动后它管理的所有程序都需要重新启动以重新向RPC注册，比如NFS服务。</p>
+<p>其实，我们可以简单的理解为：NFS当作RPC服务中的一种，同时将RPC服务当作NFS服务器与NFS客户端的中间接口人，就是说NFS客户端访问NFS服务器，必须经过RPC这个接口人，才可以去访问。</p>
+<h2 id="1-2-NFS的工作流程"><a href="#1-2-NFS的工作流程" class="headerlink" title="1.2 NFS的工作流程"></a>1.2 NFS的工作流程</h2><p>1、由程序在NFS客户端发起存取文件的请求，客户端本地的RPC(rpcbind)服务会通过网络向NFS服务端的RPC的111端口发出文件存取功能的请求。`</p>
+<p>2、NFS服务端的RPC找到对应已注册的NFS端口，通知客户端RPC服务。</p>
+<p>3、客户端获取正确的端口，并与NFS daemon联机存取数据。</p>
+<p>4、存取数据成功后，返回前端访问程序，完成一次存取操作。</p>
+<h1 id="二、NFS服务安装配置"><a href="#二、NFS服务安装配置" class="headerlink" title="二、NFS服务安装配置"></a>二、NFS服务安装配置</h1><p>安装rpcbind、nfs-utils</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum <span class="keyword">install</span>  rpcbind nfs-utils</div></pre></td></tr></table></figure>
+<p>设置开机自启动</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">systemctl <span class="built_in">enable</span> rpcbind</div><div class="line">systemctl <span class="built_in">enable</span> nfs-server</div></pre></td></tr></table></figure>
+<p>查看当前服务状态（<strong>暂时不要启动nfs-server， 等下面固定好nfs服务端口后再启动，可以避免重启电脑</strong>）</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[root@test002 ~]# systemctl status rpcbind</div><div class="line">● rpcbind.service - RPC bind service</div><div class="line">   Loaded: loaded (/usr/lib/systemd/system/rpcbind.service; indirect; vendor preset: enabled)</div><div class="line">   Active: active (running) since Sun 2017-08-13 13:34:40 CST; 31s ago</div><div class="line"> Main PID: 2289 (rpcbind)</div><div class="line">   CGroup: /system.slice/rpcbind.service</div><div class="line">           └─2289 /sbin/rpcbind -w</div><div class="line"></div><div class="line">Aug 13 13:34:39 test002 systemd[1]: Starting RPC bind service...</div><div class="line">Aug 13 13:34:40 test002 systemd[1]: Started RPC bind service.</div><div class="line">[root@test002 ~]# systemctl status nfs-server</div><div class="line">● nfs-server.service - NFS server and services</div><div class="line">   Loaded: loaded (/usr/lib/systemd/system/nfs-server.service; disabled; vendor preset: disabled)</div><div class="line">   Active: inactive (dead)</div></pre></td></tr></table></figure>
+<p>看nfs服务向rpc注册的端口信息(当前nfs-server 没有启动，所有没有注册端口)</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@test002 ~]<span class="comment"># rpcinfo -p</span></div><div class="line">   program vers proto   port  service</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 4 </span>  tcp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 3 </span>  tcp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 2 </span>  tcp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 4 </span>  udp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 3 </span>  udp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 2 </span>  udp   <span class="number"> 111 </span> portmapper</div></pre></td></tr></table></figure>
+<p>如果你此时启动nfs,可以发现nfs 随机注册的端口如下（<strong>暂时不要启动nfs-server， 等下面固定好nfs服务端口后再启动，可以避免重启电脑</strong>）</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">[root@test006 ~]<span class="comment"># rpcinfo -p</span></div><div class="line">   program vers proto   port  service</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 4 </span>  tcp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 3 </span>  tcp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 2 </span>  tcp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 4 </span>  udp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 3 </span>  udp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 2 </span>  udp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100024 </span>  <span class="number"> 1 </span>  udp <span class="number"> 49056 </span> status</div><div class="line">   <span class="number"> 100005 </span>  <span class="number"> 1 </span>  udp <span class="number"> 20048 </span> mountd</div><div class="line">   <span class="number"> 100024 </span>  <span class="number"> 1 </span>  tcp <span class="number"> 49730 </span> status</div><div class="line">   <span class="number"> 100005 </span>  <span class="number"> 1 </span>  tcp <span class="number"> 20048 </span> mountd</div><div class="line">   <span class="number"> 100005 </span>  <span class="number"> 2 </span>  udp <span class="number"> 20048 </span> mountd</div><div class="line">   <span class="number"> 100005 </span>  <span class="number"> 2 </span>  tcp <span class="number"> 20048 </span> mountd</div><div class="line">   <span class="number"> 100005 </span>  <span class="number"> 3 </span>  udp <span class="number"> 20048 </span> mountd</div><div class="line">   <span class="number"> 100005 </span>  <span class="number"> 3 </span>  tcp <span class="number"> 20048 </span> mountd</div><div class="line">   <span class="number"> 100003 </span>  <span class="number"> 3 </span>  tcp  <span class="number"> 2049 </span> nfs</div><div class="line">   <span class="number"> 100003 </span>  <span class="number"> 4 </span>  tcp  <span class="number"> 2049 </span> nfs</div><div class="line">   <span class="number"> 100227 </span>  <span class="number"> 3 </span>  tcp  <span class="number"> 2049 </span> nfs_acl</div><div class="line">   <span class="number"> 100003 </span>  <span class="number"> 3 </span>  udp  <span class="number"> 2049 </span> nfs</div><div class="line">   <span class="number"> 100003 </span>  <span class="number"> 4 </span>  udp  <span class="number"> 2049 </span> nfs</div><div class="line">   <span class="number"> 100227 </span>  <span class="number"> 3 </span>  udp  <span class="number"> 2049 </span> nfs_acl</div><div class="line">   <span class="number"> 100021 </span>  <span class="number"> 1 </span>  udp <span class="number"> 56137 </span> nlockmgr</div><div class="line">   <span class="number"> 100021 </span>  <span class="number"> 3 </span>  udp <span class="number"> 56137 </span> nlockmgr</div><div class="line">   <span class="number"> 100021 </span>  <span class="number"> 4 </span>  udp <span class="number"> 56137 </span> nlockmgr</div><div class="line">   <span class="number"> 100021 </span>  <span class="number"> 1 </span>  tcp <span class="number"> 33826 </span> nlockmgr</div><div class="line">   <span class="number"> 100021 </span>  <span class="number"> 3 </span>  tcp <span class="number"> 33826 </span> nlockmgr</div><div class="line">   <span class="number"> 100021 </span>  <span class="number"> 4 </span>  tcp <span class="number"> 33826 </span> nlockmgr</div></pre></td></tr></table></figure>
+<h1 id="三、防火墙设置"><a href="#三、防火墙设置" class="headerlink" title="三、防火墙设置"></a>三、防火墙设置</h1><p>NFS 的防火墙特别难设定规则，为什么呢？因为除了固定的port 111, 2049 之外， 还有很多不固定的端口是由rpc.mountd, rpc.rquotad 等服务所开启的。因此我们需要在/etc/sysconfig/nfs 指定特定的端口，这样每次启动nfs 时，相关服务启动的端口就会固定，如此一来， 我们就能够设定正确的防火墙了！</p>
+<h2 id="3-1-固定nfs服务端口"><a href="#3-1-固定nfs服务端口" class="headerlink" title="3.1 固定nfs服务端口"></a>3.1 固定nfs服务端口</h2><p>固定端口nfs 2049、portmapper111 ，另外3个服务端口可设置为mountd 892、rpc.statd 662、  nlockmgr 32803、32769</p>
+<p>具体配置：</p>
+<p><strong>1.修改/etc/sysconfig/nfs文件，将下列内容的注释去掉，如果没有则添加：</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"># Port rpc.mountd should listen on.</div><div class="line">MOUNTD_PORT=892</div><div class="line">#</div><div class="line"># Optional arguments passed to rpc.statd. See rpc.statd(8)</div><div class="line">STATDARG=""</div><div class="line"># Port rpc.statd should listen on.</div><div class="line">STATD_PORT=662</div><div class="line"># Outgoing port statd should used. The default is port</div><div class="line"># is random</div><div class="line">STATD_OUTGOING_PORT=2020</div></pre></td></tr></table></figure>
+<p><strong>2. vim /etc/modprobe.d/lockd.conf</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"># Set the TCP port that the NFS lock manager should use.</div><div class="line"># port must be a valid TCP port value (1-65535).</div><div class="line">options lockd nlm_tcpport=32803</div><div class="line">#</div><div class="line"># Set the UDP port that the NFS lock manager should use.</div><div class="line"># port must be a valid UDP port value (1-65535).</div><div class="line">options lockd nlm_udpport=32769</div></pre></td></tr></table></figure>
+<p>固定之后,启动nfs-server服务，后执行<code>rpcinfo -p</code>命令,查看nfs向rpc注册的端口</p>
+<p>（如果你已经启动过nfs-server服务，则光重启NFS服务不能解决问题，需要重启电脑，才能将端口固定）</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">[root@test006 ~]<span class="comment"># rpcinfo -p</span></div><div class="line">   program vers proto   port  service</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 4 </span>  tcp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 3 </span>  tcp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 2 </span>  tcp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 4 </span>  udp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 3 </span>  udp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 2 </span>  udp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100005 </span>  <span class="number"> 1 </span>  udp   <span class="number"> 892 </span> mountd</div><div class="line">   <span class="number"> 100005 </span>  <span class="number"> 1 </span>  tcp   <span class="number"> 892 </span> mountd</div><div class="line">   <span class="number"> 100005 </span>  <span class="number"> 2 </span>  udp   <span class="number"> 892 </span> mountd</div><div class="line">   <span class="number"> 100005 </span>  <span class="number"> 2 </span>  tcp   <span class="number"> 892 </span> mountd</div><div class="line">   <span class="number"> 100005 </span>  <span class="number"> 3 </span>  udp   <span class="number"> 892 </span> mountd</div><div class="line">   <span class="number"> 100005 </span>  <span class="number"> 3 </span>  tcp   <span class="number"> 892 </span> mountd</div><div class="line">   <span class="number"> 100024 </span>  <span class="number"> 1 </span>  udp   <span class="number"> 662 </span> status</div><div class="line">   <span class="number"> 100024 </span>  <span class="number"> 1 </span>  tcp   <span class="number"> 662 </span> status</div><div class="line">   <span class="number"> 100003 </span>  <span class="number"> 3 </span>  tcp  <span class="number"> 2049 </span> nfs</div><div class="line">   <span class="number"> 100003 </span>  <span class="number"> 4 </span>  tcp  <span class="number"> 2049 </span> nfs</div><div class="line">   <span class="number"> 100227 </span>  <span class="number"> 3 </span>  tcp  <span class="number"> 2049 </span> nfs_acl</div><div class="line">   <span class="number"> 100003 </span>  <span class="number"> 3 </span>  udp  <span class="number"> 2049 </span> nfs</div><div class="line">   <span class="number"> 100003 </span>  <span class="number"> 4 </span>  udp  <span class="number"> 2049 </span> nfs</div><div class="line">   <span class="number"> 100227 </span>  <span class="number"> 3 </span>  udp  <span class="number"> 2049 </span> nfs_acl</div><div class="line">   <span class="number"> 100021 </span>  <span class="number"> 1 </span>  udp <span class="number"> 32769 </span> nlockmgr</div><div class="line">   <span class="number"> 100021 </span>  <span class="number"> 3 </span>  udp <span class="number"> 32769 </span> nlockmgr</div><div class="line">   <span class="number"> 100021 </span>  <span class="number"> 4 </span>  udp <span class="number"> 32769 </span> nlockmgr</div><div class="line">   <span class="number"> 100021 </span>  <span class="number"> 1 </span>  tcp <span class="number"> 32803 </span> nlockmgr</div><div class="line">   <span class="number"> 100021 </span>  <span class="number"> 3 </span>  tcp <span class="number"> 32803 </span> nlockmgr</div><div class="line">   <span class="number"> 100021 </span>  <span class="number"> 4 </span>  tcp <span class="number"> 32803 </span> nlockmgr</div></pre></td></tr></table></figure>
+<h2 id="3-2-配置防火墙："><a href="#3-2-配置防火墙：" class="headerlink" title="3.2 配置防火墙："></a>3.2 配置防火墙：</h2><p>编辑firewalld中nfs服务的配置文件：</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cp /usr/<span class="class"><span class="keyword">lib</span>/<span class="title">firewalld</span>/<span class="title">services</span>/<span class="title">nfs</span>.<span class="title">xml</span> /<span class="title">etc</span>/<span class="title">firewalld</span>/<span class="title">services</span>/</span></div></pre></td></tr></table></figure>
+<p>将刚才固定的那几个端口加入配置文件：</p>
+<figure class="highlight vhdl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span>?&gt;</div><div class="line">&lt;service&gt;</div><div class="line">  &lt;short&gt;NFS4&lt;/short&gt;</div><div class="line">  &lt;description&gt;The NFS4 protocol <span class="keyword">is</span> used <span class="keyword">to</span> share files via TCP networking. You will need <span class="keyword">to</span> have the NFS tools installed <span class="keyword">and</span> properly configure your NFS server <span class="keyword">for</span> this option <span class="keyword">to</span> be useful.&lt;/description&gt;</div><div class="line">  &lt;<span class="keyword">port</span> protocol=<span class="string">"tcp"</span> <span class="keyword">port</span>=<span class="string">"111"</span>/&gt;</div><div class="line">  &lt;<span class="keyword">port</span> protocol=<span class="string">"tcp"</span> <span class="keyword">port</span>=<span class="string">"662"</span>/&gt;</div><div class="line">  &lt;<span class="keyword">port</span> protocol=<span class="string">"tcp"</span> <span class="keyword">port</span>=<span class="string">"892"</span>/&gt;</div><div class="line">  &lt;<span class="keyword">port</span> protocol=<span class="string">"tcp"</span> <span class="keyword">port</span>=<span class="string">"2049"</span>/&gt;</div><div class="line">  &lt;<span class="keyword">port</span> protocol=<span class="string">"tcp"</span> <span class="keyword">port</span>=<span class="string">"32803"</span>/&gt;</div><div class="line">  &lt;<span class="keyword">port</span> protocol=<span class="string">"udp"</span> <span class="keyword">port</span>=<span class="string">"111"</span>/&gt;</div><div class="line">  &lt;<span class="keyword">port</span> protocol=<span class="string">"udp"</span> <span class="keyword">port</span>=<span class="string">"662"</span>/&gt;</div><div class="line">  &lt;<span class="keyword">port</span> protocol=<span class="string">"udp"</span> <span class="keyword">port</span>=<span class="string">"892"</span>/&gt;</div><div class="line">  &lt;<span class="keyword">port</span> protocol=<span class="string">"udp"</span> <span class="keyword">port</span>=<span class="string">"2049"</span>/&gt;</div><div class="line">  &lt;<span class="keyword">port</span> protocol=<span class="string">"udp"</span> <span class="keyword">port</span>=<span class="string">"32769"</span>/&gt;</div><div class="line">&lt;/service&gt;</div></pre></td></tr></table></figure>
+<p>开启nfs</p>
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@test006 nfs]# firewall-cmd --permanent --zone=public --add-service=nfs</div><div class="line"><span class="keyword">success</span></div><div class="line">[root@test006 nfs]# firewall-cmd --reload</div><div class="line">success</div></pre></td></tr></table></figure>
+<h1 id="四、挂载"><a href="#四、挂载" class="headerlink" title="四、挂载"></a>四、挂载</h1><h2 id="4-1-exports文件配置格式"><a href="#4-1-exports文件配置格式" class="headerlink" title="4.1 exports文件配置格式"></a>4.1 exports文件配置格式</h2><figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">NFS共享的目录 NFS客户端地址<span class="number">1</span>(参数<span class="number">1</span>,参数<span class="number">2</span>,...) 客户端地址<span class="number">2</span>(参数<span class="number">1</span>,参数<span class="number">2</span>,...)</div></pre></td></tr></table></figure>
+<p><strong>说明：</strong><br>NFS共享目录：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">要用绝对路径，可被nfsnobody读写。</div></pre></td></tr></table></figure>
+<p>NFS客户端地址：</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">指定<span class="built_in">IP</span>: <span class="number">192.168</span><span class="meta">.0</span><span class="meta">.1</span></div><div class="line">指定子网所有主机: <span class="number">192.168</span><span class="meta">.0</span><span class="meta">.0</span>/<span class="number">24</span></div><div class="line">指定域名的主机: <span class="keyword">test</span>.com</div><div class="line">指定域名所有主机: *.test.com</div><div class="line">所有主机: *</div></pre></td></tr></table></figure>
+<p>参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数值</th>
+<th>内容说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rw ro</td>
+<td>该目录分享的权限是可擦写(read-write) 或只读(read-only)，但最终能不能读写，还是与文件系统的rwx 及身份有关。</td>
+</tr>
+<tr>
+<td>sync async</td>
+<td>sync 代表数据会同步写入到内存与硬盘中，async 则代表数据会先暂存于内存当中，而非直接写入硬盘！</td>
+</tr>
+<tr>
+<td>no_root_squash root_squash</td>
+<td>客户端使用NFS 文件系统的账号若为 root 时，系统该如何判断这个账号的身份？预设的情况下，客户端root 的身份会由root_squash 的设定压缩成nfsnobody， 如此对服务器的系统会较有保障。但如果你想要开放客户端使用root 身份来操作服务器的文件系统，那么这里就得要开 no_root_squash 才行！</td>
+</tr>
+<tr>
+<td>all_squash</td>
+<td>不论登入NFS 的使用者身份为何， 他的身份都会被压缩成为匿名用户，通常也就是 nobody(nfsnobody) 啦！</td>
+</tr>
+<tr>
+<td>anonuid anongid</td>
+<td>anon 意指anonymous (匿名者) 前面关于*_squash 提到的匿名用户的UID 设定值，通常为nobody(nfsnobody)，但是你可以自行设定这个UID 的值！当然，这个UID 必需要存在于你的/etc/passwd 当中！anonuid 指的是UID 而anongid 则是群组的GID 啰。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4-2-Server创建nfs共享"><a href="#4-2-Server创建nfs共享" class="headerlink" title="4.2 Server创建nfs共享"></a>4.2 Server创建nfs共享</h2><p>假如uid=1001 gid=1001是应用用户</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mkdir -p /opt/nfsshare</div><div class="line">[root@<span class="built_in">test</span>006 ~]<span class="comment"># cat /etc/exports</span></div><div class="line">/opt/nfsshare 172.17.84.72(rw,sync,root_squash,all_squash,anonuid=1001,anongid=1001)</div></pre></td></tr></table></figure>
+<p>重新加载nfs配置</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root<span class="variable">@test006</span> ~]<span class="comment"># exportfs -rv</span></div><div class="line">exporting <span class="number">172.17</span>.<span class="number">84.72</span><span class="symbol">:/opt/nfsshare</span></div></pre></td></tr></table></figure>
+<p>客户端查看nfs服务器挂载情况</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">showmount</span> <span class="selector-tag">-e</span> 172<span class="selector-class">.17</span><span class="selector-class">.84</span><span class="selector-class">.71</span></div></pre></td></tr></table></figure>
+<h2 id="4-3-Client端挂载"><a href="#4-3-Client端挂载" class="headerlink" title="4.3 Client端挂载"></a>4.3 Client端挂载</h2><p>挂载测试</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mkdir -p /mnt/nfsshare</div><div class="line">mount -t nfs  -o soft <span class="number">172.17</span>.<span class="number">84.71</span><span class="symbol">:/opt/nfsshare</span> /mnt/nfsshare</div></pre></td></tr></table></figure>
+<p>写入fstab</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root<span class="variable">@mysql002</span> ~]<span class="comment"># tail -n 1 /etc/fstab</span></div><div class="line"><span class="number">172.17</span>.<span class="number">84.71</span><span class="symbol">:/opt/nfsshare</span>  /mnt/nfsshare  nfs defaults  <span class="number">0</span> <span class="number">0</span></div></pre></td></tr></table></figure>
+<p>因为ID不一致的问题 建议Client端新建相同uid和gid的用户</p>
+<h1 id="五、autofs实现自动挂载"><a href="#五、autofs实现自动挂载" class="headerlink" title="五、autofs实现自动挂载"></a>五、autofs实现自动挂载</h1><p>参考：<a href="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/Storage_Administration_Guide/nfs-autofs.html" target="_blank" rel="external">autofs</a></p>
+<h2 id="5-1-客户端安装autofs"><a href="#5-1-客户端安装autofs" class="headerlink" title="5.1  客户端安装autofs"></a>5.1  客户端安装autofs</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">yum <span class="keyword">install</span> autofs -y</div><div class="line">systemctl <span class="keyword">enable</span> autofs</div><div class="line">systemctl <span class="keyword">start</span> autofs</div></pre></td></tr></table></figure>
+<h2 id="5-2-挂载为本地的非一级目录"><a href="#5-2-挂载为本地的非一级目录" class="headerlink" title="5.2  挂载为本地的非一级目录"></a>5.2  挂载为本地的非一级目录</h2><p>将192.168.0.103:/data目录挂载到192.168.0.104的/dir1/dir2目录</p>
+<p>查看服务端共享</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@mysql002 ~]# showmount -e <span class="number">192.168</span><span class="meta">.0</span><span class="meta">.103</span></div><div class="line">Export list for <span class="number">192.168</span><span class="meta">.0</span><span class="meta">.103</span>:</div><div class="line">/data <span class="number">192.168</span><span class="meta">.0</span><span class="meta">.104</span></div></pre></td></tr></table></figure>
+<p>修改客户端<code>vim /etc/auto.master</code>,添加以下内容, 意思是系统访问dir1下面的文件的时候，去/etc/auto.nfs 去查找nfs的配置</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="string">/dir1</span>      <span class="string">/etc/auto.nfs</span></div></pre></td></tr></table></figure>
+<p>/etc/auto.nfs 内容如下，文件需要新建</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root<span class="variable">@mysql002</span> dir2]<span class="comment"># cat /etc/auto.nfs</span></div><div class="line">dir2 -fstype=nfs <span class="number">192.168</span>.<span class="number">0</span>.<span class="number">103</span><span class="symbol">:/data</span></div></pre></td></tr></table></figure>
+<h2 id="5-3-挂载位本地的一级目录"><a href="#5-3-挂载位本地的一级目录" class="headerlink" title="5.3 挂载位本地的一级目录"></a>5.3 挂载位本地的一级目录</h2><p>修改客户端<code>vim /etc/auto.master</code>,添加以下内容, </p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="string">/-</span>      <span class="string">/etc/auto.nfs</span></div></pre></td></tr></table></figure>
+<p>/etc/auto.nfs 内容如下，文件需要新建</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/<span class="class"><span class="keyword">data</span>  -fstype=nfs 192.168.0.103:/<span class="keyword">data</span></span></div></pre></td></tr></table></figure>
+<h1 id="五、常见错误"><a href="#五、常见错误" class="headerlink" title="五、常见错误"></a>五、常见错误</h1><p>1 .  在CentOS7服务器上配置NFS服务并共享出目录后，发现客户端不能Mount共享出的目录，错误提示：</p>
+<figure class="highlight gauss"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[NFS mount <span class="built_in">Error</span>] <span class="keyword">System</span> <span class="built_in">Error</span>: No route to host.</div></pre></td></tr></table></figure>
+<p>关闭服务器端的防火墙后，问题解决，说明是防火墙端口的问题。</p>
+<p>2  client端无法读写</p>
+<ul>
+<li>确保nfs-server /etc/exports中开启了rw</li>
+<li>确保client端映射到server端的用户对于server端的目录有读写权限（涉及到uid,gid是否被压缩）</li>
+<li>确保client端挂载参数包含rw</li>
+</ul>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/Storage_Administration_Guide/ch-nfs.html" target="_blank" rel="external">CHAPTER 8. NETWORK FILE SYSTEM (NFS)</a></p>
+<p><a href="http://linux.vbird.org/linux_server/0330nfs.php" target="_blank" rel="external">第十三章、文件服务器之一：NFS服务器</a></p>
+<p><a href="https://www.howtoforge.com/tutorial/setting-up-an-nfs-server-and-client-on-centos-7/" target="_blank" rel="external">https://www.howtoforge.com/tutorial/setting-up-an-nfs-server-and-client-on-centos-7/</a></p>
+<p><a href="http://www.golinuxhub.com/2017/06/rpcbindsocket-failed-to-listen-on.html" target="_blank" rel="external">sysctl.conf禁用ipv6导致nfs无法启动的问题解决</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;一、NFS-简介&quot;&gt;&lt;a href=&quot;#一、NFS-简介&quot; class=&quot;headerlink&quot; title=&quot;一、NFS  简介&quot;&gt;&lt;/a&gt;一、NFS  简介&lt;/h1&gt;&lt;p&gt;NFS（Network File System）即网络文件系统，它允许网络中的计算机之间通过TCP/IP网络共享资源。在NFS的应用中，本地NFS的客户端应用可以透明地读写位于远端NFS服务器上的文件，就像访问本地文件一样。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://image.wangshengzhuang.com/17-8-7/50203549.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Linux" scheme="http://wangshengzhuang.com/categories/Linux/"/>
+    
+      <category term="Linux基础" scheme="http://wangshengzhuang.com/categories/Linux/Linux%E5%9F%BA%E7%A1%80/"/>
+    
+    
+      <category term="Linux" scheme="http://wangshengzhuang.com/tags/Linux/"/>
+    
+      <category term="NFS" scheme="http://wangshengzhuang.com/tags/NFS/"/>
+    
+  </entry>
   
   <entry>
     <title>Configuring Simple Virtual IP Address Failover Using Keepalived</title>
@@ -683,7 +859,7 @@
     <link href="http://wangshengzhuang.com/2017/05/27/Linux/Linux%E5%9F%BA%E7%A1%80/LVM%E5%9F%BA%E7%A1%80%E5%8F%8A%E5%9C%A8%E7%BA%BF%E6%89%A9%E5%AE%B9/"/>
     <id>http://wangshengzhuang.com/2017/05/27/Linux/Linux基础/LVM基础及在线扩容/</id>
     <published>2017-05-26T16:00:00.000Z</published>
-    <updated>2017-06-29T15:25:25.711Z</updated>
+    <updated>2017-08-20T14:58:16.262Z</updated>
     
     <content type="html"><![CDATA[<p>本文主要介绍了LVM的基本概念及磁盘扩容操作。</p>
 <p><img src="http://image.wangshengzhuang.com/17-6-23/4466666.jpg" alt=""></p>
@@ -790,7 +966,7 @@
     <link href="http://wangshengzhuang.com/2017/05/26/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Supervisor/Supervisor%E7%AE%80%E4%BB%8B/"/>
     <id>http://wangshengzhuang.com/2017/05/26/运维相关/Supervisor/Supervisor简介/</id>
     <published>2017-05-25T16:00:00.000Z</published>
-    <updated>2017-06-29T15:25:40.583Z</updated>
+    <updated>2017-08-20T14:58:35.130Z</updated>
     
     <content type="html"><![CDATA[<p>本文主要介绍了supervisor的安装、使用。</p>
 <p><img src="http://image.wangshengzhuang.com/17-5-11/27833402-file_1494510301732_82f7.jpg" alt=""></p>
@@ -992,8 +1168,8 @@
   
   <entry>
     <title>使用Sysbench进行MySQL压力测试</title>
-    <link href="http://wangshengzhuang.com/2017/05/23/MySQL/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/Sysbench%E8%BF%9B%E8%A1%8CMySQL%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95/"/>
-    <id>http://wangshengzhuang.com/2017/05/23/MySQL/性能测试/Sysbench进行MySQL压力测试/</id>
+    <link href="http://wangshengzhuang.com/2017/05/23/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9B%B8%E5%85%B3/MySQL/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/Sysbench%E8%BF%9B%E8%A1%8CMySQL%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95/"/>
+    <id>http://wangshengzhuang.com/2017/05/23/数据库相关/MySQL/性能测试/Sysbench进行MySQL压力测试/</id>
     <published>2017-05-23T14:29:25.000Z</published>
     <updated>2017-06-28T14:59:22.327Z</updated>
     
@@ -1032,9 +1208,11 @@
     
     </summary>
     
-      <category term="MySQL" scheme="http://wangshengzhuang.com/categories/MySQL/"/>
+      <category term="数据库相关" scheme="http://wangshengzhuang.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9B%B8%E5%85%B3/"/>
     
-      <category term="性能测试" scheme="http://wangshengzhuang.com/categories/MySQL/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/"/>
+      <category term="MySQL" scheme="http://wangshengzhuang.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9B%B8%E5%85%B3/MySQL/"/>
+    
+      <category term="性能测试" scheme="http://wangshengzhuang.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9B%B8%E5%85%B3/MySQL/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/"/>
     
     
       <category term="Sysbench" scheme="http://wangshengzhuang.com/tags/Sysbench/"/>
@@ -1045,8 +1223,8 @@
   
   <entry>
     <title>使用Sysbench进行CPU、 内存、 IO 、线程、 mutex压力测试</title>
-    <link href="http://wangshengzhuang.com/2017/05/22/MySQL/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/Sysbench%E8%BF%9B%E8%A1%8CCPU%20%E5%86%85%E5%AD%98%20IO%20%E7%BA%BF%E7%A8%8B%20mutex%E6%B5%8B%E8%AF%95%E4%BE%8B%E5%AD%90/"/>
-    <id>http://wangshengzhuang.com/2017/05/22/MySQL/性能测试/Sysbench进行CPU 内存 IO 线程 mutex测试例子/</id>
+    <link href="http://wangshengzhuang.com/2017/05/22/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9B%B8%E5%85%B3/MySQL/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/Sysbench%E8%BF%9B%E8%A1%8CCPU%20%E5%86%85%E5%AD%98%20IO%20%E7%BA%BF%E7%A8%8B%20mutex%E6%B5%8B%E8%AF%95%E4%BE%8B%E5%AD%90/"/>
+    <id>http://wangshengzhuang.com/2017/05/22/数据库相关/MySQL/性能测试/Sysbench进行CPU 内存 IO 线程 mutex测试例子/</id>
     <published>2017-05-22T14:29:25.000Z</published>
     <updated>2017-06-28T14:59:44.911Z</updated>
     
@@ -1083,9 +1261,11 @@
     
     </summary>
     
-      <category term="MySQL" scheme="http://wangshengzhuang.com/categories/MySQL/"/>
+      <category term="数据库相关" scheme="http://wangshengzhuang.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9B%B8%E5%85%B3/"/>
     
-      <category term="性能测试" scheme="http://wangshengzhuang.com/categories/MySQL/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/"/>
+      <category term="MySQL" scheme="http://wangshengzhuang.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9B%B8%E5%85%B3/MySQL/"/>
+    
+      <category term="性能测试" scheme="http://wangshengzhuang.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9B%B8%E5%85%B3/MySQL/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/"/>
     
     
       <category term="Sysbench" scheme="http://wangshengzhuang.com/tags/Sysbench/"/>
@@ -1096,8 +1276,8 @@
   
   <entry>
     <title>sysbench压力测试工具的安装和使用</title>
-    <link href="http://wangshengzhuang.com/2017/05/21/MySQL/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/sysbench%20%E7%AE%80%E4%BB%8B%E3%80%81%E5%AE%89%E8%A3%85%E3%80%81%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/"/>
-    <id>http://wangshengzhuang.com/2017/05/21/MySQL/性能测试/sysbench 简介、安装、使用说明/</id>
+    <link href="http://wangshengzhuang.com/2017/05/21/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9B%B8%E5%85%B3/MySQL/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/sysbench%20%E7%AE%80%E4%BB%8B%E3%80%81%E5%AE%89%E8%A3%85%E3%80%81%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/"/>
+    <id>http://wangshengzhuang.com/2017/05/21/数据库相关/MySQL/性能测试/sysbench 简介、安装、使用说明/</id>
     <published>2017-05-21T14:29:25.000Z</published>
     <updated>2017-06-28T15:00:13.871Z</updated>
     
@@ -1288,9 +1468,11 @@
     
     </summary>
     
-      <category term="MySQL" scheme="http://wangshengzhuang.com/categories/MySQL/"/>
+      <category term="数据库相关" scheme="http://wangshengzhuang.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9B%B8%E5%85%B3/"/>
     
-      <category term="性能测试" scheme="http://wangshengzhuang.com/categories/MySQL/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/"/>
+      <category term="MySQL" scheme="http://wangshengzhuang.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9B%B8%E5%85%B3/MySQL/"/>
+    
+      <category term="性能测试" scheme="http://wangshengzhuang.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9B%B8%E5%85%B3/MySQL/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/"/>
     
     
       <category term="MySQL" scheme="http://wangshengzhuang.com/tags/MySQL/"/>
@@ -1330,88 +1512,6 @@
       <category term="每天一个Linux命令" scheme="http://wangshengzhuang.com/tags/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4/"/>
     
       <category term="rmdir" scheme="http://wangshengzhuang.com/tags/rmdir/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>mkdir命令</title>
-    <link href="http://wangshengzhuang.com/2017/05/19/Linux/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4/mkdir%E5%91%BD%E4%BB%A4/"/>
-    <id>http://wangshengzhuang.com/2017/05/19/Linux/每天一个Linux命令/mkdir命令/</id>
-    <published>2017-05-19T14:43:25.000Z</published>
-    <updated>2017-06-29T15:50:09.721Z</updated>
-    
-    <content type="html"><![CDATA[<p>摘要: mkdir(Make Directory 创建目录): 若指定目录不存在则创建目录。</p>
-<a id="more"></a>
-<h3 id="1、命令简介"><a href="#1、命令简介" class="headerlink" title="1、命令简介"></a>1、命令简介</h3><p><strong>mkdir</strong> (Make Directory 创建目录): 若指定目录不存在则创建目录。在创建目录时，要求创建目录的用户具有写权限，并应保证新建的目录没有重名。</p>
-<h3 id="2、用法"><a href="#2、用法" class="headerlink" title="2、用法"></a>2、用法</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">用法：mkdir [选项]... 目录...</div></pre></td></tr></table></figure>
-<h3 id="3、选项"><a href="#3、选项" class="headerlink" title="3、选项"></a>3、选项</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">-m, --mode=模式       设置权限模式(类似chmod)，而不是rwxrwxrwx 减umask</div><div class="line">-p, --parents        需要时创建目标目录的上层目录，但即使这些目录已存在也不当作错误处理</div><div class="line">-v, --verbose        每次创建新目录都显示信息</div><div class="line">-Z, --context=CTX      将每个创建的目录的SELinux 安全环境设置为CTX</div></pre></td></tr></table></figure>
-<h3 id="4、实例"><a href="#4、实例" class="headerlink" title="4、实例"></a>4、实例</h3><h4 id="实例1：创建一个空目录"><a href="#实例1：创建一个空目录" class="headerlink" title="实例1：创建一个空目录"></a>实例1：创建一个空目录</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@oracledb study]<span class="comment"># mkdir dir1</span></div><div class="line">[root@oracledb study]<span class="comment"># ls</span></div><div class="line">dir1</div></pre></td></tr></table></figure>
-<h4 id="实例2：一次创建多个目录"><a href="#实例2：一次创建多个目录" class="headerlink" title="实例2：一次创建多个目录"></a>实例2：一次创建多个目录</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@oracledb study]<span class="comment"># mkdir dir1 dir2 dir3</span></div><div class="line">[root@oracledb study]<span class="comment"># ls</span></div><div class="line">dir1  dir2  dir3</div></pre></td></tr></table></figure>
-<h4 id="实例3：递归创建多个目录"><a href="#实例3：递归创建多个目录" class="headerlink" title="实例3：递归创建多个目录"></a>实例3：递归创建多个目录</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@oracledb study]<span class="comment"># mkdir -p dir1/sub1/sub2</span></div><div class="line">[root@oracledb study]<span class="comment"># tree</span></div><div class="line">.</div><div class="line">└── dir1</div><div class="line">    └── sub1</div><div class="line">        └── sub2</div><div class="line"></div><div class="line">3 directories, 0 files</div></pre></td></tr></table></figure>
-<h4 id="实例4：创建权限为755的目录"><a href="#实例4：创建权限为755的目录" class="headerlink" title="实例4：创建权限为755的目录"></a>实例4：创建权限为755的目录</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@oracledb study]<span class="comment"># mkdir -m 755 dir1</span></div><div class="line">[root@oracledb study]<span class="comment"># ls</span></div><div class="line">drwxr-xr-x 2 root root 4096 4月  16 15:03 dir1</div></pre></td></tr></table></figure>
-<h4 id="实例5：创建新目录都显示信息"><a href="#实例5：创建新目录都显示信息" class="headerlink" title="实例5：创建新目录都显示信息"></a>实例5：创建新目录都显示信息</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@oracledb study]<span class="comment"># mkdir -v dir3</span></div><div class="line">mkdir: 已创建目录 <span class="string">"dir3"</span></div></pre></td></tr></table></figure>
-<h4 id="实例6：一个命令创建项目的目录结构"><a href="#实例6：一个命令创建项目的目录结构" class="headerlink" title="实例6：一个命令创建项目的目录结构"></a>实例6：一个命令创建项目的目录结构</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">[root@oracledb study]<span class="comment"># mkdir -vp tomcat/&#123;bin,lib,conf,logs,webapps/&#123;examples,docs&#125;,work&#125;</span></div><div class="line">mkdir: 已创建目录 <span class="string">"tomcat"</span></div><div class="line">mkdir: 已创建目录 <span class="string">"tomcat/bin"</span></div><div class="line">mkdir: 已创建目录 <span class="string">"tomcat/lib"</span></div><div class="line">mkdir: 已创建目录 <span class="string">"tomcat/conf"</span></div><div class="line">mkdir: 已创建目录 <span class="string">"tomcat/logs"</span></div><div class="line">mkdir: 已创建目录 <span class="string">"tomcat/webapps"</span></div><div class="line">mkdir: 已创建目录 <span class="string">"tomcat/webapps/examples"</span></div><div class="line">mkdir: 已创建目录 <span class="string">"tomcat/webapps/docs"</span></div><div class="line">mkdir: 已创建目录 <span class="string">"tomcat/work"</span></div><div class="line">[root@oracledb study]<span class="comment"># tree</span></div><div class="line">.</div><div class="line">└── tomcat</div><div class="line">    ├── bin</div><div class="line">    ├── conf</div><div class="line">    ├── lib</div><div class="line">    ├── logs</div><div class="line">    ├── webapps</div><div class="line">    │   ├── docs</div><div class="line">    │   └── examples</div><div class="line">    └── work</div></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;摘要: mkdir(Make Directory 创建目录): 若指定目录不存在则创建目录。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Linux" scheme="http://wangshengzhuang.com/categories/Linux/"/>
-    
-      <category term="每天一个Linux命令" scheme="http://wangshengzhuang.com/categories/Linux/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4/"/>
-    
-    
-      <category term="每天一个Linux命令" scheme="http://wangshengzhuang.com/tags/%E6%AF%8F%E5%A4%A9%E4%B8%80%E4%B8%AALinux%E5%91%BD%E4%BB%A4/"/>
-    
-      <category term="mkdir" scheme="http://wangshengzhuang.com/tags/mkdir/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Playbook 角色(Roles) 和 Include 语句</title>
-    <link href="http://wangshengzhuang.com/2017/05/18/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/Playbook%20%E8%A7%92%E8%89%B2(Roles)%20%E5%92%8C%20Include%20%E8%AF%AD%E5%8F%A5/"/>
-    <id>http://wangshengzhuang.com/2017/05/18/运维相关/Ansible/Playbook 角色(Roles) 和 Include 语句/</id>
-    <published>2017-05-18T15:26:47.000Z</published>
-    <updated>2017-05-23T14:50:07.420Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a><a href="http://www.ansible.com.cn/docs/playbooks_roles.html#id6" target="_blank" rel="external">简介</a></h3><p>当我们刚开始学习运用 playbook 时，可能会把 playbook 写成一个很大的文件，到后来可能你会希望这些文件是可以方便去重用的，所以需要重新去组织这些文件。</p>
-<a id="more"></a>  
-<h3 id="Include-语句"><a href="#Include-语句" class="headerlink" title="Include 语句"></a><a href="http://www.ansible.com.cn/docs/playbooks_roles.html#id5" target="_blank" rel="external">Include 语句</a></h3><p>基本上，使用 include 语句引用 task 文件的方法，可允许你将一个配置策略分解到更小的文件中。使用 include 语句引用 tasks 是将 tasks 从其他文件拉取过来。因为 handlers 也是 tasks，所以你也可以使用 include 语句去引用 handlers 文件。</p>
-<p>Playbook 同样可以使用 include 引用其他 playbook 文件中的 play。这时被引用的 play 会被插入到当前的 playbook 中，当前的 playbook 中就有了一个更长的的 play 列表。Include 指令看起来像下面这样，在一个 playbook 中，Include 指令可以跟普通的 task 混合在一起使用:</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="string">tasks:</span></div><div class="line"></div><div class="line">  - <span class="string">include:</span> tasks/foo.yml</div></pre></td></tr></table></figure>
-<p>你也可以给 include 传递变量。我们称之为 ‘参数化的 include’。</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="string">tasks:</span></div><div class="line">  - <span class="string">include:</span> wordpress.yml wp_user=timmy</div></pre></td></tr></table></figure>
-<h3 id="Playbook-角色-Roles"><a href="#Playbook-角色-Roles" class="headerlink" title="Playbook 角色(Roles)"></a><a href="http://www.ansible.com.cn/docs/playbooks_roles.html#id5" target="_blank" rel="external">Playbook 角色(Roles)</a></h3><p>那怎样组织 playbook 才是最好的方式呢？简单的回答就是：使用 roles ! Roles 的概念来自于这样的想法：通过 include 包含文件并将它们组合在一起，组织成一个简洁、可重用的抽象对象。这种方式可使你将注意力更多地放在大局上，只有在需要时才去深入了解细节。Roles 基于一个已知的文件结构，去自动的加载某些 vars_files，tasks 以及 handlers。基于 roles 对内容进行分组，使得我们可以容易地与其他用户分享 roles 。</p>
-<!-- more -->
-<p><img src="http://image.wangshengzhuang.com/17-05-23/1495543493176.jpg" alt="img"></p>
-<p>这个 playbook 为一个角色 ‘x’ 指定了如下的行为：</p>
-<ul>
-<li>如果 roles/x/tasks/main.yml 存在, 其中列出的 tasks 将被添加到 play 中</li>
-<li>如果 roles/x/handlers/main.yml 存在, 其中列出的 handlers 将被添加到 play 中</li>
-<li>如果 roles/x/vars/main.yml 存在, 其中列出的 variables 将被添加到 play 中</li>
-<li>如果 roles/x/meta/main.yml 存在, 其中列出的 “角色依赖” 将被添加到 roles 列表中 (1.3 and later)</li>
-<li>所有 copy tasks 可以引用 roles/x/files/ 中的文件，不需要指明文件的路径。</li>
-<li>所有 script tasks 可以引用 roles/x/files/ 中的脚本，不需要指明文件的路径。</li>
-<li>所有 template tasks 可以引用 roles/x/templates/ 中的文件，不需要指明文件的路径。</li>
-<li>所有 include tasks 可以引用 roles/x/tasks/ 中的文件，不需要指明文件的路径。</li>
-</ul>
-<h3 id="角色依赖-Role-Dependencies"><a href="#角色依赖-Role-Dependencies" class="headerlink" title="角色依赖(Role Dependencies)"></a><a href="http://www.ansible.com.cn/docs/playbooks_roles.html#id10" target="_blank" rel="external">角色依赖(Role Dependencies)</a></h3><p>“角色依赖” 使你可以自动地将其他 roles 拉取到现在使用的 role 中。”角色依赖” 保存在 roles 目录下的 meta/main.yml 文件中。这个文件应包含一列 roles 和 为之指定的参数，</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;&lt;a href=&quot;http://www.ansible.com.cn/docs/playbooks_roles.html#id6&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;简介&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;当我们刚开始学习运用 playbook 时，可能会把 playbook 写成一个很大的文件，到后来可能你会希望这些文件是可以方便去重用的，所以需要重新去组织这些文件。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="运维相关" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/"/>
-    
-      <category term="Ansible" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Ansible/"/>
-    
-    
-      <category term="Ansible" scheme="http://wangshengzhuang.com/tags/Ansible/"/>
     
   </entry>
   

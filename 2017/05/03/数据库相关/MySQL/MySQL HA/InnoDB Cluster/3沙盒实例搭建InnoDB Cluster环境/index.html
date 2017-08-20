@@ -1,0 +1,1458 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*��������ɫ*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*��Ӱ��ɫ*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*�ϱ߿���ɫ*/
+        border-left-color: #1E92FB;    /*���߿���ɫ*/
+    }
+</style>
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="MySQL,InnoDB Cluster," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小强斋太-Study Notes" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="本文描述了如何通过三个沙盒msyql实例，创建一个Single-Primary Innodb cluster，并通过mysql Router对connections实现路由，实现高可用性。">
+<meta name="keywords" content="MySQL,InnoDB Cluster">
+<meta property="og:type" content="article">
+<meta property="og:title" content="沙盒实例搭建InnoDB Cluster环境">
+<meta property="og:url" content="http://wangshengzhuang.com/2017/05/03/数据库相关/MySQL/MySQL HA/InnoDB Cluster/3沙盒实例搭建InnoDB Cluster环境/index.html">
+<meta property="og:site_name" content="小强斋太-Study Notes">
+<meta property="og:description" content="本文描述了如何通过三个沙盒msyql实例，创建一个Single-Primary Innodb cluster，并通过mysql Router对connections实现路由，实现高可用性。">
+<meta property="og:image" content="http://image.wangshengzhuang.com/17-5-4/93088466-file_1493910959566_e506.png">
+<meta property="og:updated_time" content="2017-05-04T15:16:41.278Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="沙盒实例搭建InnoDB Cluster环境">
+<meta name="twitter:description" content="本文描述了如何通过三个沙盒msyql实例，创建一个Single-Primary Innodb cluster，并通过mysql Router对connections实现路由，实现高可用性。">
+<meta name="twitter:image" content="http://image.wangshengzhuang.com/17-5-4/93088466-file_1493910959566_e506.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wangshengzhuang.com/2017/05/03/数据库相关/MySQL/MySQL HA/InnoDB Cluster/3沙盒实例搭建InnoDB Cluster环境/"/>
+
+
+
+
+
+  <title>沙盒实例搭建InnoDB Cluster环境 | 小强斋太-Study Notes</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d5edeb6a5e3eb7303821bb702fa1df54";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/wangshengzhuang"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小强斋太-Study Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay hungry. Stay foolish</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-[object Object]"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/05/03/数据库相关/MySQL/MySQL HA/InnoDB Cluster/3沙盒实例搭建InnoDB Cluster环境/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小强斋太">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小强斋太-Study Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                沙盒实例搭建InnoDB Cluster环境
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-03T00:00:00+08:00">
+                2017-05-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据库相关/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库相关</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据库相关/MySQL/" itemprop="url" rel="index">
+                    <span itemprop="name">MySQL</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据库相关/MySQL/MySQL-HA/" itemprop="url" rel="index">
+                    <span itemprop="name">MySQL HA</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据库相关/MySQL/MySQL-HA/InnoDB-Cluster/" itemprop="url" rel="index">
+                    <span itemprop="name">InnoDB Cluster</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/05/03/数据库相关/MySQL/MySQL HA/InnoDB Cluster/3沙盒实例搭建InnoDB Cluster环境/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/05/03/数据库相关/MySQL/MySQL HA/InnoDB Cluster/3沙盒实例搭建InnoDB Cluster环境/" class="leancloud_visitors" data-flag-title="沙盒实例搭建InnoDB Cluster环境">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  943
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长预计</span>
+                
+                <span title="阅读时长预计">
+                  6
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文描述了如何通过三个沙盒msyql实例，创建一个Single-Primary Innodb cluster，并通过mysql Router对connections实现路由，实现高可用性。</p>
+<p><img src="http://image.wangshengzhuang.com/17-5-4/93088466-file_1493910959566_e506.png" alt=""></p>
+<a id="more"></a>
+<blockquote>
+<p>This section explains how to set up a single-primary InnoDB cluster and configure MySQL Router to achieve high availability. </p>
+<p>This tutorial shows how to use MySQL Shell to create an InnoDB cluster consisting of a MySQL Server instance which provides the seed instance of the InnoDB cluster and holds the initial data set. Two more sandbox MySQL server instances are created and added to the InnoDB cluster. Then MySQL Router is deployed and used to route connections to the InnoDB cluster, and high availability is tested. </p>
+</blockquote>
+<h3 id="1-Yum-安装MySQL-Shell"><a href="#1-Yum-安装MySQL-Shell" class="headerlink" title="1. Yum 安装MySQL Shell"></a>1. Yum 安装MySQL Shell</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">wget https:<span class="comment">//dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpm</span></div><div class="line">rpm -ivh mysql57-community-release-el7-<span class="number">10</span><span class="selector-class">.noarch</span><span class="selector-class">.rpm</span></div><div class="line">yum install mysql-shell -y</div></pre></td></tr></table></figure>
+<h3 id="2-创建三个沙盒实例"><a href="#2-创建三个沙盒实例" class="headerlink" title="2. 创建三个沙盒实例"></a>2. 创建三个沙盒实例</h3><p>Start MySQL Shell </p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">shell</span><span class="bash">&gt; mysqlsh</span></div></pre></td></tr></table></figure>
+<p>MySQL Shell provides two scripting languages: JavaScript and Python. Throughout this guide MySQL Shell is used primarily in JavaScript mode . When MySQL Shell starts it is in JavaScript mode by default. You switch into JavaScript mode, Python mode and SQL mode using the commands <code>\js</code>, <code>\py</code>, and <code>\sql</code>. Ensure you are in JavaScript mode by issuing the <code>\js</code> command, then execute:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">mysql-js&gt;</span><span class="bash"> dba.deploySandboxInstance(3310)</span></div><div class="line"><span class="meta">mysql-js&gt;</span><span class="bash"> dba.deploySandboxInstance(3320)</span></div><div class="line"><span class="meta">mysql-js&gt;</span><span class="bash"> dba.deploySandboxInstance(3330)</span></div></pre></td></tr></table></figure>
+<h3 id="3-Creating-the-InnoDB-Cluster"><a href="#3-Creating-the-InnoDB-Cluster" class="headerlink" title="3.  Creating the InnoDB Cluster"></a>3.  Creating the InnoDB Cluster</h3><p>Connect MySQL Shell to the seed instance, in this case the one at port 3310:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">mysql-js&gt;</span><span class="bash"> \connect root@localhost:3310</span></div><div class="line">或者</div><div class="line"><span class="meta">mysql-js&gt;</span><span class="bash"> shell.connect(<span class="string">'root@localhost:3310'</span>)</span></div></pre></td></tr></table></figure>
+<p>Use the <code>createCluster()</code> method to create the InnoDB cluster with the currently connected instance as the seed:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">mysql-js&gt;</span><span class="bash"> var cluster = dba.createCluster(<span class="string">'testCluster'</span>)</span></div></pre></td></tr></table></figure>
+<h3 id="4-Adding-Instances-to-an-InnoDB-Cluster"><a href="#4-Adding-Instances-to-an-InnoDB-Cluster" class="headerlink" title="4. Adding Instances to an InnoDB Cluster"></a>4. Adding Instances to an InnoDB Cluster</h3><p>配置<code>/etc/hosts</code></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">127<span class="selector-class">.0</span><span class="selector-class">.0</span><span class="selector-class">.1</span> <span class="selector-tag">mysql001</span></div></pre></td></tr></table></figure>
+<p>Obtaining the <code>cluster</code> Instance Variable</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">mysql-js&gt;</span><span class="bash"> var cluster = dba.getCluster(<span class="string">"testCluster"</span>)</span></div></pre></td></tr></table></figure>
+<p>Add the second instance to the InnoDB cluster:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">mysql-js&gt;</span><span class="bash"> cluster.addInstance(<span class="string">'root@localhost:3320'</span>)</span></div></pre></td></tr></table></figure>
+<p>Add the third instance:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">mysql-js&gt;</span><span class="bash"> cluster.addInstance(<span class="string">'root@localhost:3330'</span>)</span></div></pre></td></tr></table></figure>
+<p>查看cluster 状态</p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; cluster.status()</div><div class="line">&#123;</div><div class="line">    <span class="string">"clusterName"</span>: <span class="string">"testCluster"</span>, </div><div class="line">    <span class="string">"defaultReplicaSet"</span>: &#123;</div><div class="line">        <span class="string">"name"</span>: <span class="string">"default"</span>, </div><div class="line">        <span class="string">"primary"</span>: <span class="string">"localhost:3310"</span>, </div><div class="line">        <span class="string">"status"</span>: <span class="string">"OK"</span>, </div><div class="line">        <span class="string">"statusText"</span>: <span class="string">"Cluster is ONLINE and can tolerate up to ONE failure."</span>, </div><div class="line">        <span class="string">"topology"</span>: &#123;</div><div class="line">            <span class="string">"localhost:3310"</span>: &#123;</div><div class="line">                <span class="string">"address"</span>: <span class="string">"localhost:3310"</span>, </div><div class="line">                <span class="string">"mode"</span>: <span class="string">"R/W"</span>, </div><div class="line">                <span class="string">"readReplicas"</span>: &#123;&#125;, </div><div class="line">                <span class="string">"role"</span>: <span class="string">"HA"</span>, </div><div class="line">                <span class="string">"status"</span>: <span class="string">"ONLINE"</span></div><div class="line">            &#125;, </div><div class="line">            <span class="string">"localhost:3320"</span>: &#123;</div><div class="line">                <span class="string">"address"</span>: <span class="string">"localhost:3320"</span>, </div><div class="line">                <span class="string">"mode"</span>: <span class="string">"R/O"</span>, </div><div class="line">                <span class="string">"readReplicas"</span>: &#123;&#125;, </div><div class="line">                <span class="string">"role"</span>: <span class="string">"HA"</span>, </div><div class="line">                <span class="string">"status"</span>: <span class="string">"ONLINE"</span></div><div class="line">            &#125;, </div><div class="line">            <span class="string">"localhost:3330"</span>: &#123;</div><div class="line">                <span class="string">"address"</span>: <span class="string">"localhost:3330"</span>, </div><div class="line">                <span class="string">"mode"</span>: <span class="string">"R/O"</span>, </div><div class="line">                <span class="string">"readReplicas"</span>: &#123;&#125;, </div><div class="line">                <span class="string">"role"</span>: <span class="string">"HA"</span>, </div><div class="line">                <span class="string">"status"</span>: <span class="string">"ONLINE"</span></div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="5-安装配置-MySQL-Router"><a href="#5-安装配置-MySQL-Router" class="headerlink" title="5. 安装配置 MySQL Router"></a>5. 安装配置 MySQL Router</h3><p>Yum安装</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">wget https:<span class="comment">//dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpm</span></div><div class="line">rpm -ivh mysql57-community-release-el7-<span class="number">10</span><span class="selector-class">.noarch</span><span class="selector-class">.rpm</span></div><div class="line">yum install mysql-router -y</div></pre></td></tr></table></figure>
+<p> bootstrap 生成配置文件</p>
+<figure class="highlight brainfuck"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="comment">shell</span>&gt; <span class="comment">mysqlrouter</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">bootstrap</span> <span class="comment">root@localhost:3310</span> <span class="literal">-</span><span class="literal">-</span><span class="comment">user=mysqlrouter</span></div></pre></td></tr></table></figure>
+<p>配置文件<code>/etc/mysqlrouter/mysqlrouter.conf</code>内容</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line">shell &gt; cat  /etc/mysqlrouter/mysqlrouter.conf</div><div class="line"><span class="comment"># File automatically generated during MySQL Router bootstrap</span></div><div class="line">[DEFAULT]</div><div class="line">name=system</div><div class="line">user=mysqlrouter</div><div class="line">keyring_path=/var/lib/mysqlrouter/keyring</div><div class="line">master_key_path=/etc/mysqlrouter/mysqlrouter.key</div><div class="line"></div><div class="line">[logger]</div><div class="line">level = INFO</div><div class="line"></div><div class="line"><span class="section">[metadata_cache:testCluster]</span></div><div class="line">router_id=3</div><div class="line">bootstrap_server_addresses=mysql://localhost:3310,mysql://localhost:3320,mysql://localhost:3330</div><div class="line">user=mysql_router3_c3j5z9t7rjgk</div><div class="line">metadata_cluster=testCluster</div><div class="line">ttl=300</div><div class="line"></div><div class="line"><span class="section">[routing:testCluster_default_rw]</span></div><div class="line">bind_address=0.0.0.0</div><div class="line">bind_port=6446</div><div class="line">destinations=metadata-cache://testCluster/default?role=PRIMARY</div><div class="line">mode=read-write</div><div class="line">protocol=classic</div><div class="line"></div><div class="line"><span class="section">[routing:testCluster_default_ro]</span></div><div class="line">bind_address=0.0.0.0</div><div class="line">bind_port=6447</div><div class="line">destinations=metadata-cache://testCluster/default?role=SECONDARY</div><div class="line">mode=read-only</div><div class="line">protocol=classic</div><div class="line"></div><div class="line"><span class="section">[routing:testCluster_default_x_rw]</span></div><div class="line">bind_address=0.0.0.0</div><div class="line">bind_port=64460</div><div class="line">destinations=metadata-cache://testCluster/default?role=PRIMARY</div><div class="line">mode=read-write</div><div class="line">protocol=x</div><div class="line"></div><div class="line"><span class="section">[routing:testCluster_default_x_ro]</span></div><div class="line">bind_address=0.0.0.0</div><div class="line">bind_port=64470</div><div class="line">destinations=metadata-cache://testCluster/default?role=SECONDARY</div><div class="line">mode=read-only</div><div class="line">protocol=x</div></pre></td></tr></table></figure>
+<p>启动mysqlrouter(记得修改下权限 默认权限不对)</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">chown mysqlrouter.mysqlrouter /var/<span class="class"><span class="keyword">lib</span>/<span class="title">mysqlrouter</span></span></div><div class="line">systemctl start mysqlrouter</div></pre></td></tr></table></figure>
+<p>测试连接</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">shell&gt; mysqlsh --uri root@localhost:6446</div><div class="line">mysql-js&gt; \sql</div><div class="line">Switching to SQL mode... Commands end with ;</div><div class="line"><span class="section">mysql-sql&gt; select @@port;</span></div><div class="line">+--------+</div><div class="line"><span class="section">| @@port |</span></div><div class="line">+--------+</div><div class="line"><span class="section">|   3310 |</span></div><div class="line">+--------+</div><div class="line">1 row in set (0.00 sec)</div></pre></td></tr></table></figure>
+<h3 id="6-Testing-Failover"><a href="#6-Testing-Failover" class="headerlink" title="6. Testing Failover"></a>6. Testing Failover</h3><p>killing the <code>PRIMARY</code> instance 3310</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">mysql-js&gt;</span><span class="bash"> dba.killSandboxInstance(3310)</span></div></pre></td></tr></table></figure>
+<p>测试连接（第一次失败，第二次成功）</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; \sql</div><div class="line">Switching to SQL mode... Commands end with ;</div><div class="line">mysql-sql&gt; SELECT @@port;</div><div class="line">ERROR: 2013 (HY000): Lost connection to MySQL server during query</div><div class="line">The global session got disconnected.</div><div class="line">Attempting to reconnect to <span class="emphasis">'root@localhost:6446'</span>...</div><div class="line">The global session was successfully reconnected.</div><div class="line"><span class="section">mysql-sql&gt; select @@port;</span></div><div class="line">+--------+</div><div class="line"><span class="section">| @@port |</span></div><div class="line">+--------+</div><div class="line"><span class="section">|   3330 |</span></div><div class="line">+--------+</div><div class="line">1 row in set (0.00 sec)</div></pre></td></tr></table></figure>
+<p>查看cluster状态, 可以发现3320实例已经变成Primary</p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; cluster.status()</div><div class="line">&#123;</div><div class="line">    <span class="string">"clusterName"</span>: <span class="string">"testCluster"</span>, </div><div class="line">    <span class="string">"defaultReplicaSet"</span>: &#123;</div><div class="line">        <span class="string">"name"</span>: <span class="string">"default"</span>, </div><div class="line">        <span class="string">"primary"</span>: <span class="string">"localhost:3320"</span>, </div><div class="line">        <span class="string">"status"</span>: <span class="string">"OK_NO_TOLERANCE"</span>, </div><div class="line">        <span class="string">"statusText"</span>: <span class="string">"Cluster is NOT tolerant to any failures. 1 member is not active"</span>, </div><div class="line">        <span class="string">"topology"</span>: &#123;</div><div class="line">            <span class="string">"localhost:3310"</span>: &#123;</div><div class="line">                <span class="string">"address"</span>: <span class="string">"localhost:3310"</span>, </div><div class="line">                <span class="string">"mode"</span>: <span class="string">"R/O"</span>, </div><div class="line">                <span class="string">"readReplicas"</span>: &#123;&#125;, </div><div class="line">                <span class="string">"role"</span>: <span class="string">"HA"</span>, </div><div class="line">                <span class="string">"status"</span>: <span class="string">"(MISSING)"</span></div><div class="line">            &#125;, </div><div class="line">            <span class="string">"localhost:3320"</span>: &#123;</div><div class="line">                <span class="string">"address"</span>: <span class="string">"localhost:3320"</span>, </div><div class="line">                <span class="string">"mode"</span>: <span class="string">"R/W"</span>, </div><div class="line">                <span class="string">"readReplicas"</span>: &#123;&#125;, </div><div class="line">                <span class="string">"role"</span>: <span class="string">"HA"</span>, </div><div class="line">                <span class="string">"status"</span>: <span class="string">"ONLINE"</span></div><div class="line">            &#125;, </div><div class="line">            <span class="string">"localhost:3330"</span>: &#123;</div><div class="line">                <span class="string">"address"</span>: <span class="string">"localhost:3330"</span>, </div><div class="line">                <span class="string">"mode"</span>: <span class="string">"R/O"</span>, </div><div class="line">                <span class="string">"readReplicas"</span>: &#123;&#125;, </div><div class="line">                <span class="string">"role"</span>: <span class="string">"HA"</span>, </div><div class="line">                <span class="string">"status"</span>: <span class="string">"ONLINE"</span></div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p> bring the instance that you killed back online.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">mysql-js&gt;</span><span class="bash"> dba.startSandboxInstance(3310)</span></div><div class="line"><span class="meta">mysql-js&gt;</span><span class="bash"> cluster.rejoinInstance(<span class="string">'root@localhost:3310'</span>)</span></div><div class="line"><span class="meta">mysql-js&gt;</span><span class="bash"> cluster.status()</span></div></pre></td></tr></table></figure>
+<p>重新查看cluster状态</p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">mysql-js&gt; cluster.status()</div><div class="line">&#123;</div><div class="line">    <span class="string">"clusterName"</span>: <span class="string">"testCluster"</span>, </div><div class="line">    <span class="string">"defaultReplicaSet"</span>: &#123;</div><div class="line">        <span class="string">"name"</span>: <span class="string">"default"</span>, </div><div class="line">        <span class="string">"primary"</span>: <span class="string">"localhost:3320"</span>, </div><div class="line">        <span class="string">"status"</span>: <span class="string">"OK"</span>, </div><div class="line">        <span class="string">"statusText"</span>: <span class="string">"Cluster is ONLINE and can tolerate up to ONE failure."</span>, </div><div class="line">        <span class="string">"topology"</span>: &#123;</div><div class="line">            <span class="string">"localhost:3310"</span>: &#123;</div><div class="line">                <span class="string">"address"</span>: <span class="string">"localhost:3310"</span>, </div><div class="line">                <span class="string">"mode"</span>: <span class="string">"R/O"</span>, </div><div class="line">                <span class="string">"readReplicas"</span>: &#123;&#125;, </div><div class="line">                <span class="string">"role"</span>: <span class="string">"HA"</span>, </div><div class="line">                <span class="string">"status"</span>: <span class="string">"ONLINE"</span></div><div class="line">            &#125;, </div><div class="line">            <span class="string">"localhost:3320"</span>: &#123;</div><div class="line">                <span class="string">"address"</span>: <span class="string">"localhost:3320"</span>, </div><div class="line">                <span class="string">"mode"</span>: <span class="string">"R/W"</span>, </div><div class="line">                <span class="string">"readReplicas"</span>: &#123;&#125;, </div><div class="line">                <span class="string">"role"</span>: <span class="string">"HA"</span>, </div><div class="line">                <span class="string">"status"</span>: <span class="string">"ONLINE"</span></div><div class="line">            &#125;, </div><div class="line">            <span class="string">"localhost:3330"</span>: &#123;</div><div class="line">                <span class="string">"address"</span>: <span class="string">"localhost:3330"</span>, </div><div class="line">                <span class="string">"mode"</span>: <span class="string">"R/O"</span>, </div><div class="line">                <span class="string">"readReplicas"</span>: &#123;&#125;, </div><div class="line">                <span class="string">"role"</span>: <span class="string">"HA"</span>, </div><div class="line">                <span class="string">"status"</span>: <span class="string">"ONLINE"</span></div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://dev.mysql.com/doc/refman/5.7/en/mysql-innodb-cluster-getting-started.html" target="_blank" rel="external"> Getting Started with InnoDB Cluster</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>好记性不如烂笔头，生命不息，学习不止！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/wechatpay.jpg" alt="小强斋太 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/alipay.jpg" alt="小强斋太 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      小强斋太
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://wangshengzhuang.com/2017/05/03/数据库相关/MySQL/MySQL HA/InnoDB Cluster/3沙盒实例搭建InnoDB Cluster环境/" title="沙盒实例搭建InnoDB Cluster环境">http://wangshengzhuang.com/2017/05/03/数据库相关/MySQL/MySQL HA/InnoDB Cluster/3沙盒实例搭建InnoDB Cluster环境/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本文版权归作者所有,转载请注明出处！'
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MySQL/" rel="tag"> <i class="fa fa-tag"> </i> MySQL</a>
+          
+            <a href="/tags/InnoDB-Cluster/" rel="tag"> <i class="fa fa-tag"> </i> InnoDB Cluster</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/02/数据库相关/MySQL/MySQL HA/InnoDB Cluster/InnoDB Cluster简介/" rel="next" title="InnoDB Cluster简介">
+                <i class="fa fa-chevron-left"></i> InnoDB Cluster简介
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/04/数据库相关/MySQL/MySQL HA/InnoDB Cluster/单机3实例搭建InnoDB Cluster环境/" rel="prev" title="单机3实例搭建InnoDB Cluster环境">
+                单机3实例搭建InnoDB Cluster环境 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        ﻿<!--MOB SHARE BEGIN-->
+                            <div class="-mob-share-ui-button -mob-share-open">分享</div>
+                            <div class="-mob-share-ui" style="display: none">
+                                <ul class="-mob-share-list">
+				    <li class="-mob-share-weixin"><p>微信</p></li>
+                                    <li class="-mob-share-qq"><p>QQ好友</p></li>
+				    <li class="-mob-share-qzone"><p>QQ空间</p></li>
+				    <li class="-mob-share-youdao"><p>有道云笔记</p></li>
+				    <li class="-mob-share-weibo"><p>新浪微博</p></li>
+                                    <li class="-mob-share-tencentweibo"><p>腾讯微博</p></li>
+                                    <li class="-mob-share-douban"><p>豆瓣</p></li>
+                                    <li class="-mob-share-facebook"><p>Facebook</p></li>
+                                    <li class="-mob-share-twitter"><p>Twitter</p></li>
+                                    <li class="-mob-share-google"><p>Google+</p></li>
+                                    <li class="-mob-share-linkedin"><p>LinkedIn</p></li>
+                                </ul>
+                                <div class="-mob-share-close">取消</div>
+                            </div>
+<div class="-mob-share-ui-bg"></div>
+<script id="-mob-share" src="http://f1.webshare.mob.com/code/mob-share.js?appkey=b21b3b396423fbd4db32b55d570db922"></script>
+<!--MOB SHARE END-->
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.png"
+               alt="小强斋太" />
+          <p class="site-author-name" itemprop="name">小强斋太</p>
+           
+              <p class="site-description motion-element" itemprop="description">Stay hungry. Stay foolish</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wangshengzhuang" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wangshengzhuang.com" title="小强斋太-Study Notes" target="_blank">小强斋太-Study Notes</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        <br/>
+<div>
+<span> 总访问量(PV): <img src="http://cc.amazingcounters.com/counter.php?i=3214342&c=9643339" alt="UV" title="总访问量">
+独立访客(UV): <img src="http://cc.amazingcounters.com/counter.php?i=3214343&c=9643342" alt="PV" title="访问人数"> 
+</span>
+</div>
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Yum-安装MySQL-Shell"><span class="nav-text">1. Yum 安装MySQL Shell</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-创建三个沙盒实例"><span class="nav-text">2. 创建三个沙盒实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Creating-the-InnoDB-Cluster"><span class="nav-text">3.  Creating the InnoDB Cluster</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Adding-Instances-to-an-InnoDB-Cluster"><span class="nav-text">4. Adding Instances to an InnoDB Cluster</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-安装配置-MySQL-Router"><span class="nav-text">5. 安装配置 MySQL Router</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-Testing-Failover"><span class="nav-text">6. Testing Failover</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小强斋太</span>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "e97c4421445f4327b7168d5d1f51a36c",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      $('#local-search-input').focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("wtjyw6ICkB3kdGGpS6e750op-gzGzoHsz", "1VgU4A2cb7V5hk7UskuqbrWr");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1497 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*��������ɫ*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*��Ӱ��ɫ*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*�ϱ߿���ɫ*/
+        border-left-color: #1E92FB;    /*���߿���ɫ*/
+    }
+</style>
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux,NFS," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="小强斋太-Study Notes" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="一、NFS  简介NFS（Network File System）即网络文件系统，它允许网络中的计算机之间通过TCP/IP网络共享资源。在NFS的应用中，本地NFS的客户端应用可以透明地读写位于远端NFS服务器上的文件，就像访问本地文件一样。">
+<meta name="keywords" content="Linux,NFS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CentOS7安装配置 NFS">
+<meta property="og:url" content="http://wangshengzhuang.com/2017/06/07/Linux/Linux基础/CentOS 7 安装配置 NFS/index.html">
+<meta property="og:site_name" content="小强斋太-Study Notes">
+<meta property="og:description" content="一、NFS  简介NFS（Network File System）即网络文件系统，它允许网络中的计算机之间通过TCP/IP网络共享资源。在NFS的应用中，本地NFS的客户端应用可以透明地读写位于远端NFS服务器上的文件，就像访问本地文件一样。">
+<meta property="og:image" content="http://image.wangshengzhuang.com/17-8-7/50203549.jpg">
+<meta property="og:updated_time" content="2017-08-20T14:54:42.829Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CentOS7安装配置 NFS">
+<meta name="twitter:description" content="一、NFS  简介NFS（Network File System）即网络文件系统，它允许网络中的计算机之间通过TCP/IP网络共享资源。在NFS的应用中，本地NFS的客户端应用可以透明地读写位于远端NFS服务器上的文件，就像访问本地文件一样。">
+<meta name="twitter:image" content="http://image.wangshengzhuang.com/17-8-7/50203549.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wangshengzhuang.com/2017/06/07/Linux/Linux基础/CentOS 7 安装配置 NFS/"/>
+
+
+
+
+
+  <title>CentOS7安装配置 NFS | 小强斋太-Study Notes</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?d5edeb6a5e3eb7303821bb702fa1df54";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+	<a href="https://github.com/wangshengzhuang"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小强斋太-Study Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Stay hungry. Stay foolish</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-[object Object]"></i> <br />
+            
+            站点地图
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocapitalize="off" autocomplete="off" autocorrect="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wangshengzhuang.com/2017/06/07/Linux/Linux基础/CentOS 7 安装配置 NFS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小强斋太">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小强斋太-Study Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                CentOS7安装配置 NFS
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-07T00:00:00+08:00">
+                2017-06-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/Linux基础/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux基础</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/06/07/Linux/Linux基础/CentOS 7 安装配置 NFS/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/06/07/Linux/Linux基础/CentOS 7 安装配置 NFS/" class="leancloud_visitors" data-flag-title="CentOS7安装配置 NFS">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  2,734
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长预计</span>
+                
+                <span title="阅读时长预计">
+                  12
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一、NFS-简介"><a href="#一、NFS-简介" class="headerlink" title="一、NFS  简介"></a>一、NFS  简介</h1><p>NFS（Network File System）即网络文件系统，它允许网络中的计算机之间通过TCP/IP网络共享资源。在NFS的应用中，本地NFS的客户端应用可以透明地读写位于远端NFS服务器上的文件，就像访问本地文件一样。</p>
+<p><img src="http://image.wangshengzhuang.com/17-8-7/50203549.jpg" alt=""></p>
+<a id="more"></a>
+<h2 id="1-1-nfs为什么需要RPC"><a href="#1-1-nfs为什么需要RPC" class="headerlink" title="1.1 nfs为什么需要RPC?"></a>1.1 nfs为什么需要RPC?</h2><p>RPC（NFS服务需要依赖RPC服务，这个比较重要） 要想了解NFS，必然要提到RPC这个服务。 因为NFS支持的功能还是比较多的，并且不同的功能都会使用不同的程序来启动。每启动一个功能就会启用一些端口来传输数据，因此NFS的功能所对应的端口才没有固定，而是采用随机取用一些未被使用的小于1024的端口来作为传输之用。但如此一来又造成客户端要连接服务器时的困扰，因为客户端要知道服务器端的相关端口才能够联机，此时我们需要远程过程调用（RPC）的服务。 RPC最主要的功能就是指定每个NFS功能所对应的端口号，并且回报给客户端，让客户端可以连接到正确的端口上。当服务器在启动NFS时会随机选用数个端口，并主动地向RPC注册。因此RPC可以知道每个端口对应的NFS功能。然后RPC固定使用端口111来监听客户端的请求并回报客户端正确的端口，所以可以让NFS的启动更为容易。 注意，启动NFS之前，要先启动RPC服务；否则NFS无法向RPC注册。另外，重新启动RPC时原本注册的数据会不见，因此RPC重新启动后它管理的所有程序都需要重新启动以重新向RPC注册，比如NFS服务。</p>
+<p>其实，我们可以简单的理解为：NFS当作RPC服务中的一种，同时将RPC服务当作NFS服务器与NFS客户端的中间接口人，就是说NFS客户端访问NFS服务器，必须经过RPC这个接口人，才可以去访问。</p>
+<h2 id="1-2-NFS的工作流程"><a href="#1-2-NFS的工作流程" class="headerlink" title="1.2 NFS的工作流程"></a>1.2 NFS的工作流程</h2><p>1、由程序在NFS客户端发起存取文件的请求，客户端本地的RPC(rpcbind)服务会通过网络向NFS服务端的RPC的111端口发出文件存取功能的请求。`</p>
+<p>2、NFS服务端的RPC找到对应已注册的NFS端口，通知客户端RPC服务。</p>
+<p>3、客户端获取正确的端口，并与NFS daemon联机存取数据。</p>
+<p>4、存取数据成功后，返回前端访问程序，完成一次存取操作。</p>
+<h1 id="二、NFS服务安装配置"><a href="#二、NFS服务安装配置" class="headerlink" title="二、NFS服务安装配置"></a>二、NFS服务安装配置</h1><p>安装rpcbind、nfs-utils</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum <span class="keyword">install</span>  rpcbind nfs-utils</div></pre></td></tr></table></figure>
+<p>设置开机自启动</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">systemctl <span class="built_in">enable</span> rpcbind</div><div class="line">systemctl <span class="built_in">enable</span> nfs-server</div></pre></td></tr></table></figure>
+<p>查看当前服务状态（<strong>暂时不要启动nfs-server， 等下面固定好nfs服务端口后再启动，可以避免重启电脑</strong>）</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[root@test002 ~]# systemctl status rpcbind</div><div class="line">● rpcbind.service - RPC bind service</div><div class="line">   Loaded: loaded (/usr/lib/systemd/system/rpcbind.service; indirect; vendor preset: enabled)</div><div class="line">   Active: active (running) since Sun 2017-08-13 13:34:40 CST; 31s ago</div><div class="line"> Main PID: 2289 (rpcbind)</div><div class="line">   CGroup: /system.slice/rpcbind.service</div><div class="line">           └─2289 /sbin/rpcbind -w</div><div class="line"></div><div class="line">Aug 13 13:34:39 test002 systemd[1]: Starting RPC bind service...</div><div class="line">Aug 13 13:34:40 test002 systemd[1]: Started RPC bind service.</div><div class="line">[root@test002 ~]# systemctl status nfs-server</div><div class="line">● nfs-server.service - NFS server and services</div><div class="line">   Loaded: loaded (/usr/lib/systemd/system/nfs-server.service; disabled; vendor preset: disabled)</div><div class="line">   Active: inactive (dead)</div></pre></td></tr></table></figure>
+<p>看nfs服务向rpc注册的端口信息(当前nfs-server 没有启动，所有没有注册端口)</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@test002 ~]<span class="comment"># rpcinfo -p</span></div><div class="line">   program vers proto   port  service</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 4 </span>  tcp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 3 </span>  tcp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 2 </span>  tcp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 4 </span>  udp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 3 </span>  udp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 2 </span>  udp   <span class="number"> 111 </span> portmapper</div></pre></td></tr></table></figure>
+<p>如果你此时启动nfs,可以发现nfs 随机注册的端口如下（<strong>暂时不要启动nfs-server， 等下面固定好nfs服务端口后再启动，可以避免重启电脑</strong>）</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">[root@test006 ~]<span class="comment"># rpcinfo -p</span></div><div class="line">   program vers proto   port  service</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 4 </span>  tcp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 3 </span>  tcp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 2 </span>  tcp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 4 </span>  udp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 3 </span>  udp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 2 </span>  udp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100024 </span>  <span class="number"> 1 </span>  udp <span class="number"> 49056 </span> status</div><div class="line">   <span class="number"> 100005 </span>  <span class="number"> 1 </span>  udp <span class="number"> 20048 </span> mountd</div><div class="line">   <span class="number"> 100024 </span>  <span class="number"> 1 </span>  tcp <span class="number"> 49730 </span> status</div><div class="line">   <span class="number"> 100005 </span>  <span class="number"> 1 </span>  tcp <span class="number"> 20048 </span> mountd</div><div class="line">   <span class="number"> 100005 </span>  <span class="number"> 2 </span>  udp <span class="number"> 20048 </span> mountd</div><div class="line">   <span class="number"> 100005 </span>  <span class="number"> 2 </span>  tcp <span class="number"> 20048 </span> mountd</div><div class="line">   <span class="number"> 100005 </span>  <span class="number"> 3 </span>  udp <span class="number"> 20048 </span> mountd</div><div class="line">   <span class="number"> 100005 </span>  <span class="number"> 3 </span>  tcp <span class="number"> 20048 </span> mountd</div><div class="line">   <span class="number"> 100003 </span>  <span class="number"> 3 </span>  tcp  <span class="number"> 2049 </span> nfs</div><div class="line">   <span class="number"> 100003 </span>  <span class="number"> 4 </span>  tcp  <span class="number"> 2049 </span> nfs</div><div class="line">   <span class="number"> 100227 </span>  <span class="number"> 3 </span>  tcp  <span class="number"> 2049 </span> nfs_acl</div><div class="line">   <span class="number"> 100003 </span>  <span class="number"> 3 </span>  udp  <span class="number"> 2049 </span> nfs</div><div class="line">   <span class="number"> 100003 </span>  <span class="number"> 4 </span>  udp  <span class="number"> 2049 </span> nfs</div><div class="line">   <span class="number"> 100227 </span>  <span class="number"> 3 </span>  udp  <span class="number"> 2049 </span> nfs_acl</div><div class="line">   <span class="number"> 100021 </span>  <span class="number"> 1 </span>  udp <span class="number"> 56137 </span> nlockmgr</div><div class="line">   <span class="number"> 100021 </span>  <span class="number"> 3 </span>  udp <span class="number"> 56137 </span> nlockmgr</div><div class="line">   <span class="number"> 100021 </span>  <span class="number"> 4 </span>  udp <span class="number"> 56137 </span> nlockmgr</div><div class="line">   <span class="number"> 100021 </span>  <span class="number"> 1 </span>  tcp <span class="number"> 33826 </span> nlockmgr</div><div class="line">   <span class="number"> 100021 </span>  <span class="number"> 3 </span>  tcp <span class="number"> 33826 </span> nlockmgr</div><div class="line">   <span class="number"> 100021 </span>  <span class="number"> 4 </span>  tcp <span class="number"> 33826 </span> nlockmgr</div></pre></td></tr></table></figure>
+<h1 id="三、防火墙设置"><a href="#三、防火墙设置" class="headerlink" title="三、防火墙设置"></a>三、防火墙设置</h1><p>NFS 的防火墙特别难设定规则，为什么呢？因为除了固定的port 111, 2049 之外， 还有很多不固定的端口是由rpc.mountd, rpc.rquotad 等服务所开启的。因此我们需要在/etc/sysconfig/nfs 指定特定的端口，这样每次启动nfs 时，相关服务启动的端口就会固定，如此一来， 我们就能够设定正确的防火墙了！</p>
+<h2 id="3-1-固定nfs服务端口"><a href="#3-1-固定nfs服务端口" class="headerlink" title="3.1 固定nfs服务端口"></a>3.1 固定nfs服务端口</h2><p>固定端口nfs 2049、portmapper111 ，另外3个服务端口可设置为mountd 892、rpc.statd 662、  nlockmgr 32803、32769</p>
+<p>具体配置：</p>
+<p><strong>1.修改/etc/sysconfig/nfs文件，将下列内容的注释去掉，如果没有则添加：</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"># Port rpc.mountd should listen on.</div><div class="line">MOUNTD_PORT=892</div><div class="line">#</div><div class="line"># Optional arguments passed to rpc.statd. See rpc.statd(8)</div><div class="line">STATDARG=""</div><div class="line"># Port rpc.statd should listen on.</div><div class="line">STATD_PORT=662</div><div class="line"># Outgoing port statd should used. The default is port</div><div class="line"># is random</div><div class="line">STATD_OUTGOING_PORT=2020</div></pre></td></tr></table></figure>
+<p><strong>2. vim /etc/modprobe.d/lockd.conf</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"># Set the TCP port that the NFS lock manager should use.</div><div class="line"># port must be a valid TCP port value (1-65535).</div><div class="line">options lockd nlm_tcpport=32803</div><div class="line">#</div><div class="line"># Set the UDP port that the NFS lock manager should use.</div><div class="line"># port must be a valid UDP port value (1-65535).</div><div class="line">options lockd nlm_udpport=32769</div></pre></td></tr></table></figure>
+<p>固定之后,启动nfs-server服务，后执行<code>rpcinfo -p</code>命令,查看nfs向rpc注册的端口</p>
+<p>（如果你已经启动过nfs-server服务，则光重启NFS服务不能解决问题，需要重启电脑，才能将端口固定）</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">[root@test006 ~]<span class="comment"># rpcinfo -p</span></div><div class="line">   program vers proto   port  service</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 4 </span>  tcp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 3 </span>  tcp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 2 </span>  tcp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 4 </span>  udp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 3 </span>  udp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100000 </span>  <span class="number"> 2 </span>  udp   <span class="number"> 111 </span> portmapper</div><div class="line">   <span class="number"> 100005 </span>  <span class="number"> 1 </span>  udp   <span class="number"> 892 </span> mountd</div><div class="line">   <span class="number"> 100005 </span>  <span class="number"> 1 </span>  tcp   <span class="number"> 892 </span> mountd</div><div class="line">   <span class="number"> 100005 </span>  <span class="number"> 2 </span>  udp   <span class="number"> 892 </span> mountd</div><div class="line">   <span class="number"> 100005 </span>  <span class="number"> 2 </span>  tcp   <span class="number"> 892 </span> mountd</div><div class="line">   <span class="number"> 100005 </span>  <span class="number"> 3 </span>  udp   <span class="number"> 892 </span> mountd</div><div class="line">   <span class="number"> 100005 </span>  <span class="number"> 3 </span>  tcp   <span class="number"> 892 </span> mountd</div><div class="line">   <span class="number"> 100024 </span>  <span class="number"> 1 </span>  udp   <span class="number"> 662 </span> status</div><div class="line">   <span class="number"> 100024 </span>  <span class="number"> 1 </span>  tcp   <span class="number"> 662 </span> status</div><div class="line">   <span class="number"> 100003 </span>  <span class="number"> 3 </span>  tcp  <span class="number"> 2049 </span> nfs</div><div class="line">   <span class="number"> 100003 </span>  <span class="number"> 4 </span>  tcp  <span class="number"> 2049 </span> nfs</div><div class="line">   <span class="number"> 100227 </span>  <span class="number"> 3 </span>  tcp  <span class="number"> 2049 </span> nfs_acl</div><div class="line">   <span class="number"> 100003 </span>  <span class="number"> 3 </span>  udp  <span class="number"> 2049 </span> nfs</div><div class="line">   <span class="number"> 100003 </span>  <span class="number"> 4 </span>  udp  <span class="number"> 2049 </span> nfs</div><div class="line">   <span class="number"> 100227 </span>  <span class="number"> 3 </span>  udp  <span class="number"> 2049 </span> nfs_acl</div><div class="line">   <span class="number"> 100021 </span>  <span class="number"> 1 </span>  udp <span class="number"> 32769 </span> nlockmgr</div><div class="line">   <span class="number"> 100021 </span>  <span class="number"> 3 </span>  udp <span class="number"> 32769 </span> nlockmgr</div><div class="line">   <span class="number"> 100021 </span>  <span class="number"> 4 </span>  udp <span class="number"> 32769 </span> nlockmgr</div><div class="line">   <span class="number"> 100021 </span>  <span class="number"> 1 </span>  tcp <span class="number"> 32803 </span> nlockmgr</div><div class="line">   <span class="number"> 100021 </span>  <span class="number"> 3 </span>  tcp <span class="number"> 32803 </span> nlockmgr</div><div class="line">   <span class="number"> 100021 </span>  <span class="number"> 4 </span>  tcp <span class="number"> 32803 </span> nlockmgr</div></pre></td></tr></table></figure>
+<h2 id="3-2-配置防火墙："><a href="#3-2-配置防火墙：" class="headerlink" title="3.2 配置防火墙："></a>3.2 配置防火墙：</h2><p>编辑firewalld中nfs服务的配置文件：</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cp /usr/<span class="class"><span class="keyword">lib</span>/<span class="title">firewalld</span>/<span class="title">services</span>/<span class="title">nfs</span>.<span class="title">xml</span> /<span class="title">etc</span>/<span class="title">firewalld</span>/<span class="title">services</span>/</span></div></pre></td></tr></table></figure>
+<p>将刚才固定的那几个端口加入配置文件：</p>
+<figure class="highlight vhdl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span>?&gt;</div><div class="line">&lt;service&gt;</div><div class="line">  &lt;short&gt;NFS4&lt;/short&gt;</div><div class="line">  &lt;description&gt;The NFS4 protocol <span class="keyword">is</span> used <span class="keyword">to</span> share files via TCP networking. You will need <span class="keyword">to</span> have the NFS tools installed <span class="keyword">and</span> properly configure your NFS server <span class="keyword">for</span> this option <span class="keyword">to</span> be useful.&lt;/description&gt;</div><div class="line">  &lt;<span class="keyword">port</span> protocol=<span class="string">"tcp"</span> <span class="keyword">port</span>=<span class="string">"111"</span>/&gt;</div><div class="line">  &lt;<span class="keyword">port</span> protocol=<span class="string">"tcp"</span> <span class="keyword">port</span>=<span class="string">"662"</span>/&gt;</div><div class="line">  &lt;<span class="keyword">port</span> protocol=<span class="string">"tcp"</span> <span class="keyword">port</span>=<span class="string">"892"</span>/&gt;</div><div class="line">  &lt;<span class="keyword">port</span> protocol=<span class="string">"tcp"</span> <span class="keyword">port</span>=<span class="string">"2049"</span>/&gt;</div><div class="line">  &lt;<span class="keyword">port</span> protocol=<span class="string">"tcp"</span> <span class="keyword">port</span>=<span class="string">"32803"</span>/&gt;</div><div class="line">  &lt;<span class="keyword">port</span> protocol=<span class="string">"udp"</span> <span class="keyword">port</span>=<span class="string">"111"</span>/&gt;</div><div class="line">  &lt;<span class="keyword">port</span> protocol=<span class="string">"udp"</span> <span class="keyword">port</span>=<span class="string">"662"</span>/&gt;</div><div class="line">  &lt;<span class="keyword">port</span> protocol=<span class="string">"udp"</span> <span class="keyword">port</span>=<span class="string">"892"</span>/&gt;</div><div class="line">  &lt;<span class="keyword">port</span> protocol=<span class="string">"udp"</span> <span class="keyword">port</span>=<span class="string">"2049"</span>/&gt;</div><div class="line">  &lt;<span class="keyword">port</span> protocol=<span class="string">"udp"</span> <span class="keyword">port</span>=<span class="string">"32769"</span>/&gt;</div><div class="line">&lt;/service&gt;</div></pre></td></tr></table></figure>
+<p>开启nfs</p>
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@test006 nfs]# firewall-cmd --permanent --zone=public --add-service=nfs</div><div class="line"><span class="keyword">success</span></div><div class="line">[root@test006 nfs]# firewall-cmd --reload</div><div class="line">success</div></pre></td></tr></table></figure>
+<h1 id="四、挂载"><a href="#四、挂载" class="headerlink" title="四、挂载"></a>四、挂载</h1><h2 id="4-1-exports文件配置格式"><a href="#4-1-exports文件配置格式" class="headerlink" title="4.1 exports文件配置格式"></a>4.1 exports文件配置格式</h2><figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">NFS共享的目录 NFS客户端地址<span class="number">1</span>(参数<span class="number">1</span>,参数<span class="number">2</span>,...) 客户端地址<span class="number">2</span>(参数<span class="number">1</span>,参数<span class="number">2</span>,...)</div></pre></td></tr></table></figure>
+<p><strong>说明：</strong><br>NFS共享目录：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">要用绝对路径，可被nfsnobody读写。</div></pre></td></tr></table></figure>
+<p>NFS客户端地址：</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">指定<span class="built_in">IP</span>: <span class="number">192.168</span><span class="meta">.0</span><span class="meta">.1</span></div><div class="line">指定子网所有主机: <span class="number">192.168</span><span class="meta">.0</span><span class="meta">.0</span>/<span class="number">24</span></div><div class="line">指定域名的主机: <span class="keyword">test</span>.com</div><div class="line">指定域名所有主机: *.test.com</div><div class="line">所有主机: *</div></pre></td></tr></table></figure>
+<p>参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数值</th>
+<th>内容说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rw ro</td>
+<td>该目录分享的权限是可擦写(read-write) 或只读(read-only)，但最终能不能读写，还是与文件系统的rwx 及身份有关。</td>
+</tr>
+<tr>
+<td>sync async</td>
+<td>sync 代表数据会同步写入到内存与硬盘中，async 则代表数据会先暂存于内存当中，而非直接写入硬盘！</td>
+</tr>
+<tr>
+<td>no_root_squash root_squash</td>
+<td>客户端使用NFS 文件系统的账号若为 root 时，系统该如何判断这个账号的身份？预设的情况下，客户端root 的身份会由root_squash 的设定压缩成nfsnobody， 如此对服务器的系统会较有保障。但如果你想要开放客户端使用root 身份来操作服务器的文件系统，那么这里就得要开 no_root_squash 才行！</td>
+</tr>
+<tr>
+<td>all_squash</td>
+<td>不论登入NFS 的使用者身份为何， 他的身份都会被压缩成为匿名用户，通常也就是 nobody(nfsnobody) 啦！</td>
+</tr>
+<tr>
+<td>anonuid anongid</td>
+<td>anon 意指anonymous (匿名者) 前面关于*_squash 提到的匿名用户的UID 设定值，通常为nobody(nfsnobody)，但是你可以自行设定这个UID 的值！当然，这个UID 必需要存在于你的/etc/passwd 当中！anonuid 指的是UID 而anongid 则是群组的GID 啰。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4-2-Server创建nfs共享"><a href="#4-2-Server创建nfs共享" class="headerlink" title="4.2 Server创建nfs共享"></a>4.2 Server创建nfs共享</h2><p>假如uid=1001 gid=1001是应用用户</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mkdir -p /opt/nfsshare</div><div class="line">[root@<span class="built_in">test</span>006 ~]<span class="comment"># cat /etc/exports</span></div><div class="line">/opt/nfsshare 172.17.84.72(rw,sync,root_squash,all_squash,anonuid=1001,anongid=1001)</div></pre></td></tr></table></figure>
+<p>重新加载nfs配置</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root<span class="variable">@test006</span> ~]<span class="comment"># exportfs -rv</span></div><div class="line">exporting <span class="number">172.17</span>.<span class="number">84.72</span><span class="symbol">:/opt/nfsshare</span></div></pre></td></tr></table></figure>
+<p>客户端查看nfs服务器挂载情况</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">showmount</span> <span class="selector-tag">-e</span> 172<span class="selector-class">.17</span><span class="selector-class">.84</span><span class="selector-class">.71</span></div></pre></td></tr></table></figure>
+<h2 id="4-3-Client端挂载"><a href="#4-3-Client端挂载" class="headerlink" title="4.3 Client端挂载"></a>4.3 Client端挂载</h2><p>挂载测试</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mkdir -p /mnt/nfsshare</div><div class="line">mount -t nfs  -o soft <span class="number">172.17</span>.<span class="number">84.71</span><span class="symbol">:/opt/nfsshare</span> /mnt/nfsshare</div></pre></td></tr></table></figure>
+<p>写入fstab</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root<span class="variable">@mysql002</span> ~]<span class="comment"># tail -n 1 /etc/fstab</span></div><div class="line"><span class="number">172.17</span>.<span class="number">84.71</span><span class="symbol">:/opt/nfsshare</span>  /mnt/nfsshare  nfs defaults  <span class="number">0</span> <span class="number">0</span></div></pre></td></tr></table></figure>
+<p>因为ID不一致的问题 建议Client端新建相同uid和gid的用户</p>
+<h1 id="五、autofs实现自动挂载"><a href="#五、autofs实现自动挂载" class="headerlink" title="五、autofs实现自动挂载"></a>五、autofs实现自动挂载</h1><p>参考：<a href="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/Storage_Administration_Guide/nfs-autofs.html" target="_blank" rel="external">autofs</a></p>
+<h2 id="5-1-客户端安装autofs"><a href="#5-1-客户端安装autofs" class="headerlink" title="5.1  客户端安装autofs"></a>5.1  客户端安装autofs</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">yum <span class="keyword">install</span> autofs -y</div><div class="line">systemctl <span class="keyword">enable</span> autofs</div><div class="line">systemctl <span class="keyword">start</span> autofs</div></pre></td></tr></table></figure>
+<h2 id="5-2-挂载为本地的非一级目录"><a href="#5-2-挂载为本地的非一级目录" class="headerlink" title="5.2  挂载为本地的非一级目录"></a>5.2  挂载为本地的非一级目录</h2><p>将192.168.0.103:/data目录挂载到192.168.0.104的/dir1/dir2目录</p>
+<p>查看服务端共享</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@mysql002 ~]# showmount -e <span class="number">192.168</span><span class="meta">.0</span><span class="meta">.103</span></div><div class="line">Export list for <span class="number">192.168</span><span class="meta">.0</span><span class="meta">.103</span>:</div><div class="line">/data <span class="number">192.168</span><span class="meta">.0</span><span class="meta">.104</span></div></pre></td></tr></table></figure>
+<p>修改客户端<code>vim /etc/auto.master</code>,添加以下内容, 意思是系统访问dir1下面的文件的时候，去/etc/auto.nfs 去查找nfs的配置</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="string">/dir1</span>      <span class="string">/etc/auto.nfs</span></div></pre></td></tr></table></figure>
+<p>/etc/auto.nfs 内容如下，文件需要新建</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root<span class="variable">@mysql002</span> dir2]<span class="comment"># cat /etc/auto.nfs</span></div><div class="line">dir2 -fstype=nfs <span class="number">192.168</span>.<span class="number">0</span>.<span class="number">103</span><span class="symbol">:/data</span></div></pre></td></tr></table></figure>
+<h2 id="5-3-挂载位本地的一级目录"><a href="#5-3-挂载位本地的一级目录" class="headerlink" title="5.3 挂载位本地的一级目录"></a>5.3 挂载位本地的一级目录</h2><p>修改客户端<code>vim /etc/auto.master</code>,添加以下内容, </p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="string">/-</span>      <span class="string">/etc/auto.nfs</span></div></pre></td></tr></table></figure>
+<p>/etc/auto.nfs 内容如下，文件需要新建</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/<span class="class"><span class="keyword">data</span>  -fstype=nfs 192.168.0.103:/<span class="keyword">data</span></span></div></pre></td></tr></table></figure>
+<h1 id="五、常见错误"><a href="#五、常见错误" class="headerlink" title="五、常见错误"></a>五、常见错误</h1><p>1 .  在CentOS7服务器上配置NFS服务并共享出目录后，发现客户端不能Mount共享出的目录，错误提示：</p>
+<figure class="highlight gauss"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[NFS mount <span class="built_in">Error</span>] <span class="keyword">System</span> <span class="built_in">Error</span>: No route to host.</div></pre></td></tr></table></figure>
+<p>关闭服务器端的防火墙后，问题解决，说明是防火墙端口的问题。</p>
+<p>2  client端无法读写</p>
+<ul>
+<li>确保nfs-server /etc/exports中开启了rw</li>
+<li>确保client端映射到server端的用户对于server端的目录有读写权限（涉及到uid,gid是否被压缩）</li>
+<li>确保client端挂载参数包含rw</li>
+</ul>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/Storage_Administration_Guide/ch-nfs.html" target="_blank" rel="external">CHAPTER 8. NETWORK FILE SYSTEM (NFS)</a></p>
+<p><a href="http://linux.vbird.org/linux_server/0330nfs.php" target="_blank" rel="external">第十三章、文件服务器之一：NFS服务器</a></p>
+<p><a href="https://www.howtoforge.com/tutorial/setting-up-an-nfs-server-and-client-on-centos-7/" target="_blank" rel="external">https://www.howtoforge.com/tutorial/setting-up-an-nfs-server-and-client-on-centos-7/</a></p>
+<p><a href="http://www.golinuxhub.com/2017/06/rpcbindsocket-failed-to-listen-on.html" target="_blank" rel="external">sysctl.conf禁用ipv6导致nfs无法启动的问题解决</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>好记性不如烂笔头，生命不息，学习不止！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/wechatpay.jpg" alt="小强斋太 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/alipay.jpg" alt="小强斋太 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      小强斋太
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://wangshengzhuang.com/2017/06/07/Linux/Linux基础/CentOS 7 安装配置 NFS/" title="CentOS7安装配置 NFS">http://wangshengzhuang.com/2017/06/07/Linux/Linux基础/CentOS 7 安装配置 NFS/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本文版权归作者所有,转载请注明出处！'
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag"> <i class="fa fa-tag"> </i> Linux</a>
+          
+            <a href="/tags/NFS/" rel="tag"> <i class="fa fa-tag"> </i> NFS</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/06/运维相关/Keepalived/Configuring Simple Virtual IP Address Failover Using Keepalived/" rel="next" title="Configuring Simple Virtual IP Address Failover Using Keepalived">
+                <i class="fa fa-chevron-left"></i> Configuring Simple Virtual IP Address Failover Using Keepalived
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/08/Linux/Linux问题解决/sysctl.conf禁用ipv6导致nfs无法启动的问题解决/" rel="prev" title="sysctl.conf禁用ipv6导致nfs无法启动的问题解决">
+                sysctl.conf禁用ipv6导致nfs无法启动的问题解决 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        ﻿<!--MOB SHARE BEGIN-->
+                            <div class="-mob-share-ui-button -mob-share-open">分享</div>
+                            <div class="-mob-share-ui" style="display: none">
+                                <ul class="-mob-share-list">
+				    <li class="-mob-share-weixin"><p>微信</p></li>
+                                    <li class="-mob-share-qq"><p>QQ好友</p></li>
+				    <li class="-mob-share-qzone"><p>QQ空间</p></li>
+				    <li class="-mob-share-youdao"><p>有道云笔记</p></li>
+				    <li class="-mob-share-weibo"><p>新浪微博</p></li>
+                                    <li class="-mob-share-tencentweibo"><p>腾讯微博</p></li>
+                                    <li class="-mob-share-douban"><p>豆瓣</p></li>
+                                    <li class="-mob-share-facebook"><p>Facebook</p></li>
+                                    <li class="-mob-share-twitter"><p>Twitter</p></li>
+                                    <li class="-mob-share-google"><p>Google+</p></li>
+                                    <li class="-mob-share-linkedin"><p>LinkedIn</p></li>
+                                </ul>
+                                <div class="-mob-share-close">取消</div>
+                            </div>
+<div class="-mob-share-ui-bg"></div>
+<script id="-mob-share" src="http://f1.webshare.mob.com/code/mob-share.js?appkey=b21b3b396423fbd4db32b55d570db922"></script>
+<!--MOB SHARE END-->
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.png"
+               alt="小强斋太" />
+          <p class="site-author-name" itemprop="name">小强斋太</p>
+           
+              <p class="site-description motion-element" itemprop="description">Stay hungry. Stay foolish</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/wangshengzhuang" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wangshengzhuang.com" title="小强斋太-Study Notes" target="_blank">小强斋太-Study Notes</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        <br/>
+<div>
+<span> 总访问量(PV): <img src="http://cc.amazingcounters.com/counter.php?i=3214342&c=9643339" alt="UV" title="总访问量">
+独立访客(UV): <img src="http://cc.amazingcounters.com/counter.php?i=3214343&c=9643342" alt="PV" title="访问人数"> 
+</span>
+</div>
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、NFS-简介"><span class="nav-text">一、NFS  简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-nfs为什么需要RPC"><span class="nav-text">1.1 nfs为什么需要RPC?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-NFS的工作流程"><span class="nav-text">1.2 NFS的工作流程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、NFS服务安装配置"><span class="nav-text">二、NFS服务安装配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、防火墙设置"><span class="nav-text">三、防火墙设置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-固定nfs服务端口"><span class="nav-text">3.1 固定nfs服务端口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-配置防火墙："><span class="nav-text">3.2 配置防火墙：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、挂载"><span class="nav-text">四、挂载</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-exports文件配置格式"><span class="nav-text">4.1 exports文件配置格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-Server创建nfs共享"><span class="nav-text">4.2 Server创建nfs共享</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-Client端挂载"><span class="nav-text">4.3 Client端挂载</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、autofs实现自动挂载"><span class="nav-text">五、autofs实现自动挂载</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#5-1-客户端安装autofs"><span class="nav-text">5.1  客户端安装autofs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-2-挂载为本地的非一级目录"><span class="nav-text">5.2  挂载为本地的非一级目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-3-挂载位本地的一级目录"><span class="nav-text">5.3 挂载位本地的一级目录</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、常见错误"><span class="nav-text">五、常见错误</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小强斋太</span>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "e97c4421445f4327b7168d5d1f51a36c",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      $('#local-search-input').focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("wtjyw6ICkB3kdGGpS6e750op-gzGzoHsz", "1VgU4A2cb7V5hk7UskuqbrWr");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
