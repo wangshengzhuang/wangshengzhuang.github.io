@@ -50,9 +50,9 @@
       <category term="Linux问题解决" scheme="http://wangshengzhuang.com/categories/Linux/Linux%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/"/>
     
     
-      <category term="Linux" scheme="http://wangshengzhuang.com/tags/Linux/"/>
-    
       <category term="NFS" scheme="http://wangshengzhuang.com/tags/NFS/"/>
+    
+      <category term="Linux" scheme="http://wangshengzhuang.com/tags/Linux/"/>
     
   </entry>
   
@@ -185,9 +185,9 @@
       <category term="Linux基础" scheme="http://wangshengzhuang.com/categories/Linux/Linux%E5%9F%BA%E7%A1%80/"/>
     
     
-      <category term="Linux" scheme="http://wangshengzhuang.com/tags/Linux/"/>
-    
       <category term="NFS" scheme="http://wangshengzhuang.com/tags/NFS/"/>
+    
+      <category term="Linux" scheme="http://wangshengzhuang.com/tags/Linux/"/>
     
   </entry>
   
@@ -955,9 +955,9 @@
       <category term="Linux基础" scheme="http://wangshengzhuang.com/categories/Linux/Linux%E5%9F%BA%E7%A1%80/"/>
     
     
-      <category term="LVM" scheme="http://wangshengzhuang.com/tags/LVM/"/>
-    
       <category term="Linux" scheme="http://wangshengzhuang.com/tags/Linux/"/>
+    
+      <category term="LVM" scheme="http://wangshengzhuang.com/tags/LVM/"/>
     
   </entry>
   
@@ -1171,7 +1171,7 @@
     <link href="http://wangshengzhuang.com/2017/05/23/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9B%B8%E5%85%B3/MySQL/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/Sysbench%E8%BF%9B%E8%A1%8CMySQL%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95/"/>
     <id>http://wangshengzhuang.com/2017/05/23/数据库相关/MySQL/性能测试/Sysbench进行MySQL压力测试/</id>
     <published>2017-05-23T14:29:25.000Z</published>
-    <updated>2017-06-28T14:59:22.327Z</updated>
+    <updated>2017-08-20T15:23:56.955Z</updated>
     
     <content type="html"><![CDATA[<p>本文主要介绍了如何使用Sysbench进行MySQL压力测试。</p>
 <a id="more"></a>
@@ -1226,7 +1226,7 @@
     <link href="http://wangshengzhuang.com/2017/05/22/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9B%B8%E5%85%B3/MySQL/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/Sysbench%E8%BF%9B%E8%A1%8CCPU%20%E5%86%85%E5%AD%98%20IO%20%E7%BA%BF%E7%A8%8B%20mutex%E6%B5%8B%E8%AF%95%E4%BE%8B%E5%AD%90/"/>
     <id>http://wangshengzhuang.com/2017/05/22/数据库相关/MySQL/性能测试/Sysbench进行CPU 内存 IO 线程 mutex测试例子/</id>
     <published>2017-05-22T14:29:25.000Z</published>
-    <updated>2017-06-28T14:59:44.911Z</updated>
+    <updated>2017-08-20T15:23:46.044Z</updated>
     
     <content type="html"><![CDATA[<p>本文主要介绍了如何使用Sysbench进行CPU、 内存、 IO 、线程、 mutex压力测试。</p>
 <a id="more"></a>
@@ -1279,7 +1279,7 @@
     <link href="http://wangshengzhuang.com/2017/05/21/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9B%B8%E5%85%B3/MySQL/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/sysbench%20%E7%AE%80%E4%BB%8B%E3%80%81%E5%AE%89%E8%A3%85%E3%80%81%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/"/>
     <id>http://wangshengzhuang.com/2017/05/21/数据库相关/MySQL/性能测试/sysbench 简介、安装、使用说明/</id>
     <published>2017-05-21T14:29:25.000Z</published>
-    <updated>2017-06-28T15:00:13.871Z</updated>
+    <updated>2017-08-20T15:23:33.450Z</updated>
     
     <content type="html"><![CDATA[<p>本文主要介绍了sysbench的安装和使用。</p>
 <a id="more"></a>
