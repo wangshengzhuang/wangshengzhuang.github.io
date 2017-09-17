@@ -3,7 +3,7 @@
   <entry>
     <title><![CDATA[sysctl.conf禁用ipv6导致nfs无法启动的问题解决]]></title>
     <url>%2F2017%2F06%2F08%2FLinux%2FLinux%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%2Fsysctl.conf%E7%A6%81%E7%94%A8ipv6%E5%AF%BC%E8%87%B4nfs%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E7%9A%84%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%2F</url>
-    <content type="text"><![CDATA[rpcbind.socket failed to listen on sockets: Address family not supported by protocol背景虚拟机模板禁用了ipv6，创建了虚拟机1234567[root@centos7 ~]# cat /etc/sysctl.conf # System default settings live in /usr/lib/sysctl.d/00-system.conf.# To override those settings, enter new settings here, or in an /etc/sysctl.d/&lt;name&gt;.conf file## For more information, see sysctl.conf(5) and sysctl.d(5).net.ipv6.conf.all.disable_ipv6 =1net.ipv6.conf.default.disable_ipv6 =1 启动nfs报错，报错如下 Error:rpcbind service fails to start with below error message in /var/log/messages 12rpcbind.socket failed to listen on sockets: Address family not supported by protocol I got this error the other day while working on Red Hat Enterprise Linux 7.3 and after digging for a while I got to know there is a sort of a BUG in RHEL 7.3. Analysis:I found a BUG reported for this issue and I was facing the exact one. https://bugzilla.redhat.com/show_bug.cgi?id=1402961 As explained by one of the engineers on the above page 1"The problem is that if you disable ipv6 n sysctl.conf, it is not disabled from the beginning of the boot, but actually quite late in the boot process. Meanwhile systemd found out that ipv6 is enabled and scheduled a start of a socket, that would listen on ipv6." Just to summarise if you have disabled ipv6 using your sysctl configurations then it is disabled only on kernel level but not via GRUB so it is not disabled completely hence systemd will attempt to make a connection on port 111 on any ipv6 address, [::]:111 during the boot up. To know more on how to disable ipv6 follow below link How to disable or enable ipv6 in Linux 解决办法: /etc/sysctl.conf 1net.ipv6.conf.all.disable_ipv6 = 1 grub级别禁用ipv6 12# dracut -v -f# systemctl start rpcbind]]></content>
+    <content type="text"><![CDATA[rpcbind.socket failed to listen on sockets: Address family not supported by protocol 背景虚拟机模板禁用了ipv6，创建了虚拟机1234567[root@centos7 ~]# cat /etc/sysctl.conf # System default settings live in /usr/lib/sysctl.d/00-system.conf.# To override those settings, enter new settings here, or in an /etc/sysctl.d/&lt;name&gt;.conf file## For more information, see sysctl.conf(5) and sysctl.d(5).net.ipv6.conf.all.disable_ipv6 =1net.ipv6.conf.default.disable_ipv6 =1 启动nfs报错，报错如下 Error:rpcbind service fails to start with below error message in /var/log/messages 12rpcbind.socket failed to listen on sockets: Address family not supported by protocol I got this error the other day while working on Red Hat Enterprise Linux 7.3 and after digging for a while I got to know there is a sort of a BUG in RHEL 7.3. Analysis:I found a BUG reported for this issue and I was facing the exact one. https://bugzilla.redhat.com/show_bug.cgi?id=1402961 As explained by one of the engineers on the above page 1"The problem is that if you disable ipv6 n sysctl.conf, it is not disabled from the beginning of the boot, but actually quite late in the boot process. Meanwhile systemd found out that ipv6 is enabled and scheduled a start of a socket, that would listen on ipv6." Just to summarise if you have disabled ipv6 using your sysctl configurations then it is disabled only on kernel level but not via GRUB so it is not disabled completely hence systemd will attempt to make a connection on port 111 on any ipv6 address, [::]:111 during the boot up. To know more on how to disable ipv6 follow below link How to disable or enable ipv6 in Linux 解决办法: /etc/sysctl.conf 1net.ipv6.conf.all.disable_ipv6 = 1 grub级别禁用ipv6 12# dracut -v -f# systemctl start rpcbind]]></content>
       <categories>
         <category>Linux</category>
         <category>Linux问题解决</category>
@@ -47,8 +47,8 @@
         <category>Keepalived</category>
       </categories>
       <tags>
-        <tag>Keepalived</tag>
         <tag>VRRP</tag>
+        <tag>Keepalived</tag>
       </tags>
   </entry>
   <entry>
@@ -214,8 +214,8 @@
         <category>性能测试</category>
       </categories>
       <tags>
-        <tag>Sysbench</tag>
         <tag>MySQL</tag>
+        <tag>Sysbench</tag>
       </tags>
   </entry>
   <entry>
@@ -228,8 +228,8 @@
         <category>性能测试</category>
       </categories>
       <tags>
-        <tag>Sysbench</tag>
         <tag>MySQL</tag>
+        <tag>Sysbench</tag>
       </tags>
   </entry>
   <entry>
@@ -242,8 +242,8 @@
         <category>性能测试</category>
       </categories>
       <tags>
-        <tag>MySQL</tag>
         <tag>sysbench</tag>
+        <tag>MySQL</tag>
       </tags>
   </entry>
   <entry>
@@ -494,6 +494,6 @@
   <entry>
     <title><![CDATA[Hello World]]></title>
     <url>%2F2017%2F05%2F01%2Fhello-world%2F</url>
-    <content type="text"><![CDATA[今天是五一劳动节，我的新Blog诞生了。希望在新的一年里，能在此认认真真的记录自己的成长！ 目标：每天一篇学习笔记]]></content>
+    <content type="text"><![CDATA[今天是五一劳动节，我的新Blog诞生了。希望在新的一年里，能在此认认真真的记录自己的成长！ 目标：每天一篇学习笔记 123456var HelloMessage = React.createClass(&#123; render: function () &#123; return &lt;div&gt;Hello &#123;this.props.name&#125;&lt;/div&gt;; &#125;&#125;);React.render(&lt;HelloMessage name=&quot;iissnan&quot; /&gt;, document.body);]]></content>
   </entry>
 </search>

@@ -114,7 +114,7 @@
 <meta property="og:site_name" content="小强斋太-Study Notes">
 <meta property="og:description" content="本文主要介绍了Keepalived配置文件keepalived.conf。">
 <meta property="og:image" content="http://image.wangshengzhuang.com/17-7-3/62480061.jpg">
-<meta property="og:updated_time" content="2017-07-03T14:36:27.299Z">
+<meta property="og:updated_time" content="2017-09-02T06:58:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="keepalived.conf说明">
 <meta name="twitter:description" content="本文主要介绍了Keepalived配置文件keepalived.conf。">
@@ -517,7 +517,7 @@
 <a id="more"></a>
 <p>keepalived只有一个配置文件keepalived.conf，里面主要包括以下几个配置区域，分别是global_defs、static_ipaddress、static_routes、vrrp_script、vrrp_instance和virtual_server。</p>
 <h3 id="1-global-defs区域"><a href="#1-global-defs区域" class="headerlink" title="1. global_defs区域"></a>1. global_defs区域</h3><p>主要是配置故障发生时的通知对象以及机器标识</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">global_defs &#123;</div><div class="line">    notification_email &#123;</div><div class="line">        a@abc<span class="selector-class">.com</span></div><div class="line">        b@abc<span class="selector-class">.com</span></div><div class="line">        ...</div><div class="line">    &#125;</div><div class="line">    notification_email_from alert@abc<span class="selector-class">.com</span></div><div class="line">    smtp_server smtp<span class="selector-class">.abc</span><span class="selector-class">.com</span></div><div class="line">    smtp_connect_timeout <span class="number">30</span></div><div class="line">    enable_traps</div><div class="line">    router_id host163</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">global_defs &#123;</div><div class="line">    notification_email &#123;</div><div class="line">        a@abc.com</div><div class="line">        b@abc.com</div><div class="line">        ...</div><div class="line">    &#125;</div><div class="line">    notification_email_from alert@abc.com</div><div class="line">    smtp_server smtp.abc.com</div><div class="line">    smtp_connect_timeout 30</div><div class="line">    enable_traps</div><div class="line">    router_id host163</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <ul>
 <li>notification_email 故障发生时给谁发邮件通知。</li>
 <li>notification_email_from 通知邮件从哪个地址发出。</li>

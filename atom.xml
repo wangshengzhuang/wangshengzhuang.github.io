@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://wangshengzhuang.com/"/>
-  <updated>2017-08-20T15:16:11.166Z</updated>
+  <updated>2017-09-17T10:11:05.827Z</updated>
   <id>http://wangshengzhuang.com/</id>
   
   <author>
@@ -20,9 +20,10 @@
     <link href="http://wangshengzhuang.com/2017/06/08/Linux/Linux%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/sysctl.conf%E7%A6%81%E7%94%A8ipv6%E5%AF%BC%E8%87%B4nfs%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E7%9A%84%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/"/>
     <id>http://wangshengzhuang.com/2017/06/08/Linux/Linux问题解决/sysctl.conf禁用ipv6导致nfs无法启动的问题解决/</id>
     <published>2017-06-07T16:00:00.000Z</published>
-    <updated>2017-08-20T15:16:11.166Z</updated>
+    <updated>2017-09-17T10:11:05.827Z</updated>
     
-    <content type="html"><![CDATA[<h3 id="rpcbind-socket-failed-to-listen-on-sockets-Address-family-not-supported-by-protocol"><a href="#rpcbind-socket-failed-to-listen-on-sockets-Address-family-not-supported-by-protocol" class="headerlink" title="rpcbind.socket failed to listen on sockets: Address family not supported by protocol"></a><a href="http://www.golinuxhub.com/2017/06/rpcbindsocket-failed-to-listen-on.html" target="_blank" rel="external">rpcbind.socket failed to listen on sockets: Address family not supported by protocol</a></h3><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>虚拟机模板禁用了ipv6，创建了虚拟机<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[root@centos7 ~]# <span class="keyword">cat</span> /etc/sysctl.<span class="keyword">conf</span> </div><div class="line"># System default settings live <span class="keyword">in</span> /usr/lib/sysctl.<span class="keyword">d</span>/00-system.<span class="keyword">conf</span>.</div><div class="line"># To override those settings, enter new settings here, or <span class="keyword">in</span> <span class="keyword">an</span> /etc/sysctl.<span class="keyword">d</span>/&lt;name&gt;.<span class="keyword">conf</span> <span class="keyword">file</span></div><div class="line">#</div><div class="line"># <span class="keyword">For</span> <span class="keyword">more</span> information, see sysctl.<span class="keyword">conf</span>(5) and sysctl.<span class="built_in">d</span>(5).</div><div class="line"><span class="keyword">net</span>.ipv6.<span class="keyword">conf</span>.all.disable_ipv6 =1</div><div class="line"><span class="keyword">net</span>.ipv6.<span class="keyword">conf</span>.default.disable_ipv6 =1</div></pre></td></tr></table></figure></p>
+    <content type="html"><![CDATA[<h3 id="rpcbind-socket-failed-to-listen-on-sockets-Address-family-not-supported-by-protocol"><a href="#rpcbind-socket-failed-to-listen-on-sockets-Address-family-not-supported-by-protocol" class="headerlink" title="rpcbind.socket failed to listen on sockets: Address family not supported by protocol"></a><a href="http://www.golinuxhub.com/2017/06/rpcbindsocket-failed-to-listen-on.html" target="_blank" rel="external">rpcbind.socket failed to listen on sockets: Address family not supported by protocol</a></h3><a id="more"></a>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>虚拟机模板禁用了ipv6，创建了虚拟机<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[root@centos7 ~]# <span class="keyword">cat</span> /etc/sysctl.<span class="keyword">conf</span> </div><div class="line"># System default settings live <span class="keyword">in</span> /usr/lib/sysctl.<span class="keyword">d</span>/00-system.<span class="keyword">conf</span>.</div><div class="line"># To override those settings, enter new settings here, or <span class="keyword">in</span> <span class="keyword">an</span> /etc/sysctl.<span class="keyword">d</span>/&lt;name&gt;.<span class="keyword">conf</span> <span class="keyword">file</span></div><div class="line">#</div><div class="line"># <span class="keyword">For</span> <span class="keyword">more</span> information, see sysctl.<span class="keyword">conf</span>(5) and sysctl.<span class="built_in">d</span>(5).</div><div class="line"><span class="keyword">net</span>.ipv6.<span class="keyword">conf</span>.all.disable_ipv6 =1</div><div class="line"><span class="keyword">net</span>.ipv6.<span class="keyword">conf</span>.default.disable_ipv6 =1</div></pre></td></tr></table></figure></p>
 <p>启动nfs报错，报错如下</p>
 <h3 id="Error"><a href="#Error" class="headerlink" title="Error:"></a>Error:</h3><p>rpcbind service fails to start with below error message in /var/log/messages</p>
 <figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">rpcbind.socket failed <span class="keyword">to</span> listen <span class="keyword">on</span> sockets: Address family <span class="keyword">not</span> support</div><div class="line">ed <span class="keyword">by</span> protocol</div></pre></td></tr></table></figure>
@@ -41,7 +42,7 @@
     
     <summary type="html">
     
-      &lt;h3 id=&quot;rpcbind-socket-failed-to-listen-on-sockets-Address-family-not-supported-by-protocol&quot;&gt;&lt;a href=&quot;#rpcbind-socket-failed-to-listen-on-so
+      &lt;h3 id=&quot;rpcbind-socket-failed-to-listen-on-sockets-Address-family-not-supported-by-protocol&quot;&gt;&lt;a href=&quot;#rpcbind-socket-failed-to-listen-on-sockets-Address-family-not-supported-by-protocol&quot; class=&quot;headerlink&quot; title=&quot;rpcbind.socket failed to listen on sockets: Address family not supported by protocol&quot;&gt;&lt;/a&gt;&lt;a href=&quot;http://www.golinuxhub.com/2017/06/rpcbindsocket-failed-to-listen-on.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;rpcbind.socket failed to listen on sockets: Address family not supported by protocol&lt;/a&gt;&lt;/h3&gt;
     
     </summary>
     
@@ -431,9 +432,9 @@
       <category term="Keepalived" scheme="http://wangshengzhuang.com/categories/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Keepalived/"/>
     
     
-      <category term="Keepalived" scheme="http://wangshengzhuang.com/tags/Keepalived/"/>
-    
       <category term="VRRP" scheme="http://wangshengzhuang.com/tags/VRRP/"/>
+    
+      <category term="Keepalived" scheme="http://wangshengzhuang.com/tags/Keepalived/"/>
     
   </entry>
   
@@ -442,14 +443,14 @@
     <link href="http://wangshengzhuang.com/2017/06/04/%E8%BF%90%E7%BB%B4%E7%9B%B8%E5%85%B3/Keepalived/keepalived%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E7%AE%80%E4%BB%8B/"/>
     <id>http://wangshengzhuang.com/2017/06/04/运维相关/Keepalived/keepalived配置文件简介/</id>
     <published>2017-06-04T15:26:47.000Z</published>
-    <updated>2017-07-03T14:36:27.299Z</updated>
+    <updated>2017-09-02T06:58:33.000Z</updated>
     
     <content type="html"><![CDATA[<p>本文主要介绍了Keepalived配置文件keepalived.conf。</p>
 <p><img src="http://image.wangshengzhuang.com/17-7-3/62480061.jpg" alt=""></p>
 <a id="more"></a>
 <p>keepalived只有一个配置文件keepalived.conf，里面主要包括以下几个配置区域，分别是global_defs、static_ipaddress、static_routes、vrrp_script、vrrp_instance和virtual_server。</p>
 <h3 id="1-global-defs区域"><a href="#1-global-defs区域" class="headerlink" title="1. global_defs区域"></a>1. global_defs区域</h3><p>主要是配置故障发生时的通知对象以及机器标识</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">global_defs &#123;</div><div class="line">    notification_email &#123;</div><div class="line">        a@abc<span class="selector-class">.com</span></div><div class="line">        b@abc<span class="selector-class">.com</span></div><div class="line">        ...</div><div class="line">    &#125;</div><div class="line">    notification_email_from alert@abc<span class="selector-class">.com</span></div><div class="line">    smtp_server smtp<span class="selector-class">.abc</span><span class="selector-class">.com</span></div><div class="line">    smtp_connect_timeout <span class="number">30</span></div><div class="line">    enable_traps</div><div class="line">    router_id host163</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">global_defs &#123;</div><div class="line">    notification_email &#123;</div><div class="line">        a@abc.com</div><div class="line">        b@abc.com</div><div class="line">        ...</div><div class="line">    &#125;</div><div class="line">    notification_email_from alert@abc.com</div><div class="line">    smtp_server smtp.abc.com</div><div class="line">    smtp_connect_timeout 30</div><div class="line">    enable_traps</div><div class="line">    router_id host163</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <ul>
 <li>notification_email 故障发生时给谁发邮件通知。</li>
 <li>notification_email_from 通知邮件从哪个地址发出。</li>
@@ -1215,9 +1216,9 @@
       <category term="性能测试" scheme="http://wangshengzhuang.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9B%B8%E5%85%B3/MySQL/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/"/>
     
     
-      <category term="Sysbench" scheme="http://wangshengzhuang.com/tags/Sysbench/"/>
-    
       <category term="MySQL" scheme="http://wangshengzhuang.com/tags/MySQL/"/>
+    
+      <category term="Sysbench" scheme="http://wangshengzhuang.com/tags/Sysbench/"/>
     
   </entry>
   
@@ -1268,9 +1269,9 @@
       <category term="性能测试" scheme="http://wangshengzhuang.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9B%B8%E5%85%B3/MySQL/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/"/>
     
     
-      <category term="Sysbench" scheme="http://wangshengzhuang.com/tags/Sysbench/"/>
-    
       <category term="MySQL" scheme="http://wangshengzhuang.com/tags/MySQL/"/>
+    
+      <category term="Sysbench" scheme="http://wangshengzhuang.com/tags/Sysbench/"/>
     
   </entry>
   
@@ -1475,9 +1476,9 @@
       <category term="性能测试" scheme="http://wangshengzhuang.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9B%B8%E5%85%B3/MySQL/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/"/>
     
     
-      <category term="MySQL" scheme="http://wangshengzhuang.com/tags/MySQL/"/>
-    
       <category term="sysbench" scheme="http://wangshengzhuang.com/tags/sysbench/"/>
+    
+      <category term="MySQL" scheme="http://wangshengzhuang.com/tags/MySQL/"/>
     
   </entry>
   
